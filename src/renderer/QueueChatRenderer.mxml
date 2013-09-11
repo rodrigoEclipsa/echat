@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+				xmlns:s="library://ns.adobe.com/flex/spark"
+				xmlns:mx="library://ns.adobe.com/flex/mx"
+				width="100%" height="100%" maxWidth="190" autoDrawBackground="true"
+				click="itemrenderer1_clickHandler(event)"
+				dataChange="itemrenderer1_dataChangeHandler(event)"
+				height.normal="30"
+				 height.selected="42"
+				 height.hovered="30"
+				>
+
+	<fx:Script>
+		<![CDATA[
+			import com.event.MainEvent;
+			
+			import mx.events.FlexEvent;
+			
+			import util.vo.QueueChatVO;
+
+
+
+			private var interval:uint;
+
+			private var isAlarmColor:Boolean=false;
+
+
+
+
+			[Bindable]
+			public var itemData:QueueChatVO;
+
+		
+
+			[Bindable]
+			private var countWaitingMessage:int;
+
+			
+			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
+			{
+				if (data) 
+				{
+					
+					itemData=data as QueueChatVO;
+					
+					
+			
+						
+					if (itemData.showAlarm)
+					{
+						
+						if (!interval)
+						{
+							
+							interval=setInterval(showAlarm, 1000); // 1 second
+							
+							countWaitingMessage=itemData.arrayList_historyChat.length;
+							
+						}
+					}
+					
+				}
+				
+				
+			}
+			
+			
+
+
+			private function showAlarm():void
+			{
+
+				if (!isAlarmColor)
+				{
+
+					
+
+				}
+				else
+				{
+					
+
+				}
+
+
+				isAlarmColor=!isAlarmColor;
+			}
+
+
+
+			protected function itemrenderer1_clickHandler(event:MouseEvent):void
+			{
+
+				clearInterval(interval);
+				countWaitingMessage=0;
+				interval=0;
+
+				itemData.showAlarm=false;
+
+
+				
+				var mainEvent:MainEvent = new MainEvent(MainEvent.selectedChat,true);
+				
+				mainEvent.queueChatVO = itemData;
+				
+				dispatchEvent(mainEvent);
+
+			}
+			
+			
+
+			protected function button_close_clickHandler(event:MouseEvent):void
+			{
+
+
+				var mainEvent:MainEvent=new MainEvent(MainEvent.closeQueueChat, true);
+
+				mainEvent.queueChatVO=itemData;
+
+				dispatchEvent(mainEvent);
+
+
+			}
+			
+			
+		
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="hovered"/>
+		<s:State name="selected" />
+		
+		
+		
+	</s:states>     
+
+	<s:BorderContainer id="skinnableContainer_content" width="100%" height="100%"
+					   backgroundColor="#818181"
+					   backgroundColor.hovered="#101010"
+					   backgroundColor.selected="#252525"
+					   backgroundColor.normal="#252525">
+
+
+
+
+	
+
+
+			<s:Label id="label_name" fontWeight="bold" text="{itemData.jid.node}"
+					 color="#FFFFFF" horizontalCenter="0" verticalCenter="0"/>
+		
+		
+
+
+		<s:Button id="button_close" right="5" width="16" height="16" label="Button"
+				  click="button_close_clickHandler(event)" verticalCenter="0"
+				  label.selected="x"/>
+		
+		<s:Label id="label_countMessage" includeIn="normal" right="30" fontWeight="bold"
+				 text="{!countWaitingMessage ? '' : (itemData.arrayList_historyChat.length - countWaitingMessage) + 1}"
+				 verticalCenter="0"/>
+		
+
+	</s:BorderContainer>
+
+
+
+</s:ItemRenderer>

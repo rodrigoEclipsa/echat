@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<swiz:BeanProvider xmlns:fx="http://ns.adobe.com/mxml/2009"
+	xmlns:swiz="http://swiz.swizframework.org" xmlns:service="org.swizframework.quickswiz.service.*"
+	 xmlns:controller="com.controller.*" xmlns:model="com.model.*" xmlns:view="com.view.*">
+	
+	
+	
+	<controller:MainController id="mainController" />
+	<model:MainModel id="mainModel"    />
+	
+	
+	
+	<controller:ChatManagerController id="chatManagerController"/>
+	<model:ChatManagerModel id="chatManagerModel"/>
+	
+
+	
+	
+	<controller:LoginController id="loginController" />
+	<model:LoginModel id="loginModel"    />
+	
+	
+	
+	
+</swiz:BeanProvider>

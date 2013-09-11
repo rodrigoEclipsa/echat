@@ -1,0 +1,346 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:view="com.view.*"
+		 width="100%"
+		 height="100%"
+		 currentState="Login"
+		 height.Logged="100%"
+		  creationComplete="group1_creationCompleteHandler(event)"
+		   minWidth="640"
+		 xmlns:customComponent="customComponent.*">
+
+
+
+	<fx:Script>
+		<![CDATA[
+			import com.controller.MainController;
+			import com.event.ChatManagerEvent;
+			import com.event.MainEvent;
+			import com.model.ChatManagerModel;
+			import com.model.LoginModel;
+			import com.model.MainModel;
+			
+			import customComponent.LoadWait;
+			
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			
+			import org.igniterealtime.xiff.core.EscapedJID;
+			import org.igniterealtime.xiff.core.UnescapedJID;
+			import org.igniterealtime.xiff.data.Message;
+			
+			import renderer.ChatRenderer;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			import util.DateManager;
+			import util.app.ConfigParameters;
+			import util.vo.ChatVO;
+			
+			import util.vo.QueueChatVO;
+
+
+
+			private var loadWait:LoadWait;
+
+			[Bindable]
+			[Inject]
+			public var mainModel:MainModel;
+
+
+			[Bindable]
+			[Inject]
+			public var mainController:MainController;
+
+
+			[Bindable]
+			[Inject]
+			public var loginModel:LoginModel;
+
+
+
+
+
+			public var is_writing:Boolean=false;
+
+
+			[Bindable]
+			private var typicalItem:ChatVO;
+
+			
+			[Bindable]
+			public var chatWindowView:ChatWindowView = new ChatWindowView();
+
+
+			
+			
+			[EventHandler(event="LoginEvent.loginSuccess", properties="isAgentAvailable")]
+			public function loginSuccess(isAgentAvailable:Boolean):void
+			{
+				
+				typicalItem=new ChatVO();
+				typicalItem.body="dsadasdasd sa dsadsa dsa sa " + "dsadasdasdasdsa " + 
+					"ds " + "ad sad " + "sadsad   ds ds" + " ad as" + 
+					" das das " + "das d " + "asd asd " + "as das da" + " sd " + "asd " + "sad" + " as a "
+
+
+
+				this.currentState="Logged";
+
+			}
+
+
+			
+			
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				//asigno esta profundidad para que este debajo de la barra del chat
+				chatWindowView.depth = 5;
+				
+			}
+			
+
+			public function showLoad():void
+			{
+
+				if (!loadWait)
+				{
+					loadWait=new LoadWait();
+
+					this.addElement(loadWait);
+
+					this.mouseChildren=false;
+					this.tabChildren=false;
+
+				}
+			}
+
+
+
+			public function removeLoad():void
+			{
+
+
+				if (loadWait)
+				{
+
+					this.removeElement(loadWait);
+					loadWait=null;
+
+					this.mouseChildren=true;
+					this.tabChildren=true;
+
+				}
+			}
+
+
+
+			public function addChatWindow():void
+			{
+
+				group_logged.addElement(chatWindowView);
+			
+				
+			
+
+			}
+
+
+			public function minimizeChatWindow():void
+			{
+				trace("chat: " + chatWindowView)
+
+				group_logged.removeElement(chatWindowView);
+				
+
+			}
+
+
+			
+			
+			
+			protected function tabBar_queueChat_changeHandler(event:IndexChangeEvent):void
+			{
+
+                 
+
+
+
+			}
+
+			protected function borderContainer_queueChat_clickHandler(event:MouseEvent):void
+			{
+
+
+				if(mainModel.arrayCollection_queueCall.length > 0)
+				{
+				
+
+				}
+
+			}
+
+
+			
+			[EventHandler(event="MainEvent.selectedChat", properties="queueChatVO")]
+			public function selectedChat(queueChatVO:QueueChatVO):void
+			{
+
+				mainModel.currentQueueChatVO=queueChatVO;
+				addChatWindow();
+
+			}
+			
+			
+			
+
+			
+		
+			
+		]]>
+	</fx:Script>
+	
+	
+	<s:states>
+		<s:State name="Login"/>
+		<s:State name="Logged"/>
+	</s:states>
+
+
+
+
+
+	<fx:Declarations>
+
+
+
+	</fx:Declarations>
+
+
+	<view:LoginView includeIn="Login"
+					horizontalCenter="0"
+					verticalCenter="0"/>
+
+	<s:Group 
+		 id="group_logged"
+			  width="100%"
+			  height="100%"
+			  includeIn="Logged">
+
+
+
+		<s:HGroup left="0" right="0" top="0" bottom="31" gap="0" depth="1">
+
+
+
+			<s:SkinnableContainer width="180" height="100%" backgroundColor="#383838">
+				<s:Image id="image_agentAvatar"
+						 x="10"
+						 y="27"
+						 width="40"
+						 height="40"/>
+				<s:Label id="label_agentName"
+						 x="22"
+						 y="106"
+						 width="150"
+						 color="#FFFFFF"
+						 fontSize="14"
+						 fontWeight="bold"
+						 text="{ConfigParameters.agent_name}"/>
+				<s:DropDownList x="28"
+								y="206"
+								width="95"
+								dataProvider="{mainModel.arrayList_agent}"
+								itemRenderer="renderer.AgentRenderer"
+								prompt="{'AD('+mainModel.arrayList_agent.length+')' }">
+
+
+				</s:DropDownList>
+
+
+			</s:SkinnableContainer>
+			<s:VGroup width="100%"
+					  height="100%">
+				<s:BorderContainer width="100%" height="46" backgroundColor="#EAEAEA"
+								   borderColor="#C1C1C1">
+					<s:layout>
+						<s:HorizontalLayout paddingLeft="4"
+											verticalAlign="middle"/>
+					</s:layout>
+					<s:Spacer width="100%"/>
+
+
+			</s:BorderContainer>
+
+
+			</s:VGroup>
+
+
+
+		</s:HGroup>
+
+		<s:HGroup id="hgroup_queueChat" left="0" right="0" bottom="0" height="30" depth="10" >
+
+			<s:BorderContainer height="100%"
+							   id="borderContainer_queueChat"
+							   width="180"
+							   backgroundColor="#888888"
+							   click="borderContainer_queueChat_clickHandler(event)"
+							   cornerRadius="2">
+
+				<s:Label backgroundAlpha="{mainModel.arrayCollection_queueCall.length &gt; 0 ? 1 : 0}"
+						 color="#FFFFFF"
+						 fontSize="11"
+						 fontWeight="bold"
+						 horizontalCenter="0"
+						 text="{mainModel.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' + mainModel.arrayCollection_queueCall.length}"
+						 textAlign="center"
+						 verticalAlign="middle"
+						 verticalCenter="0"/>
+				<!--
+					 <customComponent:BusyIndicator bottom="2" width="12" height="12" horizontalCenter="0"  id="busyIndicator_queueChat"/>
+				-->
+			</s:BorderContainer>
+
+
+
+			<s:TabBar id="tabBar_queueChat"
+					  y="548"
+					  width="100%"
+					  height="100%"
+					  change="tabBar_queueChat_changeHandler(event)"
+					  dataProvider="{mainModel.arrayCollection_queueChat}"
+					  itemRenderer="renderer.QueueChatRenderer"
+					  selectedIndex="-1">
+				
+				<s:layout>
+					<s:HorizontalLayout/>
+				</s:layout>
+
+
+			</s:TabBar>
+
+		</s:HGroup>
+
+		
+		
+		
+		
+	</s:Group>
+
+
+
+
+
+</s:Group>

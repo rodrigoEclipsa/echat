@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					  xmlns:customComponent="customComponent.*"
+					   
+					  width="100%" height="100%" backgroundColor="#FFFFFF" fontFamily="Verdana" >
+	
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import Assets.EmbeddedAssets;
+			
+			import com.controller.LoginController;
+			import com.event.LoginEvent;
+			import com.model.LoginModel;
+			
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			
+			
+			[Bindable]
+			[Inject]
+			public var loginModel:LoginModel;
+			
+			[Bindable]
+			[Inject]
+			public var loginController:LoginController;
+			
+			
+			
+			protected function button_login_clickHandler(event:MouseEvent):void
+			{
+				
+				
+				var validate_password:ValidationResultEvent = valid_txt_password.validate();
+				var validate_username:ValidationResultEvent = valid_txt_username.validate();
+				
+				if(validate_password.type == ValidationResultEvent.VALID && 
+					
+					validate_username.type == ValidationResultEvent.VALID
+				)
+				{
+					
+					
+					loginController.login(txt_username.text,txt_password.text);
+					
+					
+				}
+				
+				
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	<fx:Declarations>
+		<mx:StringValidator id="valid_txt_username"
+							source="{txt_username}"
+							
+							
+							property="text"
+							requiredFieldError="Ingrese su mail"
+							required="true"/>
+		
+		<mx:StringValidator id="valid_txt_password"
+						   source="{txt_password}"
+						   property="text"
+						   requiredFieldError="Ingrese su contaseña"
+						   required="true"/>
+		
+		
+	</fx:Declarations>
+	
+	
+	<s:Form y="51" fontFamily="Arial" horizontalCenter="0">
+		<s:layout>
+			<s:FormLayout />
+		</s:layout>
+		<s:FormItem label="Usuario" >
+			<s:TextInput id="txt_username" width="150" text="rodrigo@eclipsait.com"/>
+		</s:FormItem>
+		<s:FormItem label="Contraseña" >
+			<s:TextInput id="txt_password" width="150" text="123456"/>
+		</s:FormItem>
+	</s:Form>
+	<s:Button id="button_entrar" y="168" label="Iniciar sesion" chromeColor="#999999"
+			  click="button_login_clickHandler(event)" fontFamily="Arial" fontWeight="bold"
+			  horizontalCenter="0"/>
+	<s:HGroup top="11" gap="0" horizontalCenter="0">
+		<s:Label color="#4D81EC" fontSize="36" text="e"/>
+		<s:Label color="#F8B762" fontSize="36" text="Chat"/>
+	</s:HGroup>
+	<s:Label top="298" color="#1C74EC" horizontalCenter="0" text="eclipsasitios.com"/>
+	<s:Image top="236" horizontalCenter="0"  source="{EmbeddedAssets.getInstance().logoEclipsa}"/>
+	
+	
+	
+	
+	
+	
+	
+	
+</s:SkinnableContainer>

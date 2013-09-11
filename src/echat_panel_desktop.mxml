@@ -1,0 +1,371 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:WindowedApplication xmlns:fx="http://ns.adobe.com/mxml/2009"
+					   xmlns:s="library://ns.adobe.com/flex/spark"
+					   xmlns:swiz="http://swiz.swizframework.org"
+					   xmlns:view="com.view.*"
+					   xmlns:local="*"
+					   xmlns:mx="library://ns.adobe.com/flex/mx"
+					   xmlns:update="air.update.*"
+					   width="640" height="480"
+					   applicationComplete="windowedapplication_applicationCompleteHandler(event)"
+					   closing="{windowedapplication1_closingHandler(event)}"
+					   creationComplete="windowedapplication1_creationCompleteHandler(event)"
+					   showStatusBar="false" title="echat Agente">
+	
+	
+	
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import Assets.EmbeddedAssets;
+			
+			import air.update.events.UpdateEvent;
+			
+			import com.controller.LoginController;
+			import com.event.LoginEvent;
+			import com.event.MainEvent;
+			import com.view.ChatWindowView;
+			
+			import mx.controls.Alert;
+			import mx.core.BitmapAsset;
+			import mx.core.FlexGlobals;
+			import mx.events.CloseEvent;
+			import mx.events.FlexEvent;
+			import mx.events.FlexNativeMenuEvent;
+			import mx.utils.ObjectUtil;
+			
+			[Bindable]
+			[Inject]
+			public var loginController:LoginController;
+			
+			[Bindable]
+			private var iconoMinimizado:BitmapData=new BitmapData(32, 32);
+			
+			
+			
+			
+			
+			protected function windowedapplication_applicationCompleteHandler(event:FlexEvent):void
+			{
+				
+				var mainEvent:MainEvent = new MainEvent(MainEvent.applicationComplete,true);
+				
+				
+				dispatchEvent(mainEvent);
+				
+			}
+			
+			
+			
+			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				Alert.yesLabel = "si";
+				Alert.noLabel = "no";
+				
+				inicializarSystrayHandler();
+				
+				//inicio busqueda de actualizaciones
+				applicationUpdateUI.initialize();
+				
+				
+				
+			}
+			
+			
+			
+			protected function applicationUpdateUI_errorHandler(event:ErrorEvent):void
+			{
+				
+				trace("error updated : " + event.text);
+				
+			}
+			
+			
+			
+			protected function applicationUpdateUI_initializedHandler(event:UpdateEvent):void
+			{
+				//compruevo actualizaciones
+				applicationUpdateUI.checkNow();
+				
+			}
+			
+			
+			public function stateSystemTray():void
+			{
+				
+				//Ocultamos la aplicacion y mostramos el icono del systray
+				//stage.nativeWindow.visible=false
+				
+				NativeApplication.nativeApplication.icon.bitmaps=[iconoMinimizado];
+				
+				
+			}
+			
+			
+			
+			
+			public function inicializarSystrayHandler():void
+			{
+				
+				
+				if (NativeApplication.supportsSystemTrayIcon)
+				{
+					
+					var icon:Class=EmbeddedAssets.getInstance().trayIcon;
+					
+					var bitMapAsset:BitmapAsset=new icon();
+					
+					
+					iconoMinimizado=bitMapAsset.bitmapData;
+					
+					SystemTrayIcon(NativeApplication.nativeApplication.icon).tooltip="echat - el chat de tu web";
+					SystemTrayIcon(NativeApplication.nativeApplication.icon).addEventListener(MouseEvent.CLICK, restoreAplicacionHandler);
+					
+					//Creamos su menu y lo añadimos
+					var menu:NativeMenu=new NativeMenu();
+					var restaurarNativeMenuItem:NativeMenuItem=new NativeMenuItem("Restaurar");
+					
+					var salirNativeMenuItem:NativeMenuItem=new NativeMenuItem("Salir de eChat");
+					
+					//Manejador de cada uno de los items del menu      
+					restaurarNativeMenuItem.addEventListener(Event.SELECT, restoreAplicacionHandler);
+					
+					salirNativeMenuItem.addEventListener(Event.SELECT, closeAplicacionHandler);
+					
+					//Añadimos los menuitems al menu, y el menu al icono 
+					
+					menu.addItem(restaurarNativeMenuItem);
+					
+					menu.addItem(new NativeMenuItem("", true));
+					menu.addItem(salirNativeMenuItem);
+					SystemTrayIcon(NativeApplication.nativeApplication.icon).menu=menu;
+					
+					stateSystemTray();
+					
+				}
+				
+			}
+			
+			
+			public function restoreAplicacionHandler(event:Event):void
+			{
+				
+				restoreAplicacion();
+				
+			}
+			
+			
+			
+			
+			public function closeAplicacionHandler(event:Event):void
+			{
+				restoreAplicacion();
+				Alert.show("¿Seguro desea cerrar eChat?","Cerrar eChat",Alert.NO|Alert.YES,null,alertWindowClose_closeHandler);
+			}
+			
+			
+			
+			
+			
+			public function restoreAplicacion():void
+			{
+				//Ponemos la aplicacion visible y la maximizamos
+				
+				stage.nativeWindow.restore();
+				
+				//Eliminamos el icono del systray 
+				
+			}
+			
+			
+			public function maximizeAplicacion():void
+			{
+				//Ponemos la aplicacion visible y la maximizamos
+				
+				stage.nativeWindow.maximize();
+				
+			}
+			
+			
+			public function closeAplicacion():void
+			{
+				/*
+				var alertWindow:AlertWindow=new AlertWindow();
+				alertWindow.defaultButtonFlag=Alert.NO | Alert.YES;
+				alertWindow.isCenter=true;
+				alertWindow.closeHandler=alertWindowClose_closeHandler;
+				alertWindow.text="Si cierra mate\n-no podra ver las alarmas de sus contactos\n-no podra enviar alarmas\n\n ¿Esta seguro que desea cerrar Mate ? ";
+				alertWindow.title="cerrar mate";
+				alertWindow.open();
+				//Alert.show("Esta seguro que desea cerrar Mate ? ","Atencion !",Alert.YES|Alert.NO,null,alert_closingHandler);
+				*/
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			private function alertWindowClose_closeHandler(event:CloseEvent):void
+			{
+				
+				
+				if (event.detail == Alert.YES)
+				{
+					
+					
+					FlexGlobals.topLevelApplication.exit();
+				}
+				
+				
+			}
+			
+			
+			
+			
+			
+			protected function windowedapplication1_closingHandler(event:Event):void
+			{
+				
+				
+				event.preventDefault();	
+				
+				this.minimize();
+				
+			}
+			
+			
+			
+			
+			public function centerNativeWindow():void
+			{
+				
+				var screenBounds:Rectangle=Screen.mainScreen.bounds;
+				
+				nativeWindow.x=(screenBounds.width - nativeWindow.width) / 2;
+				nativeWindow.y=(screenBounds.height - nativeWindow.height) / 2;
+				
+			}
+			
+			
+			
+			
+			public function getVersionNumber():String
+			{
+				
+				var appXML:XML = NativeApplication.nativeApplication.applicationDescriptor;
+				var ns:Namespace = appXML.namespace();
+				
+				
+				return appXML.ns::versionNumber;
+				
+			}
+			
+			
+			
+			
+			
+			protected function flexNativeMenu_app_itemClickHandler(event:FlexNativeMenuEvent):void
+			{
+				
+				
+				//	trace("menu ... :" + ObjectUtil.toString(event.item));
+				
+				switch(String(event.item.@id))
+				{
+					
+					
+					case "close":
+						
+						Alert.show("¿Seguro desea cerrar eChat?","Cerrar eChat",Alert.NO|Alert.YES,null,alertWindowClose_closeHandler);
+						
+						break;
+					
+					case "closeSession":
+						
+						
+						loginController.logout();
+						
+						break;
+					
+					
+				}
+				
+				
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	
+	<fx:Declarations>
+		
+		<swiz:Swiz>
+			
+			
+			
+			<!-- BeanProviders simply contain the non-display objects that Swiz should process. -->
+			
+			<swiz:beanProviders>
+				
+				<local:Beans/>
+				
+			</swiz:beanProviders>
+			
+			
+			
+			<swiz:config>
+				
+				<!-- The eventPackages value tells Swiz the path to your Event classes,
+				
+				and viewPackages is an optional value that speeds up the processing of display classes. -->
+				
+				<swiz:SwizConfig eventPackages="com.event.*"
+								 viewPackages="com.view.*"
+								 
+								 
+								 />
+				
+				
+				
+			</swiz:config>
+			
+			
+			
+		</swiz:Swiz>
+		
+		
+		<update:ApplicationUpdaterUI id="applicationUpdateUI"
+									 isCheckForUpdateVisible="false"
+									 
+									 initialized="applicationUpdateUI_initializedHandler(event)"
+									 error="applicationUpdateUI_errorHandler(event)"
+									 updateURL="http://eclipsait.com/echat/agent/update.xml"
+									 />
+		
+		
+		
+	</fx:Declarations>
+	
+	
+	<view:MainView id="mainView"/>
+	
+	
+	
+</s:WindowedApplication>

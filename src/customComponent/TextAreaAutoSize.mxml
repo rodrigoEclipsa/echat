@@ -1,0 +1,45 @@
+<s:TextArea xmlns:fx="http://ns.adobe.com/mxml/2009" 
+			xmlns:s="library://ns.adobe.com/flex/spark" 
+			xmlns:mx="library://ns.adobe.com/flex/mx"
+			
+			horizontalScrollPolicy="off"
+			verticalScrollPolicy="off"
+			
+			creationComplete="init()"
+			>
+	
+	<fx:Metadata>
+		[Event(name="height_change", type="flash.events.Event")]
+	</fx:Metadata>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.PropertyChangeEvent
+				
+				private function updateHeight():void {
+					var newHeight:Number = scroller.viewport.contentHeight
+					
+					// Set the calculated height within minHeight / maxHeoght range
+					if(newHeight > maxHeight)
+						newHeight = maxHeight
+					else if(newHeight < minHeight)
+						newHeight = minHeight
+					
+					if(height != newHeight) {
+						height = newHeight
+						dispatchEvent(new Event("height_change"))
+					}
+				}
+				
+				private function propertyChangeHandler(e:PropertyChangeEvent):void {
+					if(e.property == "contentHeight")
+						updateHeight()
+				}
+				
+				private function init():void {
+					scroller.viewport.addEventListener(PropertyChangeEvent.PROPERTY_CHANGE, propertyChangeHandler)
+					updateHeight()
+				}
+		]]>
+	</fx:Script>
+</s:TextArea>

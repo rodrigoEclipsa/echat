@@ -1,0 +1,450 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
+					  xmlns:s="library://ns.adobe.com/flex/spark"
+					  xmlns:mx="library://ns.adobe.com/flex/mx"
+					
+					  width="100%" height="100%" backgroundAlpha="0.5" backgroundColor="#464646"
+					 >
+	
+	
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.controller.MainController;
+			import com.event.ChatManagerEvent;
+			import com.event.MainEvent;
+			import com.model.ChatManagerModel;
+			import com.model.LoginModel;
+			import com.model.MainModel;
+			
+			import customComponent.LoadWait;
+			
+			import flashx.textLayout.elements.ParagraphElement;
+			import flashx.textLayout.elements.SpanElement;
+			
+			import mx.collections.ArrayList;
+			import mx.events.FlexEvent;
+			import mx.events.ValidationResultEvent;
+			import mx.managers.PopUpManager;
+			import mx.utils.ObjectUtil;
+			import mx.utils.StringUtil;
+			
+			import org.igniterealtime.xiff.core.EscapedJID;
+			import org.igniterealtime.xiff.core.UnescapedJID;
+			import org.igniterealtime.xiff.data.Message;
+			
+			import renderer.ChatRenderer;
+			
+			import spark.events.IndexChangeEvent;
+			import spark.events.TextOperationEvent;
+			
+			import util.DateManager;
+			import util.app.ConfigParameters;
+			import util.vo.ChatVO;
+			import util.vo.QueueChatVO;
+			
+			
+			
+			
+
+			private var loadWait:LoadWait;
+			
+			[Bindable]
+			[Inject]
+			public var mainModel:MainModel;
+			
+			
+			[Bindable]
+			[Inject]
+			public var mainController:MainController;
+			
+			
+			[Bindable]
+			[Inject]
+			public var loginModel:LoginModel;
+		
+			
+			
+	
+			
+			public var is_writing:Boolean=false;
+			
+			
+			[Bindable]
+			private var typicalItem:ChatVO;
+			
+			
+			
+			
+		
+			
+			
+			public function showLoad():void
+			{
+				
+				if(!loadWait)
+				{
+					loadWait = new LoadWait();
+					
+					this.addElement(loadWait);		
+					
+					this.mouseChildren=false;
+					this.tabChildren=false;
+					
+				}
+			}
+			
+			
+			
+			public function removeLoad():void
+			{
+				
+				
+				if (loadWait)
+				{
+					
+					this.removeElement(loadWait);
+					loadWait=null;
+					
+					this.mouseChildren=true;
+					this.tabChildren=true;
+					
+				}
+			}
+			
+			
+			
+			
+			
+			
+			protected function richEditableText_inputChat_keyDownHandler(event:KeyboardEvent):void
+			{
+				
+				
+				if (event.keyCode == Keyboard.ENTER && event.shiftKey)
+				{
+					
+					richEditableText_inputChat.dispatchEvent(new FlexEvent(FlexEvent.ENTER));
+					
+					
+				}
+				else
+				{
+					
+					
+					
+					if (event.keyCode == Keyboard.ENTER)
+					{
+						
+						
+						
+						
+						enter_inputChat();
+						event.preventDefault();
+					}
+					
+					
+				}
+				
+				
+			}
+			
+			
+			
+			
+			
+			private function enter_inputChat():void
+			{
+				
+				
+				if (StringUtil.trim(richEditableText_inputChat.text) != "")
+				{
+					
+					
+					
+					
+					var strMessage:String=richEditableText_inputChat.text;
+					
+					
+					//limpio input chat y envio comando se escritura off
+					richEditableText_inputChat.text="";
+					
+					writing();
+					
+					
+					
+					
+					mainController.writeAndSendMessage(strMessage, mainModel.currentQueueChatVO);
+					
+					
+					updateScroll();
+					
+					
+				}
+				
+				
+				
+			}
+			
+			
+			public function writing():void
+			{
+				
+				var message:Message;
+				
+				if (!is_writing && richEditableText_inputChat.text != "")
+				{
+					
+					is_writing=true;
+					mainController.command_writing(mainModel.currentQueueChatVO.jid, 1)
+					
+					
+				}
+				else
+				{
+					
+					if (is_writing && richEditableText_inputChat.text == "")
+					{
+						
+						is_writing=false;
+						mainController.command_writing(mainModel.currentQueueChatVO.jid, 0)
+						
+					}
+					
+				}
+				
+				
+				
+				
+				
+				
+			}
+			
+			
+			
+			protected function richEditableText_inputChat_changeHandler(event:TextOperationEvent):void
+			{
+				
+				writing();
+				
+				
+			}
+			
+			
+			
+			public function updateScroll():void
+			{
+				
+				
+				
+				list_historyChat.validateNow();
+				list_historyChat.ensureIndexIsVisible(mainModel.currentQueueChatVO.arrayList_historyChat.length-1);
+				
+				
+				
+				//	scroller_historyChat.verticalScrollBar.value=scroller_historyChat.verticalScrollBar.maximum;
+				
+				/*
+				
+				list_historyChat.callLater(function update():void
+				{
+				list_historyChat.ensureIndexIsVisible(mainModel.currentQueueChatVO.arrayList_historyChat.length-1);
+				})
+				*/
+				
+			}
+			
+			
+			
+		
+			protected function button_close_clickHandler(event:MouseEvent):void
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			
+			
+			protected function button_mininize_clickHandler(event:MouseEvent):void
+			{
+				
+			
+				mainController.mainView.minimizeChatWindow();
+				
+			}
+			
+			
+			
+		
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+			
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	<s:SkinnableContainer width="80%" height="80%"
+					   horizontalCenter="0" verticalCenter="0">
+
+		<s:layout >
+			<s:VerticalLayout gap="0"  />
+		</s:layout>
+	
+		<s:SkinnableContainer width="100%" height="40" backgroundColor="#383838">
+			<s:Button id="button_close" click="button_close_clickHandler(event)" right="5" width="22" height="22" label="x" verticalCenter="0"/>
+			<s:Button id="button_mininize"  click="button_mininize_clickHandler(event)" right="34" width="22" height="22" label="-" verticalCenter="0"/>
+			<s:Label id="label_nameVisitor" left="50" color="#FFFFFF" verticalCenter="0"/>
+			<s:Image left="12" width="20" height="20" verticalCenter="0"/>
+			
+		</s:SkinnableContainer>
+		
+	
+	
+	
+	<s:SkinnableContainer width="100%" height="100%" backgroundColor="#EEEEEE">
+		<s:layout>
+			<s:HorizontalLayout gap="0"/>
+		</s:layout>
+	
+		
+			<s:VGroup width="100%" height="100%" gap="0" paddingBottom="10" paddingLeft="10"
+					  paddingTop="10">
+				
+		
+			
+			<s:List id="list_historyChat"
+					width="100%"
+					height="100%"
+				
+					horizontalScrollPolicy="off"
+					 borderColor="#9C9C9C"
+					dataProvider="{mainModel.currentQueueChatVO.arrayList_historyChat}"
+					itemRenderer="renderer.ChatRenderer">
+				<s:layout>
+					<s:VerticalLayout id="layout_historyChat" gap="6" paddingBottom="5"
+									  paddingTop="5" variableRowHeight="true"/>
+					
+				</s:layout>
+			</s:List>
+			
+			
+			
+		
+			
+				<s:Group width="100%"
+						 height="10">
+					<s:Label id="label_writing" top="0" fontSize="10" fontStyle="italic"
+							 fontWeight="normal" horizontalCenter="0"
+							 text="{!mainModel.currentQueueChatVO ? '' : mainModel.currentQueueChatVO.isWriting == 0 ? '' : mainModel.currentQueueChatVO.jid.node+' esta escribiendo ...'}"/>
+				</s:Group>
+				
+				
+				
+				<s:BorderContainer width="100%" height="143" borderColor="#9C9C9C" >
+					
+					
+					<s:Scroller width="100%"
+								height="100%">
+						
+						
+						
+						<s:RichEditableText id="richEditableText_inputChat"
+											width="100%"
+											height="100%"
+											backgroundColor="#FFFFFF"
+											change="richEditableText_inputChat_changeHandler(event)"
+											focusThickness="0"
+											keyDown="richEditableText_inputChat_keyDownHandler(event)"
+											maxChars="300"
+											paddingLeft="5"
+											enabled="{mainModel.currentQueueChatVO ? true : false}"
+											paddingRight="5"
+											paddingTop="5"/>
+						
+						
+						
+						
+					</s:Scroller>
+				</s:BorderContainer>
+				
+				
+			</s:VGroup>
+				
+		<s:Scroller width="300"
+					 horizontalScrollPolicy="off"
+					  verticalScrollPolicy="off"
+					height="100%">
+			
+			
+		<s:VGroup id="vGroup_clientInfo" width="100%" height="100%" horizontalAlign="center"
+				  paddingBottom="10" paddingLeft="10" paddingRight="10" paddingTop="10">
+			
+			
+			
+			
+			<s:HGroup width="100%" verticalAlign="middle">
+				<s:Image width="50" height="50"/>
+				<s:BorderContainer width="100%" borderColor="#9C9C9C" >
+					
+					<s:layout>
+						<s:VerticalLayout gap="0"/>
+					</s:layout>
+					
+					<s:TextInput id="txt_nameVisitorInput" width="100%" borderColor="#DADADA"
+								 borderVisible="false" prompt="nombre"/>
+					<mx:HRule width="100%"/>
+					<s:TextInput id="txt_emailVisitor" width="100%" borderColor="#DADADA"
+								 borderVisible="false" prompt="email"/>
+					
+				</s:BorderContainer>
+				
+			</s:HGroup>
+			<s:TextArea width="100%" height="100" borderColor="#9C9C9C"
+						prompt="Agregar nota del visitante"/>
+			<mx:HRule width="100%"/>
+			<s:BorderContainer width="100%" height="343" borderColor="#9C9C9C" cornerRadius="2">
+				<s:layout>
+					<s:VerticalLayout paddingBottom="5" paddingLeft="5" paddingRight="5"
+									  paddingTop="5"/>
+				</s:layout>
+				<s:VGroup x="10" y="43">
+					<s:Label color="#888888" text="Ubicacion"/>
+					<s:Label text="Label"/>
+				</s:VGroup>
+				<s:VGroup>
+					<s:Label color="#888888" text="Browser"/>
+					<s:Label text="Label"/>
+				</s:VGroup>
+				<s:VGroup>
+					<s:Label color="#888888" text="Plataforma"/>
+					<s:Label text="Label"/>
+				</s:VGroup>
+				<s:VGroup>
+					<s:Label color="#888888" text="Direccion ip"/>
+					<s:Label text="Label"/>
+				</s:VGroup>
+			</s:BorderContainer>
+			
+			
+			
+		</s:VGroup>
+		
+		</s:Scroller>
+		<s:VScrollBar id="vScrollBar_infoClient" viewport="{vGroup_clientInfo}"    skinClass="skin.vScrollerWindowChatSkin" height="100%"/>
+	</s:SkinnableContainer>
+
+	
+	</s:SkinnableContainer>
+	
+	
+
+	
+</s:SkinnableContainer>
