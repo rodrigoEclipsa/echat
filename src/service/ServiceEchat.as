@@ -4,6 +4,8 @@ package service
 	
 	
 	
+	import com.event.ErrorServiceEvent;
+	
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
@@ -21,7 +23,7 @@ package service
 
 	
 	
-	public class Service_echat 
+	public class ServiceEchat 
 	{
 		
 		public var gatewayUrl:String= "http://" + ConfigParameters.server + "/amfphp_echat/index.php/amf/gateway/";
@@ -30,7 +32,7 @@ package service
 		
 		private var interval:uint;
 		
-		public function Service_echat()
+		public function ServiceEchat()
 		{
 			
 			remoteObj = new RemoteObject("service_echat");
@@ -70,6 +72,7 @@ package service
 		private function getResult(event:ResultEvent):void
 		{
 			
+			
 				_func(event.result);
 		
 				destroy();
@@ -86,7 +89,7 @@ package service
 			
 			//Alert.show(event.fault.faultString);
 			
-			var errorServiceEvent:ErrorServiceEvent = new ErrorServiceEvent(ErrorServiceEvent.error);
+			var errorServiceEvent:ErrorServiceEvent = new ErrorServiceEvent(ErrorServiceEvent.timeOut);
 			
 			errorServiceEvent.message = event.message.body.toString();
             _func(errorServiceEvent);
@@ -117,12 +120,12 @@ package service
 		
 		
 		
-		public function login(func:Function,username:String,password:String):void
+		public function login(func:Function,email:String,password:String):void
 		{
 			
 			_func=func;
 			
-			remoteObj.login(username,password);
+			remoteObj.login(email,password);
 			
 		}
 		

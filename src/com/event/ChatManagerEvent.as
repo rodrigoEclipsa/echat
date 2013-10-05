@@ -26,7 +26,7 @@ package com.event
 		//events connection
 		
 		
-		public static const connect_success:String="ChatManagerEvent.connect_success";
+		public static const connectSuccess:String="ChatManagerEvent.connectSuccess";
 		public static const disconnect:String="ChatManagerEvent.disconnect";
 		public static const reconnect:String="ChatManagerEvent.reconnect";
 		public static const login:String="ChatManagerEvent.login";
@@ -39,17 +39,6 @@ package com.event
 	
 		
 		
-		///eventos de comandos
-		public static const command_sos:String="ChatManagerEvent.command_sos";
-		public static const command_state:String="ChatManagerEvent.command_state";
-		
-		
-		
-		//roomEvent
-		public static const room_userDeparture:String="ChatManagerEvent.room_userDeparture";
-		public static const room_join:String="ChatManagerEvent.room_join";
-		
-		public static const roomUser_join:String="ChatManagerEvent.roomUser_join";
 		
 		//other events
 		public static const addContact:String="ChatManagerEvent.addContact";

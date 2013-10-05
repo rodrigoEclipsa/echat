@@ -1,16 +1,13 @@
-package  service
+package com.event
 {
 	import flash.events.Event;
 	
 	public class ErrorServiceEvent extends Event
 	{
 		
+		public static const timeOut:String="ErrorServiceEvent.timeOut";
 		
-		public static const timeOut:String = "ErrorServiceEvent.timeOut";
-		
-		public static const error:String = "ErrorServiceEvent.error";
-		
-		
+		public static const fault:String="ErrorServiceEvent.fault";
 		
 		public var message:String;
 		

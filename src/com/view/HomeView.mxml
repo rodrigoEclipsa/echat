@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:VGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		  creationComplete="group1_creationCompleteHandler(event)"
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+	
+	
+	
+	
+	
+	
+	
+	
+	<fx:Script>
+		<![CDATA[
+			import com.model.LoginModel;
+			
+			import mx.events.FlexEvent;
+			import mx.utils.ObjectUtil;
+			
+			
+			[Bindable]
+			[Inject]
+			public var loginModel:LoginModel;
+			
+			
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				trace("homeview : " + ObjectUtil.toString(loginModel.agentVO))
+				
+			}
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	
+	
+	
+	
+	<s:BorderContainer  width="100%" height="46" backgroundColor="#EAEAEA"
+					   borderColor="#C1C1C1">
+		<s:Label left="10" fontSize="16" text="{'Hola ' + loginModel.agentVO.name}"
+				 verticalCenter="0"/>
+</s:BorderContainer>
+</s:VGroup>

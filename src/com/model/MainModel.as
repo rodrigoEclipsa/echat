@@ -5,6 +5,7 @@ package com.model
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	import mx.controls.Alert;
+	import mx.utils.ObjectProxy;
 	import mx.utils.UIDUtil;
 	
 	import org.igniterealtime.xiff.conference.Room;
@@ -30,6 +31,13 @@ package com.model
 		
 		[Inject]
 		public var chatManagerModel:ChatManagerModel;
+		
+		
+		
+		public var arrayCollection_domains:ArrayCollection = new ArrayCollection();
+		
+		
+		
 		
 		
 		

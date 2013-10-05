@@ -1,10 +1,13 @@
 package com.controller
 {
+	import com.adobe.crypto.SHA1;
 	import com.event.ChatManagerEvent;
+	import com.event.ErrorServiceEvent;
 	import com.event.LoginEvent;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
+	import com.view.LoginView;
 	import com.view.MainView;
 	
 	import flash.events.IEventDispatcher;
@@ -14,11 +17,11 @@ package com.controller
 	import mx.utils.ObjectUtil;
 	
 	import org.igniterealtime.xiff.core.EscapedJID;
+	import org.igniterealtime.xiff.events.ConnectionSuccessEvent;
 	import org.igniterealtime.xiff.events.RoomEvent;
 	import org.igniterealtime.xiff.events.XIFFErrorEvent;
 	
-	import service.ErrorServiceEvent;
-	import service.Service_echat;
+	import service.ServiceEchat;
 	
 	import util.app.ConfigParameters;
 	import util.vo.ResultVO;
@@ -31,6 +34,10 @@ package com.controller
 		[ViewAdded]
 		public var mainView:MainView;
 		
+		
+		[Bindable]
+		[ViewAdded]
+		public var loginView:LoginView;
 		
 		[Bindable]
 		[Inject]
@@ -48,6 +55,10 @@ package com.controller
 		[Inject]
 		public var chatManagerModel:ChatManagerModel;;
 		
+		[Bindable]
+		[Inject]
+		public var chatManagerController:ChatManagerController;
+		
 		
 		public function LoginController()
 		{
@@ -56,66 +67,72 @@ package com.controller
 		
 		
 		
-		[EventHandler(event="LoginEvent.loginChat",properties="username,password")]
-		public function login(username:String,password:String):void
+	
+		public function login(email:String,password:String):void
 		{
 			
 			
-			mainView.showLoad();
+			loginView.showLoad();
 	
-	     loginModel.username = username;
-		 loginModel.password =password;
+	   
 			
-		var service_echat:Service_echat = new Service_echat();
+		var service_echat:ServiceEchat = new ServiceEchat();
 		
-		service_echat.login(service_chat_loginHandler,username,password);
+		service_echat.login(service_chat_loginHandler,email,SHA1.hash(password));
 			
 			
 			
 		function service_chat_loginHandler(result:Object):void
 		{
 			
+				
+			
+			
 			
 			if(result is ErrorServiceEvent)
 			{
 				
-				//Alert.show("Se produjo un error","Error");
-				mainView.removeLoad();
+				Alert.show("Se produjo un error","Error");
+			
+				loginView.removeLoad();
 			}
 			else
 			{
 				
 				var resultVO:ResultVO= result as ResultVO;
-				//	trace(ObjectUtil.toString(resultVO.data))
+				
 				if(resultVO.success)
 				{
 					
-					
-					if(resultVO.data)
+					//si tiene acceso existe la propiedad access
+					if(resultVO.data.hasOwnProperty("access"))
 					{
 						
-						
-						ConfigParameters.roomName =resultVO.data.conference.id;
-						
-						ConfigParameters.agent_name = resultVO.data.agent.agent_name;
-						
-						
-						var chatManagerEvent:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.login,true);
-						
-						chatManagerEvent.username = resultVO.data.agent.id;
-						chatManagerEvent.password = loginModel.password;
+				//		trace("loggued : " + ObjectUtil.toString(resultVO.data))
+			
+						loginModel.agentVO = resultVO.data.agentVO;
+						loginModel.domainsVO = resultVO.data.domainsVO;
+						loginModel.rolesVO = resultVO.data.rolesVO;
 						
 						
+						chatManagerController.login(resultVO.data.agentVO.id,SHA1.hash(password)); 
 						
-						dispatcher.dispatchEvent(chatManagerEvent);
+						
 						
 					}
 					else
 					{
+						loginView.removeLoad();
 						Alert.show("Usuario o Contraseña incorrecto","Atencion");
-						mainView.removeLoad();
+						
 					}
 					
+					
+				}
+				else
+				{
+					Alert.show("ups algo salio mal, contactese con eclipsa ","Atencion");
+					loginView.removeLoad();
 					
 				}
 				
@@ -123,6 +140,8 @@ package com.controller
 			}
 			
 			
+		
+			
 			
 		}
 			
@@ -131,32 +150,19 @@ package com.controller
 		
 		
 		
-		
-		
-		
-		[EventHandler(event="ChatManagerEvent.room_join",properties="roomEvent")]
-		public function loginSuccess(roomEvent:RoomEvent):void
+		[EventHandler("ChatManagerEvent.connectSuccess",properties="connectionSuccessEvent")]
+		public function chatManagerEvent_connectSuccess(connectionSuccessEvent:ConnectionSuccessEvent):void
 		{
 			
-			//	trace("jid : " + chatManagerModel.connection)
-			trace("jin room")
-			
-			
-			mainView.removeLoad();
-			
-		
-			loginModel.currentUserJID = new EscapedJID(loginModel.username+"@"+ConfigParameters.server);
+			loginView.removeLoad();
 			
 			var loginEvent:LoginEvent = new LoginEvent(LoginEvent.loginSuccess,true);
-			
-		
-			
 			dispatcher.dispatchEvent(loginEvent);
 			
 		
 			
+			
 		}
-		
 		
 		
 		[EventHandler(event="ChatManagerEvent.xiff_error",properties="xIFFErrorEvent")]
@@ -171,7 +177,7 @@ package com.controller
 				
 				mainView.removeLoad();
 				
-				Alert.show("Contactese con eclipsait.com","Error");
+				Alert.show("No se pudo conectar con el servidor de chat","Error");
 				
 			}
 			

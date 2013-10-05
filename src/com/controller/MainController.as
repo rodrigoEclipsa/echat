@@ -33,16 +33,15 @@ package com.controller
 	
 	import renderer.ChatRenderer;
 	
-	import service.ErrorServiceEvent;
-	import service.Service_echat;
+	import service.ServiceEchat;
 	
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
 	import util.app.ConfigParameters;
-	import util.vo.AgentVO;
 	import util.vo.ChatVO;
 	import util.vo.QueueChatVO;
 	import util.vo.ResultVO;
+	import util.vo.entities.DomainVO;
 
 
 	
@@ -85,17 +84,38 @@ package com.controller
 		[Inject]
 		public var mainController:MainController;
 		
-		namespace ns = "http://www.eclipsait.com/echat";
+		//namespace ns = "http://www.eclipsait.com/echat";
 		
 		[PostConstruct]
 		public function postConstruct():void
 		{
 			
 			
-			default xml namespace =ns; 
+			//default xml namespace =ns; 
 			
 		}
 			
+		
+		
+		[EventHandler(event="LoginEvent.loginSuccess")]
+		public function loginEvent_loginSuccess():void
+		{
+			
+			
+			for each(var domainItem:DomainVO in loginModel.domainsVO)
+			{
+				
+				
+				trace("dsa : " + domainItem.name)
+				
+			}
+			
+			
+		}
+
+		
+		
+		
 			
 		
 		[EventHandler(event="ChatManagerEvent.message",properties="message")]
@@ -387,7 +407,7 @@ package com.controller
 		[EventHandler(event="ChatManagerEvent.roomUser_join",properties="roomEvent")]
 		public function roomUser_join(roomEvent:RoomEvent):void
 		{
-		     
+		     /*
 		    var presence:Presence = roomEvent.data as Presence;
 		
 			
@@ -410,7 +430,7 @@ package com.controller
 			
 			mainModel.arrayCollection_visitor.addItem(queueChatVO);
 			
-			
+			*/
 		
 			
 		}
@@ -450,7 +470,7 @@ package com.controller
 		public  function requestAttended(queueChatVO:QueueChatVO):void
 		{
 		
-			var service_echat:Service_echat = new Service_echat();
+			var service_echat:ServiceEchat = new ServiceEchat();
 			
 			service_echat.requestAttended(service_echat_requestAttended,queueChatVO.jid.node);
 		
@@ -515,9 +535,7 @@ package com.controller
 			if(!chatManagerModel.isDisconnect)
 			{
 			
-				mainModel.clearData();
-				mainView.currentState = "Login";
-				loginController.login(loginModel.username,loginModel.password);
+			
 		
 			
 		
@@ -560,7 +578,7 @@ package com.controller
 			
 			var xml:XML=<command id="meet">
 	
-					<name>{ConfigParameters.agent_name}</name>
+					<name></name>
 				
 					</command>
 			

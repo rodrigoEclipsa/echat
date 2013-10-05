@@ -80,19 +80,18 @@ package com.controller
 	
 		
 		[PostConstruct]
-		public function post_chatManagerController():void
+		public function ChatManagerController_postContruct():void
 		{
 			
 			Security.loadPolicyFile("xmlsocket://"+ConfigParameters.server+":5229");
-			
 		
+			
+			setupConnection();
+			setupRoster();
 			
 			timerKeepAlive = new Timer(60000);
 			
 			timerKeepAlive.addEventListener(TimerEvent.TIMER,timerKeepAlive_timerHandler);
-			
-		
-			
 			
 		}
 		
@@ -113,21 +112,16 @@ package com.controller
 		
 		
 
-		[EventHandler(event="ChatManagerEvent.login",properties="username,password")]
+		
 		public function login(username:String,password:String ):void
 		{
-			
-			setupConnection();
-			setupRoom();
-			
-			
 			
 			chatManagerModel.connection.username = username;
 			chatManagerModel.connection.password = password;
 			chatManagerModel.connection.server = ConfigParameters.server;
 			
 		
-			chatManagerModel.connection.resource = "echat/agent/";
+			chatManagerModel.connection.resource = "echat/panel/";
 			
 			chatManagerModel.connection.connect(XMPPConnection.STREAM_TYPE_STANDARD);
 		
@@ -154,17 +148,7 @@ package com.controller
 		private function setupConnection():void
 		{
 			
-			/*
-			
-			_connection.enableSASLMechanism( "X-FACEBOOK-PLATFORM", XFacebookPlatform );
-			+			// By default only ANONYMOUS and DIGEST-MD5 enabled.
-			+			_connection.enableSASLMechanism( External.MECHANISM, External );
-			+			_connection.enableSASLMechanism( Plain.MECHANISM, Plain );
-			+			_connection.enableSASLMechanism( XFacebookPlatform.MECHANISM, XFacebookPlatform );
-			+			//_connection.enableSASLMechanism( XGoogleToken.MECHANISM, XGoogleToken );
-			}
-			
-			*/
+		
 			
 			
 			chatManagerModel.connection = new XMPPTLSConnection();
@@ -196,29 +180,81 @@ package com.controller
 		}
 		
 		
-		
-		
-		
-		private function setupRoom():void
+		private function setupRoster():void
 		{
 			
-			chatManagerModel.room = new Room(chatManagerModel.connection);
+		
+			chatManagerModel.roster = new Roster();
+			chatManagerModel.roster.addEventListener( RosterEvent.ROSTER_LOADED, onRosterLoaded );
+			chatManagerModel.roster.addEventListener( RosterEvent.SUBSCRIPTION_DENIAL, onSubscriptionDenial );
+			chatManagerModel.roster.addEventListener( RosterEvent.SUBSCRIPTION_REQUEST, onSubscriptionRequest );
+			chatManagerModel.roster.addEventListener( RosterEvent.SUBSCRIPTION_REVOCATION, onSubscriptionRevocation );
+			chatManagerModel.roster.addEventListener( RosterEvent.USER_ADDED, onUserAdded );
+			chatManagerModel.roster.addEventListener( RosterEvent.USER_AVAILABLE, onUserAvailable );
+			chatManagerModel.roster.addEventListener( RosterEvent.USER_PRESENCE_UPDATED, onUserPresenceUpdated );
+			chatManagerModel.roster.addEventListener( RosterEvent.USER_REMOVED, onUserRemoved );
+			chatManagerModel.roster.addEventListener( RosterEvent.USER_SUBSCRIPTION_UPDATED, onUserSubscriptionUpdated );
+			chatManagerModel.roster.addEventListener( RosterEvent.USER_UNAVAILABLE, onUserUnavailable );
+			chatManagerModel.roster.connection = chatManagerModel.connection;
 			
-			chatManagerModel.room.addEventListener(RoomEvent.USER_PRESENCE_CHANGE,room_userPreseceChangeHandler);	
 			
-			chatManagerModel.room.addEventListener(RoomEvent.DECLINED,room_declinedHandler);	
+		}
+		
+		
+		
+		
+		private function onRosterLoaded( event:RosterEvent ):void
+		{
 			
-			chatManagerModel.room.addEventListener(RoomEvent.USER_DEPARTURE,room_userDepartureHandler);	
-			
-			chatManagerModel.room.addEventListener(RoomEvent.ROOM_JOIN, room_joinHandler);
-			
-		//	chatManagerModel.room.addEventListener(RoomEvent.PRIVATE_MESSAGE,room_privateMessageHandler);
-			
-			chatManagerModel.room.addEventListener(RoomEvent.USER_JOIN,room_userJoinHandler);
-				
 		
 			
-		//	chatManagerModel.room.addEventListener(RoomEvent.,room_userJoinHandler);
+			
+		}
+		
+		private function onSubscriptionDenial( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onSubscriptionRequest( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onSubscriptionRevocation( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onUserAdded( event:RosterEvent ):void
+		{
+			
+		
+			
+		}
+		
+		private function onUserAvailable( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onUserPresenceUpdated( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onUserRemoved( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onUserSubscriptionUpdated( event:RosterEvent ):void
+		{
+			
+		}
+		
+		private function onUserUnavailable( event:RosterEvent ):void
+		{
 			
 		}
 		
@@ -265,104 +301,13 @@ package com.controller
 		
 		
 		
-		private function room_userDepartureHandler(event:RoomEvent):void
-		{
-			
-			
-			var chatManagerEvent:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.room_userDeparture,true);
-			
-			chatManagerEvent.roomEvent = event;
-			
-			dispatcher.dispatchEvent(chatManagerEvent);
-		
-		}
-		
-		
-		
-		private function room_userJoinHandler(event:RoomEvent):void
-		{
-			
-			
-			
-			var chatManagerEvent:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.roomUser_join,true);
-			
-			chatManagerEvent.roomEvent = event;
-			
-			dispatcher.dispatchEvent(chatManagerEvent);
-			
-			
-		}
-		
-		private function room_leaveHandler(event:RoomEvent):void
-		{
-			
-			trace("room_leave: " + event.data);
-			
-		}
-		
-		private function room_userPreseceChangeHandler(event:RoomEvent):void
-		{
-			
-			trace("room precence change : " + event.data);
-			
-			
-		}
-		
-		
-		private function room_declinedHandler(event:RoomEvent):void
-		{
-			
-			trace("room_declined : " + event.data);
-			
-		}
-		
-		
-		
-		
-		
-		
-		private function enterRoom():void
-		{
-			
-				
-			
-		
-		
-		chatManagerModel.room.roomJID = new UnescapedJID(ConfigParameters.roomName+"@conference."+ConfigParameters.server);
-		
-	
-		chatManagerModel.room.password = ConfigParameters.roomPassword;
 	
 		
 		
-		chatManagerModel.room.join();
 		
 		
 		
-		}
-		
-		
-		
-		
-		
-		private function room_joinHandler(event:RoomEvent):void
-		{
-			
-			var chatManagerEvent:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.room_join);
-			
-			chatManagerEvent.roomEvent = event;
-			
-			dispatcher.dispatchEvent(chatManagerEvent);
 	
-			
-		
-			
-		  //Room(e.target).sendMessage("entre en la sala");
-		}
-		
-		
-		
-		
 
 		private function onConnectSuccess( event:ConnectionSuccessEvent ):void
 		{
@@ -373,7 +318,7 @@ package com.controller
 	
 			
 		
-			var chatManagerEvent_connect_success:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.connect_success,true);
+			var chatManagerEvent_connect_success:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.connectSuccess,true);
 			
 			chatManagerEvent_connect_success.connectionSuccessEvent = event;
 			
@@ -411,9 +356,7 @@ package com.controller
 			
 			chatManagerModel.connection.send(presence);
 			
-			enterRoom();
-			
-			
+	
 	
 			
 		}

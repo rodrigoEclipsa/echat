@@ -6,9 +6,9 @@ package util.vo
 	{
 		
 	
-		public var success:Boolean; 
+		public var success:Boolean = false; 
 		public var data:Object;
-		
+		public var errorMenssage:String;
 		
 		
 	}

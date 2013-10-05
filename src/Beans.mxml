@@ -20,6 +20,8 @@
 	<model:LoginModel id="loginModel"    />
 	
 	
+	<controller:VisitListController id="visitListController" />
+	<model:VisitListModel id="VisitListModel"    />
 	
 	
 </swiz:BeanProvider>

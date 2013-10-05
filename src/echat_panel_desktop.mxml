@@ -232,11 +232,11 @@
 			protected function windowedapplication1_closingHandler(event:Event):void
 			{
 				
-				
+				/*
 				event.preventDefault();	
 				
 				this.minimize();
-				
+				*/
 			}
 			
 			

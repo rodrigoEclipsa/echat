@@ -15,13 +15,9 @@ package com.model
 		
 		public var connection:XMPPTLSConnection;
 		public var inviteListener:InviteListener;
-		
+		public var roster:Roster;
 
-		
-		public var room:Room;
-		
-		
-		
+	
 		
 		public var isDisconnect:Boolean = false;
 		

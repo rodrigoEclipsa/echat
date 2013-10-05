@@ -17,6 +17,8 @@
 			import com.event.LoginEvent;
 			import com.model.LoginModel;
 			
+			import customComponent.LoadWait;
+			
 			import mx.events.FlexEvent;
 			import mx.events.ValidationResultEvent;
 			
@@ -29,6 +31,7 @@
 			[Inject]
 			public var loginController:LoginController;
 			
+			private var loadWait:LoadWait;
 			
 			
 			protected function button_login_clickHandler(event:MouseEvent):void
@@ -45,7 +48,7 @@
 				{
 					
 					
-					loginController.login(txt_username.text,txt_password.text);
+					loginController.login(txt_email.text,txt_password.text);
 					
 					
 				}
@@ -58,7 +61,38 @@
 			
 			
 			
+			public function showLoad():void
+			{
+				
+				if (!loadWait)
+				{
+					loadWait=new LoadWait();
+					
+					group_loading.addElement(loadWait);
+					
+					this.mouseChildren=false;
+					this.tabChildren=false;
+					
+				}
+			}
 			
+			
+			
+			public function removeLoad():void
+			{
+				
+				
+				if (loadWait)
+				{
+					
+					group_loading.removeElement(loadWait);
+					loadWait=null;
+					
+					this.mouseChildren=true;
+					this.tabChildren=true;
+					
+				}
+			}
 			
 			
 			
@@ -78,7 +112,7 @@
 	
 	<fx:Declarations>
 		<mx:StringValidator id="valid_txt_username"
-							source="{txt_username}"
+							source="{txt_email}"
 							
 							
 							property="text"
@@ -95,26 +129,31 @@
 	</fx:Declarations>
 	
 	
-	<s:Form y="51" fontFamily="Arial" horizontalCenter="0">
-		<s:layout>
-			<s:FormLayout />
-		</s:layout>
-		<s:FormItem label="Usuario" >
-			<s:TextInput id="txt_username" width="150" text="rodrigo@eclipsait.com"/>
-		</s:FormItem>
-		<s:FormItem label="Contraseña" >
-			<s:TextInput id="txt_password" width="150" text="123456"/>
-		</s:FormItem>
-	</s:Form>
-	<s:Button id="button_entrar" y="168" label="Iniciar sesion" chromeColor="#999999"
-			  click="button_login_clickHandler(event)" fontFamily="Arial" fontWeight="bold"
-			  horizontalCenter="0"/>
-	<s:HGroup top="11" gap="0" horizontalCenter="0">
-		<s:Label color="#4D81EC" fontSize="36" text="e"/>
-		<s:Label color="#F8B762" fontSize="36" text="Chat"/>
-	</s:HGroup>
-	<s:Label top="298" color="#1C74EC" horizontalCenter="0" text="eclipsasitios.com"/>
-	<s:Image top="236" horizontalCenter="0"  source="{EmbeddedAssets.getInstance().logoEclipsa}"/>
+	<s:VGroup top="10" width="426" height="280" horizontalAlign="center" horizontalCenter="0">
+		
+		<s:HGroup top="11" gap="0" horizontalCenter="0">
+			<s:Label color="#4D81EC" fontSize="36" text="e"/>
+			<s:Label color="#F8B762" fontSize="36" text="Chat"/>
+		</s:HGroup>
+		<s:Form fontFamily="Arial">
+			<s:layout>
+				<s:FormLayout />
+			</s:layout>
+			<s:FormItem label="Email" >
+				<s:TextInput id="txt_email" width="220" height="30" text="rodrigo.eclipsa@gmail.com"/>
+			</s:FormItem>
+			<s:FormItem label="Contraseña" >
+				<s:TextInput id="txt_password"  displayAsPassword="true" width="220" height="30" text="eclipsa"/>
+			</s:FormItem>
+		</s:Form>
+		<s:Button id="button_entrar" label="Iniciar sesion" click="button_login_clickHandler(event)"
+				  cornerRadius="0" fontFamily="Arial" fontWeight="bold"/>
+		<s:Group width="146" height="31" id="group_loading">
+		</s:Group>
+		<s:Image source="{EmbeddedAssets.getInstance().logoEclipsa}"/>
+		<s:Label color="#1C74EC" text="eclipsasitios.com"/>
+		
+	</s:VGroup>
 	
 	
 	
