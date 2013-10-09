@@ -12,12 +12,12 @@
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import util.vo.AgentVO;
+			import util.classes.Agent;
 			
 			
 			
 			[Bindable]
-			public var itemData:AgentVO
+			public var itemData:Agent
 			
 		
 			
@@ -27,7 +27,7 @@
 				if(data)
 				{
 					
-					itemData = data as AgentVO;
+					itemData = data as Agent;
 				}
 				
 			}

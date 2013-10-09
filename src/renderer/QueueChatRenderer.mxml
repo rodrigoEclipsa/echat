@@ -16,7 +16,7 @@
 			
 			import mx.events.FlexEvent;
 			
-			import util.vo.QueueChatVO;
+			import util.classes.QueueChat;
 
 
 
@@ -28,7 +28,7 @@
 
 
 			[Bindable]
-			public var itemData:QueueChatVO;
+			public var itemData:QueueChat;
 
 		
 
@@ -41,7 +41,7 @@
 				if (data) 
 				{
 					
-					itemData=data as QueueChatVO;
+					itemData=data as QueueChat;
 					
 					
 			

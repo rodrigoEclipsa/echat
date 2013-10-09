@@ -5,7 +5,7 @@ package com.controller
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
-	import com.view.ChatWindowView;
+	import com.view.chatWindow.ChatWindowView;
 	import com.view.MainView;
 	
 	import flash.events.IEventDispatcher;
@@ -38,8 +38,9 @@ package com.controller
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
 	import util.app.ConfigParameters;
-	import util.vo.ChatVO;
-	import util.vo.QueueChatVO;
+	import util.classes.Chat;
+	import util.classes.WorkSpaceDomain;
+	import util.classes.QueueChat;
 	import util.vo.ResultVO;
 	import util.vo.entities.DomainVO;
 
@@ -102,19 +103,21 @@ package com.controller
 		{
 			
 			
-			for each(var domainItem:DomainVO in loginModel.domainsVO)
+			for each(var domainVOItem:DomainVO in loginModel.domainsVO)
 			{
 				
+				var domain:WorkSpaceDomain = new WorkSpaceDomain();
+				domain.domainVO = domainVOItem;
 				
-				trace("dsa : " + domainItem.name)
+				mainModel.arrayCollection_workSpacedomains.addItem(domain);
+				
 				
 			}
 			
 			
+			
 		}
 
-		
-		
 		
 			
 		
@@ -212,7 +215,7 @@ package com.controller
 			function writingFunc():void
 			{
 				
-				var queueChatVO:QueueChatVO = mainModel.getQueueChatVO(message.from.node);
+				var queueChatVO:QueueChat = mainModel.getQueueChatVO(message.from.node);
 				
 				if(queueChatVO)
 				{
@@ -247,12 +250,12 @@ package com.controller
 			{
 				
 				
-				var queueChatVO:QueueChatVO = mainModel.getQueueChatVO(message.from.node);
+				var queueChatVO:QueueChat = mainModel.getQueueChatVO(message.from.node);
 				
 				if(queueChatVO)
 				{
 					
-				var chatVO:ChatVO = mainModel.getChatVO(queueChatVO,messageXML.uid);
+				var chatVO:Chat = mainModel.getChatVO(queueChatVO,messageXML.uid);
 				
 				if(chatVO)
 				{
@@ -273,7 +276,7 @@ package com.controller
 		
 		
 		//escribo y envio el mensage
-		public function writeAndSendMessage(body:String, queueChatVO:QueueChatVO):void
+		public function writeAndSendMessage(body:String, queueChatVO:QueueChat):void
 		{
 			
 			
@@ -288,10 +291,10 @@ package com.controller
 			
 			
 			
-			var chatVO:ChatVO;
+			var chatVO:Chat;
 			
 			
-			chatVO=new ChatVO();
+			chatVO=new Chat();
 			
 			chatVO.body=body;
 			
@@ -322,12 +325,12 @@ package com.controller
 		{
 			
 		
-			var chatVO:ChatVO;
+			var chatVO:Chat;
 			
 			
 			
 			
-			var queueChatVO:QueueChatVO = mainModel.getQueueChatVO(message.from.node);
+			var queueChatVO:QueueChat = mainModel.getQueueChatVO(message.from.node);
 			
 			
 			
@@ -335,7 +338,7 @@ package com.controller
 			{
 				
 				
-				chatVO = new ChatVO();
+				chatVO = new Chat();
 				
 				chatVO.body = message.body;
 				
@@ -380,7 +383,7 @@ package com.controller
 		
 		
 		[EventHandler(event="MainEvent.closeQueueChat",properties="queueChatVO")]
-		public function closeQueueChat(queueChatVO:QueueChatVO):void
+		public function closeQueueChat(queueChatVO:QueueChat):void
 		{
 			
 			var queueChatVOIndex:int = mainModel.arrayCollection_queueChat.getItemIndex(queueChatVO);
@@ -444,7 +447,7 @@ package com.controller
 		{
 			///nota quitar agentes online !!!!!!!!!!!!
 			trace("deperture: " + roomEvent.nickname)
-			var queueChatVO:QueueChatVO;
+			var queueChatVO:QueueChat;
 		
 		
 		     queueChatVO = mainModel.getQueueChatVO(roomEvent.nickname);
@@ -467,7 +470,7 @@ package com.controller
 		
 		
 		[EventHandler(event="MainEvent.requestAttended",properties="queueChatVO")]
-		public  function requestAttended(queueChatVO:QueueChatVO):void
+		public  function requestAttended(queueChatVO:QueueChat):void
 		{
 		
 			var service_echat:ServiceEchat = new ServiceEchat();

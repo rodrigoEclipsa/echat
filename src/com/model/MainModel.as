@@ -15,8 +15,9 @@ package com.model
 	import org.igniterealtime.xiff.data.Message;
 	
 	import util.app.ConfigParameters;
-	import util.vo.ChatVO;
-	import util.vo.QueueChatVO;
+	import util.classes.Chat;
+	import util.classes.QueueChat;
+	import util.classes.WorkSpaceDomain;
 
 	
 	
@@ -33,12 +34,16 @@ package com.model
 		public var chatManagerModel:ChatManagerModel;
 		
 		
+	/**
+	 * array de dominios , de aqui parten todos los datos 
+	 * ya que cada dominio tiene sus propias caracteristicas
+	 * 
+	 **/
+	 public var arrayCollection_workSpacedomains:ArrayCollection = new ArrayCollection();
 		
-		public var arrayCollection_domains:ArrayCollection = new ArrayCollection();
 		
 		
-		
-		
+	    public var currentDomain:WorkSpaceDomain;	
 		
 		
 		/*
@@ -77,7 +82,7 @@ package com.model
 		
 		
 		
-		public var currentQueueChatVO:QueueChatVO;
+		public var currentQueueChatVO:QueueChat;
 		
 		
 		public var arrayList_agent:ArrayList = new ArrayList();
@@ -96,10 +101,10 @@ package com.model
 		}
 		
 		
-		public function getChatVO(queueChatVO:QueueChatVO,uid:String):ChatVO
+		public function getChatVO(queueChatVO:QueueChat,uid:String):Chat
 		{
 			
-			var chatVO:ChatVO;
+			var chatVO:Chat;
 			
 			var len:uint = queueChatVO.arrayList_historyChat.source.length-1;
 			
@@ -107,7 +112,7 @@ package com.model
 			for(var i:int =len ; i>=0;i--)
 			{
 				
-				var item:ChatVO = queueChatVO.arrayList_historyChat.source[i] as ChatVO;
+				var item:Chat = queueChatVO.arrayList_historyChat.source[i] as Chat;
 				
 				if(item.uid ==  uid)
 				{
@@ -127,13 +132,13 @@ package com.model
 	
 		
 		
-		public function getQueueChatVO(node:String):QueueChatVO
+		public function getQueueChatVO(node:String):QueueChat
 	    {
 			
 			
-			var queueChatVO:QueueChatVO;
+			var queueChatVO:QueueChat;
 			
-			for each(var queueChatVOItem:QueueChatVO in arrayCollection_queueChat)
+			for each(var queueChatVOItem:QueueChat in arrayCollection_queueChat)
 			{
 				
 				if(node == queueChatVOItem.jid.node )
@@ -152,7 +157,25 @@ package com.model
 		
 		
 	  
-	
+	public function getWorkSpacedomainById(id:int):WorkSpaceDomain
+	{
+		
+		var workSpaceDomain:WorkSpaceDomain;
+		
+		for each(var workSpaceDomainItem:WorkSpaceDomain in arrayCollection_workSpacedomains)
+		{
+			
+			if(workSpaceDomainItem.domainVO.id == id  )
+			{
+				workSpaceDomain = workSpaceDomainItem;
+			
+				break;
+			}
+		}
+		
+		return workSpaceDomain;
+		
+	}
 	 
 	
 		

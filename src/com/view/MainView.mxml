@@ -9,7 +9,10 @@
 		 height.Logged="100%"
 		 creationComplete="group1_creationCompleteHandler(event)"
 		 minWidth="640"
-		 xmlns:customComponent="customComponent.*">
+		 xmlns:customComponent="customComponent.*"
+		 xmlns:home="com.view.home.*"
+		 xmlns:login="com.view.login.*"
+		 xmlns:visitList="com.view.visitList.*">
 
 
 
@@ -21,12 +24,13 @@
 			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
 			import com.model.MainModel;
-
+			import com.view.chatWindow.ChatWindowView;
+			
 			import customComponent.LoadWait;
-
+			
 			import flashx.textLayout.elements.ParagraphElement;
 			import flashx.textLayout.elements.SpanElement;
-
+			
 			import mx.collections.ArrayList;
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
@@ -34,22 +38,23 @@
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectUtil;
 			import mx.utils.StringUtil;
-
+			
 			import org.igniterealtime.xiff.core.EscapedJID;
 			import org.igniterealtime.xiff.core.UnescapedJID;
 			import org.igniterealtime.xiff.data.Message;
-
+			
 			import renderer.ChatRenderer;
-
+			
 			import service.ServiceEchat;
-
+			
 			import spark.events.IndexChangeEvent;
 			import spark.events.TextOperationEvent;
-
+			
 			import util.DateManager;
 			import util.app.ConfigParameters;
-			import util.vo.ChatVO;
-			import util.vo.QueueChatVO;
+			import util.classes.Chat;
+			import util.classes.QueueChat;
+			import util.classes.WorkSpaceDomain;
 
 
 
@@ -84,7 +89,7 @@
 
 
 
-            [EventHandler(event="LoginEvent.loginSuccess")]
+			[EventHandler(event="LoginEvent.loginSuccess")]
 			public function loginEvent_loginSuccess():void
 			{
 				/*
@@ -94,12 +99,14 @@
 				   " das das " + "das d " + "asd asd " + "as das da" + " sd " + "asd " + "sad" + " as a "
 				 */
 
-
+               
+				
 				this.currentState="Logged";
 
 			}
 
-
+           
+			
 
 
 
@@ -194,7 +201,7 @@
 
 
 			[EventHandler(event="MainEvent.selectedChat", properties="queueChatVO")]
-			public function selectedChat(queueChatVO:QueueChatVO):void
+			public function selectedChat(queueChatVO:QueueChat):void
 			{
 
 				mainModel.currentQueueChatVO=queueChatVO;
@@ -222,9 +229,25 @@
 
 			protected function hGroupMenu_home_clickHandler(event:MouseEvent):void
 			{
+				if (viewStack_navigator.selectedChild != navigatorContent_home)
+					viewStack_navigator.selectedChild=navigatorContent_home;
 
-				viewStack_navigator.selectedChild=navigatorContent_home;
 
+			}
+
+			protected function list_domains_changeHandler(event:IndexChangeEvent):void
+			{
+
+				mainModel.currentDomain=list_domains.selectedItem as WorkSpaceDomain;
+
+			}
+
+
+
+			protected function groupMenuItem_visitList_clickHandler(event:MouseEvent):void
+			{
+				if (viewStack_navigator.selectedChild != navigatorContent_visitList)
+					viewStack_navigator.selectedChild=navigatorContent_visitList;
 
 			}
 		]]>
@@ -247,9 +270,9 @@
 	</fx:Declarations>
 
 
-	<view:LoginView includeIn="Login"
-					horizontalCenter="0"
-					verticalCenter="0"/>
+	<login:LoginView includeIn="Login"
+					 horizontalCenter="0"
+					 verticalCenter="0"/>
 
 	<s:Group id="group_logged"
 			 includeIn="Logged"
@@ -263,235 +286,288 @@
 		<s:HGroup left="0"
 				  right="0"
 				  top="0"
-				  bottom="31"
+				  bottom="0"
 				  gap="0"
 				  depth="1">
 
 
 
-			<s:SkinnableContainer width="180"
+
+          <s:VGroup width="180" height="100%" gap="2">
+			  
+		  
+			<s:SkinnableContainer width="100%"
 								  height="100%"
 								  backgroundColor="#3D3D3D">
-				<s:layout>
-					<s:VerticalLayout gap="0"/>
-				</s:layout>
-				<s:Group width="100%"
-						 height="188">
-					<s:Label top="10"
-							 color="#FFFFFF"
-							 fontSize="22"
-							 horizontalCenter="0"
-							 text="eChat"/>
-					<s:Image id="image_agentAvatar"
-							 x="0"
-							 top="35"
-							 bottom="0"
-							 width="100%"/>
-				</s:Group>
-				<s:Spacer height="10"/>
-				<s:Label fontSize="14" fontWeight="bold" text="Dominios"/>
-				<s:List width="100%" height="100" contentBackgroundAlpha="1.0"
-						contentBackgroundColor="#686868"/>
-				<s:Group width="100%"
-						 height="34"
-						 id="group_menuItemHome"
-						 click="hGroupMenu_home_clickHandler(event)">
-					<s:Label color="#FFFFFF"
-							 horizontalCenter="0"
-							 text="Pagina principal"
-							 verticalCenter="0"/>
-					<mx:HRule left="0"
-							  right="0"
-							  bottom="0"
-							  shadowColor="#5A5A5A"
-							  strokeColor="#000000"/>
-				</s:Group>
-				<s:Group width="100%"
-						 height="34"
-						 id="groupMenuItem_visitList"
-						 click="hGroupMenu_home_clickHandler(event)">
-					<s:Label color="#FFFFFF"
-							 horizontalCenter="0"
-							 text="Lista de visitantes"
-							 verticalCenter="0"/>
-					<mx:HRule left="0"
-							  right="0"
-							  bottom="0"
-							  shadowColor="#5A5A5A"
-							  strokeColor="#000000"/>
-				</s:Group>
-				<s:Group width="100%"
-						 height="34"
-						 id="groupMenuItem_history"
-						 click="hGroupMenu_home_clickHandler(event)">
-					<s:Label color="#FFFFFF"
-							 horizontalCenter="0"
-							 text="Historial"
-							 verticalCenter="0"/>
-					<mx:HRule left="0"
-							  right="0"
-							  bottom="0"
-							  shadowColor="#5A5A5A"
-							  strokeColor="#000000"/>
-				</s:Group>
-				<s:VGroup width="100%">
-					
-				
-				<s:Spacer width="10" height="5"/>
-				<s:Label fontSize="14" fontWeight="bold" text="Administrar"/>
-				<s:Spacer width="10" height="5"/>
-				<s:VGroup id="vGroup_menuAdminister" width="100%">
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history0"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Agentes"
-								 verticalCenter="0"/>
-					</s:Group>
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history4"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Departamentos"
-								 verticalCenter="0"/>
-					</s:Group>
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history1"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Accesos directos"
-								 verticalCenter="0"/>
-					</s:Group>
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history2"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Visitantes bloqueados"
-								 verticalCenter="0"/>
-					</s:Group>
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history3"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Disparadores"
-								 verticalCenter="0"/>
-					</s:Group>
-				</s:VGroup>
-				</s:VGroup>
-				<s:VGroup width="100%">
-					
-				
-				<s:Spacer width="10" height="5"/>
-				<s:Label fontSize="14" fontWeight="bold" text="Configuraciones"/>
-				<s:Spacer width="10" height="5"/>
-				<s:VGroup id="vGroup_menuAdminister0" width="100%">
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history5"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Widget"
-								 verticalCenter="0"/>
-					</s:Group>
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history6"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Personal"
-								 verticalCenter="0"/>
-					</s:Group>
-					<s:Group width="100%"
-							 height="24"
-							 id="groupMenuItem_history7"
-							 click="hGroupMenu_home_clickHandler(event)">
-						<s:Label color="#FFFFFF"
-								 horizontalCenter="0"
-								 text="Cuenta"
-								 verticalCenter="0"/>
-					</s:Group>
-				</s:VGroup>
-				</s:VGroup>
+
+				<s:Scroller width="100%"
+							height="100%"
+							horizontalScrollPolicy="off">
+
+
+					<s:VGroup width="100%"
+							  height="100%">
+
+
+
+						<s:Group width="100%"
+								 height="155">
+							<s:Label top="10"
+									 color="#FFFFFF"
+									 fontSize="22"
+									 horizontalCenter="0"
+									 text="eChat"/>
+							<s:Image id="image_agentAvatar"
+									 x="0"
+									 top="35"
+									 bottom="0"
+									 width="100%"/>
+						</s:Group>
+						<s:Spacer height="10"/>
+						<s:Label fontSize="14"
+								 fontWeight="bold"
+								 text="Dominios"/>
+						<s:List width="100%"
+								height="100"
+								contentBackgroundAlpha="1.0"
+								id="list_domains"
+								change="list_domains_changeHandler(event)"
+								dataProvider="{mainModel.arrayCollection_workSpacedomains}"
+								itemRenderer="renderer.DomainRenderer"
+								contentBackgroundColor="#686868"/>
+						<s:VGroup width="100%" gap="0">
+							
+						
+						<customComponent:groupMenu width="100%"
+												   height="30"
+												   id="group_menuItemHome"
+												   click="hGroupMenu_home_clickHandler(event)">
+							<s:Label left="45"
+									 color="#FFFFFF"
+									 text="Pagina principal"
+									 verticalCenter="0"/>
+							<mx:HRule left="0"
+									  right="0"
+									  bottom="0"
+									  shadowColor="#5A5A5A"
+									  strokeColor="#000000"/>
+						</customComponent:groupMenu>
+						<customComponent:groupMenu width="100%"
+												   height="30"
+												   id="groupMenuItem_visitList"
+												   click="groupMenuItem_visitList_clickHandler(event)">
+							<s:Label left="45"
+									 color="#FFFFFF"
+									 text="Lista de visitantes"
+									 verticalCenter="0"/>
+							<mx:HRule left="0"
+									  right="0"
+									  bottom="0"
+									  shadowColor="#5A5A5A"
+									  strokeColor="#000000"/>
+						</customComponent:groupMenu>
+						<customComponent:groupMenu width="100%"
+												   height="30"
+												   id="groupMenuItem_history"
+												   click="hGroupMenu_home_clickHandler(event)">
+							<s:Label left="45"
+									 color="#FFFFFF"
+									 text="Historial"
+									 verticalCenter="0"/>
+							<mx:HRule left="0"
+									  right="0"
+									  bottom="0"
+									  shadowColor="#5A5A5A"
+									  strokeColor="#000000"/>
+						</customComponent:groupMenu>
+						</s:VGroup>
+						<s:VGroup width="100%">
+
+
+							<s:Spacer width="10"
+									  height="5"/>
+							<s:Label fontSize="14"
+									 fontWeight="bold"
+									 text="Administrar"/>
+							<s:Spacer width="10"
+									  height="5"/>
+							<s:VGroup id="vGroup_menuAdminister" width="100%" gap="0">
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history0"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Agentes"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history4"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Departamentos"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history1"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Accesos directos"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history2"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Visitantes bloqueados"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history3"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Disparadores"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+							</s:VGroup>
+						</s:VGroup>
+						<s:VGroup width="100%">
+
+
+							<s:Spacer width="10"
+									  height="5"/>
+							<s:Label fontSize="14"
+									 fontWeight="bold"
+									 text="Configuraciones"/>
+							<s:Spacer width="10"
+									  height="5"/>
+							<s:VGroup id="vGroup_menuAdminister0" width="100%" gap="0">
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history5"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Widget"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history6"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Personal"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+								<customComponent:groupMenu width="100%"
+														   height="22"
+														   id="groupMenuItem_history7"
+														   click="hGroupMenu_home_clickHandler(event)">
+									<s:Label left="45"
+											 color="#FFFFFF"
+											 text="Cuenta"
+											 verticalCenter="0"/>
+								</customComponent:groupMenu>
+							</s:VGroup>
+						</s:VGroup>
+
+
+					</s:VGroup>
+				</s:Scroller>
 
 			</s:SkinnableContainer>
-			<mx:ViewStack width="100%"
-						  height="100%"
-						  id="viewStack_navigator"
-						  selectedIndex="0">
+		
+			  
+			  
+			  <s:BorderContainer height="32"
+								 id="borderContainer_queueChat"
+								 width="100%"
+								 backgroundColor="#888888"
+								 click="borderContainer_queueChat_clickHandler(event)"
+								 cornerRadius="2">
+				  
+				  <s:Label backgroundAlpha="{mainModel.arrayCollection_queueCall.length &gt; 0 ? 1 : 0}"
+						   color="#FFFFFF"
+						   fontSize="11"
+						   fontWeight="bold"
+						   horizontalCenter="0"
+						   text="{mainModel.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' + mainModel.arrayCollection_queueCall.length}"
+						   textAlign="center"
+						   verticalAlign="middle"
+						   verticalCenter="0"/>
+				  <!--
+				  <customComponent:BusyIndicator bottom="2" width="12" height="12" horizontalCenter="0"  id="busyIndicator_queueChat"/>
+				  -->
+			  </s:BorderContainer>
+		  </s:VGroup>
+				
+			<s:VGroup width="100%" height="100%" gap="2">
+				
+					
+				<mx:ViewStack width="100%"
+							  height="100%"
+							  id="viewStack_navigator"
+							  selectedIndex="0">
+					
+					<s:NavigatorContent id="navigatorContent_home">
+						
+						<home:HomeView/>
+						
+						
+					</s:NavigatorContent>
+					
+					<s:NavigatorContent id="navigatorContent_visitList">
+						
+						<visitList:VisitListView/>
+						
+					</s:NavigatorContent>
+					
+					
+				</mx:ViewStack>
+				
+				<s:HGroup id="hgroup_queueChat"
+						  width="100%"
+						  height="32"
+						 >
+					
+					
+					
+					
+					<s:TabBar id="tabBar_queueChat"
+							  y="548"
+							  width="100%"
+							  height="100%"
+							  change="tabBar_queueChat_changeHandler(event)"
+							  dataProvider="{mainModel.arrayCollection_queueChat}"
+							  itemRenderer="renderer.QueueChatRenderer"
+							  selectedIndex="-1">
+						
+						<s:layout>
+							<s:HorizontalLayout/>
+						</s:layout>
+						
+						
+					</s:TabBar>
+				</s:HGroup>
 
-				<s:NavigatorContent id="navigatorContent_home">
-
-					<view:HomeView/>
-
-
-				</s:NavigatorContent>
-
-			</mx:ViewStack>
-
-
+			</s:VGroup>
+		
+		<s:Group id="group_chatWindow" height="100%" minWidth="0">
+			
+			
+			
+		</s:Group>
 
 		</s:HGroup>
-
-		<s:HGroup id="hgroup_queueChat"
-				  left="0"
-				  right="0"
-				  bottom="0"
-				  height="30"
-				  depth="10">
-
-			<s:BorderContainer height="100%"
-							   id="borderContainer_queueChat"
-							   width="180"
-							   backgroundColor="#888888"
-							   click="borderContainer_queueChat_clickHandler(event)"
-							   cornerRadius="2">
-
-				<s:Label backgroundAlpha="{mainModel.arrayCollection_queueCall.length &gt; 0 ? 1 : 0}"
-						 color="#FFFFFF"
-						 fontSize="11"
-						 fontWeight="bold"
-						 horizontalCenter="0"
-						 text="{mainModel.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' + mainModel.arrayCollection_queueCall.length}"
-						 textAlign="center"
-						 verticalAlign="middle"
-						 verticalCenter="0"/>
-				<!--
-					 <customComponent:BusyIndicator bottom="2" width="12" height="12" horizontalCenter="0"  id="busyIndicator_queueChat"/>
-				-->
-			</s:BorderContainer>
-
-
-
-			<s:TabBar id="tabBar_queueChat"
-					  y="548"
-					  width="100%"
-					  height="100%"
-					  change="tabBar_queueChat_changeHandler(event)"
-					  dataProvider="{mainModel.arrayCollection_queueChat}"
-					  itemRenderer="renderer.QueueChatRenderer"
-					  selectedIndex="-1">
-
-				<s:layout>
-					<s:HorizontalLayout/>
-				</s:layout>
-
-
-			</s:TabBar>
-
-		</s:HGroup>
-
 
 
 

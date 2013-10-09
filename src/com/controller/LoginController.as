@@ -7,7 +7,7 @@ package com.controller
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
-	import com.view.LoginView;
+	import com.view.login.LoginView;
 	import com.view.MainView;
 	
 	import flash.events.IEventDispatcher;
@@ -113,6 +113,8 @@ package com.controller
 						loginModel.agentVO = resultVO.data.agentVO;
 						loginModel.domainsVO = resultVO.data.domainsVO;
 						loginModel.rolesVO = resultVO.data.rolesVO;
+						
+						
 						
 						
 						chatManagerController.login(resultVO.data.agentVO.id,SHA1.hash(password)); 

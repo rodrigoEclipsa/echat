@@ -54,7 +54,10 @@ package util.ExtensionsXiff
 		
 		public static function enable():void
 		{
+			
 			ExtensionClassRegistry.register(EchatExtension);
+		
+		
 		}
 		
 		

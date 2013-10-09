@@ -1,11 +1,11 @@
-package util.vo
+package util.classes
 {
 	import mx.collections.ArrayList;
 
 	import org.igniterealtime.xiff.core.EscapedJID;
 
 	[Bindable]
-	public class QueueChatVO
+	public class QueueChat
 	{
 
 

@@ -9,7 +9,7 @@ package com.event
 	import org.igniterealtime.xiff.data.Message;
 	
 
-	import util.vo.QueueChatVO;
+	import util.classes.QueueChat;
 	
 	
 	public class MainEvent extends Event
@@ -57,7 +57,7 @@ package com.event
 		public var message:Message;
 	
 		
-		public var queueChatVO:QueueChatVO;
+		public var queueChatVO:QueueChat;
 		
 		
 		public var to:EscapedJID;

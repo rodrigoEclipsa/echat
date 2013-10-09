@@ -26,6 +26,32 @@ package com.model
 		
 		
 		
+		
+	///--------------------------------------------------mensages xml	
+		
+		public function xml_ex_chat_presence(name:String,email:String):XML
+		{
+			
+			
+			var xml:XML = <ex_echat_presence id="agent">
+									<name>{name}</name>	
+									 <email>{email}</email>
+									
+									  </ex_echat_presence>;
+			
+			
+			
+			return xml;
+			
+		}
+		
+		
+		
+		
+		
+	//-----------------------------------------------------------------------------------------------------------------------	
+		
+		
 		public function disconnect():void
 		{
 			isDisconnect = true;

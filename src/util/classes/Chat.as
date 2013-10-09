@@ -1,8 +1,8 @@
-package util.vo
+package util.classes
 {
 	
 	[Bindable]
-	public class ChatVO
+	public class Chat
 	{
 		
 	

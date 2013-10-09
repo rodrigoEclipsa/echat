@@ -42,8 +42,8 @@
 			
 			import util.DateManager;
 			import util.app.ConfigParameters;
-			import util.vo.ChatVO;
-			import util.vo.QueueChatVO;
+			import util.classes.Chat;
+			import util.classes.QueueChat;
 			
 			
 			
@@ -73,7 +73,7 @@
 			
 			
 			[Bindable]
-			private var typicalItem:ChatVO;
+			private var typicalItem:Chat;
 			
 			
 			

@@ -5,6 +5,7 @@ package com.controller
 	import com.hurlant.crypto.tls.TLSConfig;
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.model.ChatManagerModel;
+	import com.model.LoginModel;
 	import com.model.MainModel;
 	import com.wirelust.as3zlib.System;
 	
@@ -56,8 +57,15 @@ package com.controller
 	
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
+	import util.ExtensionsXiff.EchatExtension;
 	import util.NetUtil;
+	import util.XmlFuncUtil;
 	import util.app.ConfigParameters;
+	import util.classes.User;
+	import util.classes.WorkSpaceDomain;
+	import util.vo.entities.AgentVO;
+	import util.vo.entities.UserVO;
+	import util.vo.entities.WebVO;
 	
 	
 	
@@ -78,6 +86,15 @@ package com.controller
 		private var timerKeepAlive:Timer;
 		
 	
+		[Bindable]
+		[Inject]
+		public var loginModel:LoginModel;
+		
+		[Bindable]
+		[Inject]
+		public var mainModel:MainModel;
+		
+		namespace space = "http://www.eclipsait.com/echat";
 		
 		[PostConstruct]
 		public function ChatManagerController_postContruct():void
@@ -120,7 +137,6 @@ package com.controller
 			chatManagerModel.connection.password = password;
 			chatManagerModel.connection.server = ConfigParameters.server;
 			
-		
 			chatManagerModel.connection.resource = "echat/panel/";
 			
 			chatManagerModel.connection.connect(XMPPConnection.STREAM_TYPE_STANDARD);
@@ -195,7 +211,9 @@ package com.controller
 			chatManagerModel.roster.addEventListener( RosterEvent.USER_REMOVED, onUserRemoved );
 			chatManagerModel.roster.addEventListener( RosterEvent.USER_SUBSCRIPTION_UPDATED, onUserSubscriptionUpdated );
 			chatManagerModel.roster.addEventListener( RosterEvent.USER_UNAVAILABLE, onUserUnavailable );
-			chatManagerModel.roster.connection = chatManagerModel.connection;
+			
+			
+			
 			
 			
 		}
@@ -229,17 +247,79 @@ package com.controller
 		private function onUserAdded( event:RosterEvent ):void
 		{
 			
+		trace("added....................")
 		
-			
 		}
 		
 		private function onUserAvailable( event:RosterEvent ):void
 		{
 			
+		    
+			use namespace space;
+			
+			var presence:Presence = event.data as Presence;
+			
+			var extension:XML = XML(presence.xml.echat.ex_echat_presence);
+			var workSpaceDomain:WorkSpaceDomain;
+			
+		    if(extension.@id =="agent")
+			{
+				
+				
+			}
+			else if(extension.@id =="user")
+			{
+			
+		       workSpaceDomain = mainModel.getWorkSpacedomainById(extension.group);
+			   
+			   if(workSpaceDomain)
+			   {
+				   
+				  
+				   
+				   var userVO:UserVO = new UserVO();
+				   userVO.email = extension.email;
+				   userVO.name = extension.name;
+				   userVO.id = int(presence.from.bareJID);
+				   
+				   var webVO:WebVO = new WebVO();
+				   webVO.title = extension.web.title;
+				   webVO.url = extension.web.url;
+				   
+				   var user:User = new User();
+				   user.userVO = userVO;
+				   user.arrayList_webVO.addItem(webVO);
+				   
+				   workSpaceDomain.arrayCollection_users.addItem(user);
+			   
+			
+				   
+				   
+			   }
+				
+			}
+				
+			
+			
+			
+		     
+		
+			trace("precenseUpdated : " + event.data)
+			
+			
 		}
 		
 		private function onUserPresenceUpdated( event:RosterEvent ):void
 		{
+			
+			//var precence:Presence = event.data as Presence;
+		
+			
+		//	trace("precenseUpdated : " + precence.presence)
+			
+			
+			
+			
 			
 		}
 		
@@ -343,7 +423,9 @@ package com.controller
 			
 			timerKeepAlive.stop();
 			
+			
 		///	Alert.show("se desconecto de openfire .......");
+			
 			
 		}
 		
@@ -352,12 +434,27 @@ package com.controller
 		private function onLogin( event:LoginEvent ):void
 		{
 		
-			var presence:Presence = new Presence(null,chatManagerModel.connection.jid.escaped,null,Presence.SHOW_CHAT);
+			//una ves logueado envio mensage de presencia con una extencion y asigno la conexion a roster
+			var xml:XML =chatManagerModel.xml_ex_chat_presence(loginModel.agentVO.name,loginModel.agentVO.email);
+			
+			
+			var presence:Presence = new Presence(null,chatManagerModel.connection.jid.escaped,Presence.SHOW_CHAT,Presence.SHOW_CHAT);
+			
+			var echatExtension:EchatExtension = new EchatExtension();
+			
+			echatExtension.setDataExtension(xml);
+			
+		
+			presence.addExtension(echatExtension);
+			
 			
 			chatManagerModel.connection.send(presence);
 			
-	
-	
+			
+			
+			
+			chatManagerModel.roster.connection = chatManagerModel.connection;
+			
 			
 		}
 		
@@ -399,7 +496,7 @@ package com.controller
 		private function onIncomingData( event:IncomingDataEvent ):void
 		{
 			
-		//	trace("incomingData ...... :" +  String(event.data).toString());
+			trace("incomingData ...... :" +  String(event.data).toString());
 			
 		}
 		

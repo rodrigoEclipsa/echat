@@ -17,14 +17,14 @@
 			import mx.utils.ObjectUtil;
 
 			import util.DateManager;
-			import util.vo.ChatVO;
+			import util.classes.Chat;
 
 
 
 
 
 			[Bindable]
-			private var itemData:ChatVO;
+			private var itemData:Chat;
 
 			
 			public static const state_other:String = "Other";
@@ -40,7 +40,7 @@
 				if (data) 
 				{
 					
-					itemData=data as ChatVO;
+					itemData=data as Chat;
 					
 					this.currentState=itemData.state;
 					
