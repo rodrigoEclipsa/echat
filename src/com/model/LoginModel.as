@@ -14,7 +14,7 @@ package com.model
 		
 		
 		public var agentVO:AgentVO;
-		public var domainsVO:Array;
+		public var domainsVO:Array = new Array();
 		public var rolesVO:Array;
 		
 		

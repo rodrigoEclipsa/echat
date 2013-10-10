@@ -6,7 +6,7 @@
 					   xmlns:local="*"
 					   xmlns:mx="library://ns.adobe.com/flex/mx"
 					   xmlns:update="air.update.*"
-					   width="640" height="480"
+					   width="800" height="600"
 					   applicationComplete="windowedapplication_applicationCompleteHandler(event)"
 					   closing="{windowedapplication1_closingHandler(event)}"
 					   creationComplete="windowedapplication1_creationCompleteHandler(event)"
@@ -327,9 +327,11 @@
 				<local:Beans/>
 				
 			</swiz:beanProviders>
-			
-			
-			
+			<!--
+			<swiz:loggingTargets>
+				<swiz:SwizTraceTarget id="myTraceTarget" />
+			</swiz:loggingTargets>
+			-->
 			<swiz:config>
 				
 				<!-- The eventPackages value tells Swiz the path to your Event classes,

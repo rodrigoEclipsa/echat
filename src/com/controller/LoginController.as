@@ -7,8 +7,8 @@ package com.controller
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
-	import com.view.login.LoginView;
 	import com.view.MainView;
+	import com.view.login.LoginView;
 	
 	import flash.events.IEventDispatcher;
 	
@@ -25,6 +25,7 @@ package com.controller
 	
 	import util.app.ConfigParameters;
 	import util.vo.ResultVO;
+	import util.vo.entities.DomainVO;
 	
 	public class LoginController
 	{
@@ -111,13 +112,19 @@ package com.controller
 				//		trace("loggued : " + ObjectUtil.toString(resultVO.data))
 			
 						loginModel.agentVO = resultVO.data.agentVO;
-						loginModel.domainsVO = resultVO.data.domainsVO;
+						
+						
+						
+						for each(var domainVO:DomainVO in resultVO.data.domainsVO)
+						loginModel.domainsVO.push(domainVO);
+					
+						
 						loginModel.rolesVO = resultVO.data.rolesVO;
 						
 						
 						
 						
-						chatManagerController.login(resultVO.data.agentVO.id,SHA1.hash(password)); 
+						chatManagerController.login("agent_"+resultVO.data.agentVO.id,SHA1.hash(password)); 
 						
 						
 						

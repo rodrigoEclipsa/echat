@@ -14,13 +14,20 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import com.controller.VisitListController;
 			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
 			import com.model.MainModel;
+			import com.view.MainView;
+			import com.view.chatWindow.ChatWindowView;
 			
 			import mx.events.FlexEvent;
 			import mx.utils.ObjectUtil;
 			
+			import spark.events.GridSelectionEvent;
+			
+			import util.classes.User;
+			import util.vo.entities.UserVO;
 			import util.vo.entities.WebVO;
 			
 			
@@ -32,10 +39,19 @@
 			[Inject]
 			public var mainModel:MainModel;
 			
+			[Bindable]
+			[Inject]
+			public var visitListController:VisitListController;
+			
 			
 			[Bindable]
 			[Inject]
 			public var chatManagerModel:ChatManagerModel;
+			
+			
+		
+			
+		
 			
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -50,16 +66,48 @@
 			public function labelFunc_visualizando(item:Object, column:GridColumn):String
 			{
 				
-				var webs:String;
-				var arrayList_webVO:ArrayList = item as ArrayList;
+				var webs:String= "";
+				var user:User = item as User;
+			
 				
-				
-				
-				for each(var webVOItem:WebVO in arrayList_webVO)
+				for each(var webVOItem:WebVO in user.arrayList_webVO.source)
 				webs +=" "+webVOItem.title; 
 				
 				return webs;
 			}
+			
+			
+			
+			public function labelFunc_visitante(item:Object, column:GridColumn):String
+			{
+			
+				
+				var user:User = item as User;
+				
+				return  user.userVO.id.toString();
+				
+			}
+			
+			
+		
+			
+		
+			protected function datagrid_visit_selectionChangeHandler(event:GridSelectionEvent):void
+			{
+				
+				var user:User = datagrid_visit.selectedItem as User;
+				
+				//pregunto si el usuario esta en el tab, si no lo agrego 
+		    	visitListController.selectUser(user);
+					
+				
+				
+				
+				
+				
+				
+			}
+			
 			
 			
 		]]>
@@ -93,17 +141,18 @@
 		
 		
 	</s:BorderContainer>
-	<s:DataGrid width="100%" height="100%" requestedRowCount="4" dataProvider="{mainModel.currentDomain.arrayCollection_users}">
+	<s:DataGrid width="100%" borderVisible="false" height="100%" requestedRowCount="4" dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_users}"
+				 id="datagrid_visit"
+				  selectionChange="datagrid_visit_selectionChangeHandler(event)"
+				   >
 		<s:columns>
 			<s:ArrayList>
-				<s:GridColumn dataField="id" headerText="Visitante"></s:GridColumn>
+				<s:GridColumn   labelFunction="{labelFunc_visitante}"    headerText="Visitante"></s:GridColumn>
 				<s:GridColumn   dataField="minuteConnect"  headerText="Conectado"></s:GridColumn>
-				<s:GridColumn  labelFunction="{labelFunc_visualizando}" headerText="Visualizando"></s:GridColumn>
+				<s:GridColumn     dataField="textDisplayedWebs"  headerText="Visualizando"></s:GridColumn>
 			</s:ArrayList>
 		</s:columns>
-		<s:typicalItem>
-			<fx:Object dataField1="Sample Data" dataField2="Sample Data" dataField3="Sample Data"></fx:Object>
-		</s:typicalItem>
+	
 		
 	</s:DataGrid>
 

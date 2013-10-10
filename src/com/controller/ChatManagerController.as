@@ -262,25 +262,42 @@ package com.controller
 			var extension:XML = XML(presence.xml.echat.ex_echat_presence);
 			var workSpaceDomain:WorkSpaceDomain;
 			
-		    if(extension.@id =="agent")
+			
+			
+			
+			var splitNode:Array =  presence.from.node.split("_");
+			
+			
+			var prefix:String = splitNode[0];
+			var id:int = splitNode[1];
+			
+			
+			
+		
+			
+		    //seguen el prefix se si es un agente o un usuario
+		    if(prefix =="agent")
 			{
 				
 				
 			}
-			else if(extension.@id =="user")
+			else if(prefix == "user")
 			{
 			
 		       workSpaceDomain = mainModel.getWorkSpacedomainById(extension.group);
 			   
+			  
+		
+			   
 			   if(workSpaceDomain)
 			   {
 				   
-				  
+				
 				   
 				   var userVO:UserVO = new UserVO();
 				   userVO.email = extension.email;
 				   userVO.name = extension.name;
-				   userVO.id = int(presence.from.bareJID);
+				   userVO.id = id;
 				   
 				   var webVO:WebVO = new WebVO();
 				   webVO.title = extension.web.title;
@@ -290,23 +307,23 @@ package com.controller
 				   user.userVO = userVO;
 				   user.arrayList_webVO.addItem(webVO);
 				   
+				   
+				  
+				   
 				   workSpaceDomain.arrayCollection_users.addItem(user);
 			   
 			
 				   
 				   
 			   }
+			 
 				
 			}
 				
 			
-			
-			
-		     
 		
-			trace("precenseUpdated : " + event.data)
-			
-			
+		
+
 		}
 		
 		private function onUserPresenceUpdated( event:RosterEvent ):void

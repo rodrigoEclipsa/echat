@@ -24,4 +24,9 @@
 	<model:VisitListModel id="VisitListModel"    />
 	
 	
+	
+	<controller:ChatWindowController id="chatWindowController"/>
+	<model:ChatWindowModel id="chatWindowModel"/>
+	
+	
 </swiz:BeanProvider>

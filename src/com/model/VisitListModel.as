@@ -5,5 +5,19 @@ package com.model
 		public function VisitListModel()
 		{
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 	}
 }

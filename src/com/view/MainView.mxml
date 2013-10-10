@@ -12,19 +12,19 @@
 		 xmlns:customComponent="customComponent.*"
 		 xmlns:home="com.view.home.*"
 		 xmlns:login="com.view.login.*"
-		 xmlns:visitList="com.view.visitList.*">
+		 xmlns:visitList="com.view.visitList.*" xmlns:chatWindow="com.view.chatWindow.*">
 
 
 
 	<fx:Script>
 		<![CDATA[
+			import com.view.chatWindow.ChatWindowView;
 			import com.controller.MainController;
 			import com.event.ChatManagerEvent;
 			import com.event.MainEvent;
 			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
 			import com.model.MainModel;
-			import com.view.chatWindow.ChatWindowView;
 			
 			import customComponent.LoadWait;
 			
@@ -54,6 +54,7 @@
 			import util.app.ConfigParameters;
 			import util.classes.Chat;
 			import util.classes.QueueChat;
+			import util.classes.User;
 			import util.classes.WorkSpaceDomain;
 
 
@@ -75,37 +76,33 @@
 			public var loginModel:LoginModel;
 
 
-
+			[Bindable]
+			[ViewAdded]
+			public var chatWindowView:ChatWindowView;
 
 
 			public var is_writing:Boolean=false;
+			
 
 
 
-
-			[Bindable]
-			public var chatWindowView:ChatWindowView=new ChatWindowView();
-
-
-
-
+/*
 			[EventHandler(event="LoginEvent.loginSuccess")]
 			public function loginEvent_loginSuccess():void
 			{
-				/*
-				   typicalItem=new ChatVO();
-				   typicalItem.body="dsadasdasd sa dsadsa dsa sa " + "dsadasdasdasdsa " +
-				   "ds " + "ad sad " + "sadsad   ds ds" + " ad as" +
-				   " das das " + "das d " + "asd asd " + "as das da" + " sd " + "asd " + "sad" + " as a "
-				 */
-
-               
 				
-				this.currentState="Logged";
+				  /// typicalItem=new ChatVO();
+				 ///  typicalItem.body="dsadasdasd sa dsadsa dsa sa " + "dsadasdasdasdsa " +
+				 //  "ds " + "ad sad " + "sadsad   ds ds" + " ad as" +
+				 //  " das das " + "das d " + "asd asd " + "as das da" + " sd " + "asd " + "sad" + " as a "
+				 
+
+			
+				
 
 			}
 
-           
+           */
 			
 
 
@@ -113,7 +110,7 @@
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				//asigno esta profundidad para que este debajo de la barra del chat
-				chatWindowView.depth=5;
+				
 
 			}
 
@@ -156,7 +153,7 @@
 			public function addChatWindow():void
 			{
 
-				group_logged.addElement(chatWindowView);
+			
 
 
 
@@ -164,57 +161,42 @@
 			}
 
 
-			public function minimizeChatWindow():void
-			{
-				trace("chat: " + chatWindowView)
-
-				group_logged.removeElement(chatWindowView);
-
-
-			}
-
+			
 
 
 
 
 			protected function tabBar_queueChat_changeHandler(event:IndexChangeEvent):void
 			{
-
-
+				
+				
+				
+				
+                 var user:User = tabBar_queueChat.selectedItem as User;
+				
+              
+			
+				 if(mainModel.currentWorkSpaceDomain.currentActiveUser == user || !user)
+				 {
+					 
+					 mainModel.currentWorkSpaceDomain.currentActiveUser = null;
+					 chatWindowView.isVisible = false;
+					 
+				 }
+				 else
+				 {
+					 
+					 mainModel.currentWorkSpaceDomain.currentActiveUser = user;
+					 chatWindowView.isVisible = true;
+					 
+				 }
+				 
 
 
 
 			}
 
-			protected function borderContainer_queueChat_clickHandler(event:MouseEvent):void
-			{
-
-
-				if (mainModel.arrayCollection_queueCall.length > 0)
-				{
-
-
-				}
-
-			}
-
-
-
-			[EventHandler(event="MainEvent.selectedChat", properties="queueChatVO")]
-			public function selectedChat(queueChatVO:QueueChat):void
-			{
-
-				mainModel.currentQueueChatVO=queueChatVO;
-				addChatWindow();
-
-			}
-
-
-
-
-
-
-
+			
 
 
 
@@ -238,7 +220,7 @@
 			protected function list_domains_changeHandler(event:IndexChangeEvent):void
 			{
 
-				mainModel.currentDomain=list_domains.selectedItem as WorkSpaceDomain;
+				mainModel.currentWorkSpaceDomain=list_domains.selectedItem as WorkSpaceDomain;
 
 			}
 
@@ -331,6 +313,8 @@
 								height="100"
 								contentBackgroundAlpha="1.0"
 								id="list_domains"
+								 requireSelection="true"
+								  selectedItem="{mainModel.currentWorkSpaceDomain}"
 								change="list_domains_changeHandler(event)"
 								dataProvider="{mainModel.arrayCollection_workSpacedomains}"
 								itemRenderer="renderer.DomainRenderer"
@@ -492,15 +476,15 @@
 								 id="borderContainer_queueChat"
 								 width="100%"
 								 backgroundColor="#888888"
-								 click="borderContainer_queueChat_clickHandler(event)"
+								
 								 cornerRadius="2">
 				  
-				  <s:Label backgroundAlpha="{mainModel.arrayCollection_queueCall.length &gt; 0 ? 1 : 0}"
+				  <s:Label 
 						   color="#FFFFFF"
 						   fontSize="11"
 						   fontWeight="bold"
 						   horizontalCenter="0"
-						   text="{mainModel.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' + mainModel.arrayCollection_queueCall.length}"
+						   text="{mainModel.currentWorkSpaceDomain.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' +mainModel.currentWorkSpaceDomain.arrayCollection_queueCall.length}"
 						   textAlign="center"
 						   verticalAlign="middle"
 						   verticalCenter="0"/>
@@ -534,36 +518,35 @@
 					
 				</mx:ViewStack>
 				
-				<s:HGroup id="hgroup_queueChat"
-						  width="100%"
-						  height="32"
-						 >
+			
 					
 					
 					
 					
 					<s:TabBar id="tabBar_queueChat"
-							  y="548"
-							  width="100%"
-							  height="100%"
+							 
+							  width="100%" height="42"
+							    requireSelection="false"
 							  change="tabBar_queueChat_changeHandler(event)"
-							  dataProvider="{mainModel.arrayCollection_queueChat}"
-							  itemRenderer="renderer.QueueChatRenderer"
-							  selectedIndex="-1">
+							  dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_queueChat}"
+							
+							   itemRenderer="renderer.TabChatRenderer"
+							   
+							>
 						
 						<s:layout>
-							<s:HorizontalLayout/>
+							<s:HorizontalLayout verticalAlign="bottom"/>
 						</s:layout>
 						
 						
 					</s:TabBar>
-				</s:HGroup>
+				
 
 			</s:VGroup>
 		
-		<s:Group id="group_chatWindow" height="100%" minWidth="0">
+		<s:Group id="group_chatWindow" height="100%"  minWidth="0">
 			
-			
+			<chatWindow:ChatWindowView/>
 			
 		</s:Group>
 
