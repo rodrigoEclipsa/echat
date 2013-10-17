@@ -4,9 +4,7 @@ package util.vo.entities
 	[RemoteClass(alias="AgentVO")]
 	public class AgentVO
 	{
-		public function AgentVO()
-		{
-		}
+	
 		
 		public var id:int;
 		public var created_at:String;
@@ -14,6 +12,16 @@ package util.vo.entities
 		public var email:String;
 		public var name:String;
 		public var password:String;
+		
+		public var nick:String;
+		public var surname:String;
+		public var enabled:Boolean = true;
+		
+		public function AgentVO()
+		{
+		}
+		
+		
 
 	}
 }

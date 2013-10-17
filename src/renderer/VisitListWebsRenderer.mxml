@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					 creationComplete="griditemrenderer1_creationCompleteHandler(event)"
+					xmlns:mx="library://ns.adobe.com/flex/mx" clipAndEnableScrolling="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayList;
+			import mx.events.CollectionEvent;
+			import mx.events.FlexEvent;
+			
+			import util.vo.entities.WebVO;
+			
+			
+			private var itemData:ArrayList;
+			
+			override public function prepare(hasBeenRecycled:Boolean):void {
+			
+				
+				
+				
+				
+				
+			}
+			
+			
+			
+			
+			
+			private function arrayList_webVO_changeHandler(event:CollectionEvent):void
+			{
+				
+				setLabelWebs();
+				
+				
+			}
+			
+			
+			
+			private function setLabelWebs():void
+			{
+				
+				var webs:String= "";
+				
+				for each(var webVOItem:WebVO in itemData.source)
+				webs +="* "+webVOItem.title; 
+				
+				
+				lblData.text = webs;
+				
+			}
+			
+			
+			protected function griditemrenderer1_creationCompleteHandler(event:FlexEvent):void
+			{
+				
+				itemData = data[column.dataField] as ArrayList;	
+				
+				
+				setLabelWebs();
+				
+				itemData.addEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_webVO_changeHandler);
+				
+				
+			}
+			
+			
+			
+			
+		]]>
+	</fx:Script>
+	
+	
+	
+	<s:Label id="lblData" top="9" left="7"/>
+	
+</s:GridItemRenderer>

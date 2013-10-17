@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:GridItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009" 
+					xmlns:s="library://ns.adobe.com/flex/spark" 
+					xmlns:mx="library://ns.adobe.com/flex/mx" clipAndEnableScrolling="true">
+	
+	<fx:Script>
+		<![CDATA[
+			import util.classes.Agent;
+			
+			
+			[Bindable]
+			public var itemData:Agent;
+			
+			override public function prepare(hasBeenRecycled:Boolean):void {
+				if(data)
+				{
+					
+					itemData = data as Agent;
+					
+				}
+			}
+		]]>
+	</fx:Script>
+	
+	<s:Label id="lblData" top="9" left="7" text="{itemData.agentVO.nick}"/>
+	
+</s:GridItemRenderer>

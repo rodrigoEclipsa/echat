@@ -39,6 +39,7 @@ package com.controller
 	import util.DateManager;
 	import util.app.ConfigParameters;
 	import util.classes.Chat;
+	import util.classes.Domain;
 	import util.classes.QueueChat;
 	import util.classes.User;
 	import util.classes.WorkSpaceDomain;
@@ -102,17 +103,78 @@ package com.controller
 		
 		
 		
+		public function openChatWindow(user:User):void
+		{
+			
+			//pregunto si el usuario esta en la cola de chat, si no la agrego
+			if(!mainModel.isQueueChat(user))
+				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(user);
+			
+				
+		        
+			// si no esta activo lo pongo activo y lo selecciono en el tab
+			if(mainModel.currentWorkSpaceDomain.currentActiveUser != user )
+			{
+				
+				
+				mainModel.currentWorkSpaceDomain.currentActiveUser = user;
+				mainView.tabBar_queueChat.selectedItem = mainModel.currentWorkSpaceDomain.currentActiveUser;
+				
+				
+				
+				
+					chatWindowView.isVisible = true;
+				
+				
+			}
+			
+		}
+		
+		
+		public function closeChatWindow(user:User):void
+		{
+			
+		
+		
+			
+			var userIndex:int = mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.getItemIndex(user);
+			
+			//	trace("user: " + mainModel.currentWorkSpaceDomain.currentActiveUser)
+			
+			if(mainModel.currentWorkSpaceDomain.currentActiveUser == user)
+			{
+				
+				mainModel.currentWorkSpaceDomain.currentActiveUser = null;
+				chatWindowView.isVisible = false;
+				
+				
+			}
+			
+			
+			mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.removeItemAt(userIndex);
+			
+		
+				
+			
+		}
+		
+		
+		
+		
 		
 		[EventHandler(event="LoginEvent.loginSuccess")]
 		public function loginEvent_loginSuccess():void
 		{
 			
 		
-			for each(var domainVOItem:DomainVO in loginModel.domainsVO)
+			for each(var domainVOItem:DomainVO in loginModel.arrayList_domainsVO.source)
 			{
 				
+				var domain:Domain = new Domain(domainVOItem);
+				
 				var workSpaceDomain:WorkSpaceDomain = new WorkSpaceDomain();
-				workSpaceDomain.domainVO = domainVOItem;
+				
+				workSpaceDomain.domain = domain;
 				
 				mainModel.arrayCollection_workSpacedomains.addItem(workSpaceDomain);
 				

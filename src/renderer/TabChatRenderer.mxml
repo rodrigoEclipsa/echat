@@ -5,14 +5,16 @@
 				width="100%" 
 				height="32"  
 				 maxWidth="190"
-				  height.selected="42"
-				autoDrawBackground="true"
+				 height.selected="42"
+				
+				autoDrawBackground="false"
 				dataChange="itemrenderer1_dataChangeHandler(event)"
 				>
 	
 	<fx:Script>
 		<![CDATA[
 			import com.event.MainEvent;
+			import com.event.customComponent.TabBarChatEvent;
 			import com.event.renderer.TabChatEvent;
 			
 			import mx.events.FlexEvent;
@@ -67,6 +69,27 @@
 		
 			
 			
+			
+			
+			protected function button_close_clickHandler(event:MouseEvent):void
+			{
+				
+			
+				var tabBarChatEvent_closeEvent:TabBarChatEvent = new TabBarChatEvent(TabBarChatEvent.close);
+				tabBarChatEvent_closeEvent.user = itemData;
+				
+				this.owner.dispatchEvent(tabBarChatEvent_closeEvent);
+			
+				event.stopImmediatePropagation();
+				
+				
+			}
+			
+			
+			
+			
+			
+			
 		]]>
 	</fx:Script>
 	
@@ -81,7 +104,10 @@
 	
 	<s:BorderContainer id="skinnableContainer_content" width="100%" height="100%"
 					   backgroundColor="#818181"
-					   
+					   useHandCursor="true"
+					   buttonMode="true"
+					    mouseChildren="true"
+					 
 					   backgroundColor.hovered="#101010"
 					   backgroundColor.selected="#252525"
 					   backgroundColor.normal="#252525">
@@ -98,9 +124,11 @@
 		
 		
 		
-		<s:Button id="button_close" right="5" width="16" height="16" label="Button"
+		<s:Button id="button_close" right="5" width="16" height="16" 
 				  verticalCenter="0"
-				  label.selected="x"/>
+				 
+				   click="button_close_clickHandler(event)"
+				  label="x"/>
 		
 		
 		

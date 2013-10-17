@@ -12,19 +12,20 @@
 		 xmlns:customComponent="customComponent.*"
 		 xmlns:home="com.view.home.*"
 		 xmlns:login="com.view.login.*"
-		 xmlns:visitList="com.view.visitList.*" xmlns:chatWindow="com.view.chatWindow.*">
+		 xmlns:visitList="com.view.visitList.*" xmlns:chatWindow="com.view.chatWindow.*" xmlns:agent="com.view.agent.*">
 
 
 
 	<fx:Script>
 		<![CDATA[
-			import com.view.chatWindow.ChatWindowView;
 			import com.controller.MainController;
 			import com.event.ChatManagerEvent;
 			import com.event.MainEvent;
+			import com.event.customComponent.TabBarChatEvent;
 			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
 			import com.model.MainModel;
+			import com.view.chatWindow.ChatWindowView;
 			
 			import customComponent.LoadWait;
 			
@@ -165,41 +166,6 @@
 
 
 
-
-			protected function tabBar_queueChat_changeHandler(event:IndexChangeEvent):void
-			{
-				
-				
-				
-				
-                 var user:User = tabBar_queueChat.selectedItem as User;
-				
-              
-			
-				 if(mainModel.currentWorkSpaceDomain.currentActiveUser == user || !user)
-				 {
-					 
-					 mainModel.currentWorkSpaceDomain.currentActiveUser = null;
-					 chatWindowView.isVisible = false;
-					 
-				 }
-				 else
-				 {
-					 
-					 mainModel.currentWorkSpaceDomain.currentActiveUser = user;
-					 chatWindowView.isVisible = true;
-					 
-				 }
-				 
-
-
-
-			}
-
-			
-
-
-
 			private function serviceEchat_testHandler(result:Object):void
 			{
 
@@ -209,6 +175,9 @@
 			}
 
 
+			//-----------------------------------------------------------------------------------------------------------------------click menu 
+			
+			
 			protected function hGroupMenu_home_clickHandler(event:MouseEvent):void
 			{
 				if (viewStack_navigator.selectedChild != navigatorContent_home)
@@ -232,6 +201,76 @@
 					viewStack_navigator.selectedChild=navigatorContent_visitList;
 
 			}
+			
+			protected function groupMenuItem_agent_clickHandler(event:MouseEvent):void
+			{
+				
+				
+				if (viewStack_navigator.selectedChild != navigatorContent_agent)
+					viewStack_navigator.selectedChild=navigatorContent_agent;
+				
+			}
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			
+			//----------------------------------------------------------------------------------------------------------------------
+			
+			
+		
+			
+			
+			protected function tabBar_queueChat_closeHandler(event:TabBarChatEvent):void
+			{
+				
+		
+				
+				mainController.closeChatWindow(event.user);
+				
+				
+			}
+			
+			
+			
+			
+			
+			protected function tabBar_queueChat_changeHandler(event:IndexChangeEvent):void
+			{
+				
+				trace(tabBar_queueChat.selectedIndex)
+				var user:User = tabBar_queueChat.selectedItem as User;
+				
+				
+				//	trace("aver : " + mainModel.currentWorkSpaceDomain.currentActiveUser)
+				if(user)
+				{
+					
+					trace("abre")
+					mainModel.currentWorkSpaceDomain.currentActiveUser = user;
+					chatWindowView.isVisible = true;
+					
+				}
+				else
+				{
+					
+					
+					trace("cierra")
+					mainModel.currentWorkSpaceDomain.currentActiveUser = null;
+					chatWindowView.isVisible = false;
+					
+					
+					
+					
+					
+				}
+			}
+			
 		]]>
 	</fx:Script>
 
@@ -378,8 +417,8 @@
 							<s:VGroup id="vGroup_menuAdminister" width="100%" gap="0">
 								<customComponent:groupMenu width="100%"
 														   height="22"
-														   id="groupMenuItem_history0"
-														   click="hGroupMenu_home_clickHandler(event)">
+														   id="groupMenuItem_agent"
+														    click="groupMenuItem_agent_clickHandler(event)">
 									<s:Label left="45"
 											 color="#FFFFFF"
 											 text="Agentes"
@@ -463,6 +502,7 @@
 								</customComponent:groupMenu>
 							</s:VGroup>
 						</s:VGroup>
+					
 
 
 					</s:VGroup>
@@ -516,6 +556,13 @@
 					</s:NavigatorContent>
 					
 					
+					<s:NavigatorContent id="navigatorContent_agent">
+					
+						<agent:AgentListView/>
+						
+					</s:NavigatorContent>
+					
+					
 				</mx:ViewStack>
 				
 			
@@ -523,28 +570,31 @@
 					
 					
 					
-					<s:TabBar id="tabBar_queueChat"
+					<customComponent:TabBarChat id="tabBar_queueChat"
 							 
 							  width="100%" height="42"
 							    requireSelection="false"
-							  change="tabBar_queueChat_changeHandler(event)"
+							    change="tabBar_queueChat_changeHandler(event)"
 							  dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_queueChat}"
-							
+							 minWidth="140"
 							   itemRenderer="renderer.TabChatRenderer"
-							   
+							      
+								 close="tabBar_queueChat_closeHandler(event)"
 							>
+						<customComponent:layout>
+							
+					
 						
-						<s:layout>
 							<s:HorizontalLayout verticalAlign="bottom"/>
-						</s:layout>
+						
+                      </customComponent:layout>
 						
 						
-					</s:TabBar>
-				
+					</customComponent:TabBarChat>
 
 			</s:VGroup>
 		
-		<s:Group id="group_chatWindow" height="100%"  minWidth="0">
+		<s:Group id="group_chatWindow" height="100%" minWidth="0">
 			
 			<chatWindow:ChatWindowView/>
 			

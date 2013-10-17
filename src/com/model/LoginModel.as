@@ -1,5 +1,7 @@
 package com.model
 {
+	import mx.collections.ArrayList;
+	
 	import org.igniterealtime.xiff.core.EscapedJID;
 	
 	import util.vo.entities.AgentVO;
@@ -14,7 +16,7 @@ package com.model
 		
 		
 		public var agentVO:AgentVO;
-		public var domainsVO:Array = new Array();
+		public var arrayList_domainsVO:ArrayList = new ArrayList()
 		public var rolesVO:Array;
 		
 		

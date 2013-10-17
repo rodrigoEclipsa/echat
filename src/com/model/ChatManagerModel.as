@@ -29,7 +29,7 @@ package com.model
 		
 	///--------------------------------------------------mensages xml	
 		
-		public function xml_ex_chat_presence(name:String,email:String):XML
+		public function getExtensionPresence(name:String,email:String):XML
 		{
 			
 			

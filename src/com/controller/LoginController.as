@@ -116,7 +116,7 @@ package com.controller
 						
 						
 						for each(var domainVO:DomainVO in resultVO.data.domainsVO)
-						loginModel.domainsVO.push(domainVO);
+						loginModel.arrayList_domainsVO.addItem(domainVO);
 					
 						
 						loginModel.rolesVO = resultVO.data.rolesVO;

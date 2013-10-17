@@ -28,5 +28,8 @@
 	<controller:ChatWindowController id="chatWindowController"/>
 	<model:ChatWindowModel id="chatWindowModel"/>
 	
+	<controller:AgentListController id="agentListController"/>
+	<model:AgentListModel id="agentListModel"/>
+	
 	
 </swiz:BeanProvider>

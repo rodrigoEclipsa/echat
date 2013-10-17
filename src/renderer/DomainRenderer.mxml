@@ -39,6 +39,6 @@
 		]]>
 	</fx:Script>
 	
-	<s:Label text="{domain.domainVO.name}"/>
+	<s:Label text="{domain.domain.domainVO.name}"/>
 	
 </s:ItemRenderer>

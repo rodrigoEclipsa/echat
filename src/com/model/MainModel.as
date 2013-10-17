@@ -49,10 +49,10 @@ package com.model
 		
 		
 		
-	    public var currentWorkSpaceDomain:WorkSpaceDomain;	
+	 public var currentWorkSpaceDomain:WorkSpaceDomain;	
 		
 		
-
+	
 		
 		
 		
@@ -92,7 +92,12 @@ package com.model
 	}
 		
 	
-	  
+	  /**
+	  * 
+	  * obtiene el espacio de trabajo del dominio pasando la id del mismo
+	  * 
+	  * 
+	  * **/
 	public function getWorkSpacedomainById(id:int):WorkSpaceDomain
 	{
 		
@@ -101,7 +106,7 @@ package com.model
 		for each(var workSpaceDomainItem:WorkSpaceDomain in arrayCollection_workSpacedomains)
 		{
 			
-			if(workSpaceDomainItem.domainVO.id == id  )
+			if(workSpaceDomainItem.domain.domainVO.id == id  )
 			{
 				workSpaceDomain = workSpaceDomainItem;
 			
@@ -113,6 +118,33 @@ package com.model
 		
 	}
 	 
+	
+	
+	/**
+	 * 
+	 * obtiene el usuario de espacio de trabajo segun id de usuario
+	 * 
+	 * 
+	 * **/
+	public function getUserById(workSpaceDomain:WorkSpaceDomain, userId:int):User
+	{
+		
+	
+		
+		var user:User;
+		
+		for each(var userItem:User in workSpaceDomain.arrayCollection_users)
+		{
+			
+			if(userItem.userVO.id == userId)
+				user = userItem
+			
+		}
+
+
+		return user;
+		
+	}
 	
 		
 		

@@ -1,9 +1,11 @@
 package util.classes
 {
+	import flash.events.EventDispatcher;
 	import flash.utils.setInterval;
 	
 	import mx.collections.ArrayList;
 	import mx.events.CollectionEvent;
+	import mx.events.PropertyChangeEvent;
 	
 	import org.igniterealtime.xiff.collections.events.CollectionEventKind;
 	
@@ -12,60 +14,44 @@ package util.classes
 	
     
 	[Bindable]
-	public class User
+	public class User extends EventDispatcher
 	{
 		
 		
 		public var userVO:UserVO;
-		public var arrayList_webVO:ArrayList = new ArrayList();
 		
-		
+		public var arrayList_session:ArrayList = new ArrayList();
 		
 		public var minuteConnect:Number = 0;
-		public var textDisplayedWebs:String = "";
-		
-		
-		
 		private var interval:uint;
 		
 		private var stampTime:Number = new Date().time;
 		
-		
-		
 		public function User()
 		{
-		
+		 
+			arrayList_session.addEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_session_changeHandler);
 			
-		   interval = setInterval(interval_minuteHadler,60000);
-		
-		   //si se agrega una nueva web actualizo el label
-		   arrayList_webVO.addEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_webVO_changeHandler);
+			interval = setInterval(interval_minuteHadler,60000);
 		   
-		   
+			
 		}
 		
-		
-		private function arrayList_webVO_changeHandler(event:CollectionEvent):void
-		{
-		
-				
-				var webs:String= "";
-				
-		
-				for each(var webVOItem:WebVO in arrayList_webVO.source)
-				webs +="* "+webVOItem.title; 
-				
-				
-				textDisplayedWebs = webs;
-			
-			
-			
-		}
 		
 	
-
+		
+		private function arrayList_session_changeHandler(event:CollectionEvent):void
+		{
+			var dispatcherEvent:PropertyChangeEvent = new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE);
+			this.dispatchEvent(dispatcherEvent);
+			
+		}
+		
+		
 		public function interval_minuteHadler():void
 		{
+			
+			
 			var date:Date = new Date();
 			
 			date.time = date.time - stampTime;
@@ -73,6 +59,11 @@ package util.classes
 			minuteConnect = date.seconds;
 			
 		}
+		
+		
+		
+		
+		
 		
 	}
 }

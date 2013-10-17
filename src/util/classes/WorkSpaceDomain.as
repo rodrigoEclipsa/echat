@@ -3,7 +3,6 @@ package util.classes
 	import com.model.MainModel;
 	import com.view.MainView;
 	
-	
 	import mx.collections.ArrayCollection;
 	import mx.collections.ArrayList;
 	
@@ -21,12 +20,12 @@ package util.classes
 		
 		
 		
-		public var domainVO:DomainVO;
+		public var domain:Domain;
 		
 		public var arrayCollection_users:ArrayCollection = new ArrayCollection();
 		
-		public var arrayCollection_agent:ArrayCollection = new ArrayCollection();
 		
+		public var arrayCollection_agent:ArrayCollection = new ArrayCollection();
 		
 		public var arrayList_usersTab:ArrayList = new ArrayList();
 		
