@@ -2,6 +2,8 @@ package com.model
 {
 	
 	
+	
+	
 	import com.view.MainView;
 	import com.view.chatWindow.ChatWindowView;
 	
@@ -18,6 +20,7 @@ package com.model
 	import org.igniterealtime.xiff.data.Message;
 	
 	import util.app.ConfigParameters;
+	import util.classes.Agent;
 	import util.classes.Chat;
 	import util.classes.QueueChat;
 	import util.classes.User;
@@ -39,6 +42,7 @@ package com.model
 		[Inject]
 		public var chatManagerModel:ChatManagerModel;
 		
+	
 		
 	/**
 	 * array de dominios , de aqui parten todos los datos 
@@ -49,15 +53,16 @@ package com.model
 		
 		
 		
+	 
+	 
+	 
+	 
 	 public var currentWorkSpaceDomain:WorkSpaceDomain;	
 		
 		
 	
 		
-		
-		
-		
-		
+
 		public function clearData():void
 		{
 			
@@ -67,14 +72,14 @@ package com.model
 		
 		
 		
-	public function isQueueChat(user:User):Boolean
+	public function isQueueChat(contact:Object):Boolean
 	{
 		var exist:Boolean = false;
 		
-		for each(var userItem:User in currentWorkSpaceDomain.arrayCollection_queueChat)
+		for each(var iContactItem:Object in currentWorkSpaceDomain.arrayCollection_queueChat)
 		{
 			
-			if(userItem == user)
+			if(iContactItem == contact)
 			{
 			
 		    exist = true;
@@ -143,6 +148,30 @@ package com.model
 
 
 		return user;
+		
+	}
+	
+	
+	
+	
+	
+	public function getAgentById(workSpaceDomain:WorkSpaceDomain, agentId:int):Agent
+	{
+		
+		
+		
+		var agent:Agent;
+		
+		for each(var agentItem:Agent in workSpaceDomain.arrayCollection_agent)
+		{
+			
+			if(agentItem.agentVO.id == agentId)
+				agent = agentItem;
+			
+		}
+		
+		
+		return agent;
 		
 	}
 	

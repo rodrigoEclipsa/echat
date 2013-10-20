@@ -119,7 +119,7 @@ package com.controller
 						loginModel.arrayList_domainsVO.addItem(domainVO);
 					
 						
-						loginModel.rolesVO = resultVO.data.rolesVO;
+						loginModel.roleVO = resultVO.data.roleVO;
 						
 						
 						

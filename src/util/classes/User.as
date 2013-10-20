@@ -1,6 +1,8 @@
 package util.classes
 {
-	import flash.events.EventDispatcher;
+	
+	
+	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
 	import mx.collections.ArrayList;
@@ -14,13 +16,18 @@ package util.classes
 	
     
 	[Bindable]
-	public class User extends EventDispatcher
+	public class User 
 	{
 		
+		public var type:String="user";
+
+		public var contact:Contact;
 		
 		public var userVO:UserVO;
 		
 		public var arrayList_session:ArrayList = new ArrayList();
+		
+		
 		
 		public var minuteConnect:Number = 0;
 		private var interval:uint;
@@ -40,6 +47,9 @@ package util.classes
 		
 	
 		
+		
+		
+
 		private function arrayList_session_changeHandler(event:CollectionEvent):void
 		{
 			var dispatcherEvent:PropertyChangeEvent = new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE);
@@ -62,6 +72,24 @@ package util.classes
 		
 		
 		
+		public function stopInterval():void
+		{
+			
+			clearInterval(interval);
+		}
+		
+		public function startInterval():void
+		{
+			interval = setInterval(interval_minuteHadler,60000);
+		}
+		
+		
+		public function clearClass():void
+		{
+			
+			arrayList_session.removeEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_session_changeHandler);
+			stopInterval();
+		}
 		
 		
 		

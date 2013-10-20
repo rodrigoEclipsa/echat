@@ -13,12 +13,14 @@
 	
 	<fx:Script>
 		<![CDATA[
+			
 			import com.event.MainEvent;
 			import com.event.customComponent.TabBarChatEvent;
 			import com.event.renderer.TabChatEvent;
 			
 			import mx.events.FlexEvent;
 			
+			import util.classes.Agent;
 			import util.classes.QueueChat;
 			import util.classes.User;
 			
@@ -29,30 +31,51 @@
 	
 			
 			[Bindable]
-			public var itemData:User;
+			private var user:User;
 			
-			
-			
+			[Bindable]
+			private var agent:Agent;
 			
 			protected function itemrenderer1_dataChangeHandler(event:FlexEvent):void
 			{
 				if (data) 
 				{
 					
-					itemData=data as User;
+				
 					
-					if(itemData.userVO.name)
+					
+					if(data is User)
 					{
 						
+						user = data as User;
 						
-						label_name.text = itemData.userVO.name;
+						
+						if(user.userVO.name)
+						{
+							
+							
+							label_name.text = user.userVO.name;
+						}
+						else
+						{
+							
+							label_name.text = user.userVO.id.toString();
+						}
+						
+						
 					}
 					else
 					{
 						
-						label_name.text = itemData.userVO.id.toString();
+						agent = data as Agent;
+						
+						
+						label_name.text = agent.agentVO.name;
+						
 					}
 					
+					
+				
 					
 					
 				}
@@ -76,7 +99,7 @@
 				
 			
 				var tabBarChatEvent_closeEvent:TabBarChatEvent = new TabBarChatEvent(TabBarChatEvent.close);
-				tabBarChatEvent_closeEvent.user = itemData;
+				tabBarChatEvent_closeEvent.contact = data;
 				
 				this.owner.dispatchEvent(tabBarChatEvent_closeEvent);
 			

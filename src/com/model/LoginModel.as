@@ -6,6 +6,7 @@ package com.model
 	
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.DomainVO;
+	import util.vo.entities.RoleVO;
 	
 	[Bindable]
 	public class LoginModel
@@ -17,7 +18,7 @@ package com.model
 		
 		public var agentVO:AgentVO;
 		public var arrayList_domainsVO:ArrayList = new ArrayList()
-		public var rolesVO:Array;
+		public var roleVO:RoleVO;
 		
 		
 		

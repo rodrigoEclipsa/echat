@@ -14,6 +14,9 @@
 	
 	<fx:Script>
 		<![CDATA[
+			
+			
+			import com.controller.ChatWindowController;
 			import com.controller.VisitListController;
 			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
@@ -24,10 +27,9 @@
 			import mx.events.FlexEvent;
 			import mx.utils.ObjectUtil;
 			
-		
-			
 			import spark.events.GridSelectionEvent;
 			
+			import util.classes.Agent;
 			import util.classes.Session;
 			import util.classes.User;
 			import util.vo.entities.UserVO;
@@ -52,7 +54,9 @@
 			public var chatManagerModel:ChatManagerModel;
 			
 			
-			
+			[Bindable]
+			[Inject]
+			public var chatWindowController:ChatWindowController;
 			
 			
 			
@@ -61,7 +65,7 @@
 			{
 				
 				
-				
+			//	trace("agent: "  + ObjectUtil.toString(mainModel.currentWorkSpaceDomain.arrayCollection_agent))
 			}
 			
 			
@@ -78,9 +82,17 @@
 			protected function datagrid_visit_selectionChangeHandler(event:GridSelectionEvent):void
 			{
 				
-				var user:User = datagrid_visit.selectedItem as User;
+				var contact:Object = datagrid_agent.selectedItem ;
 				
-				//pregunto si el usuario esta en el tab, si no lo agrego 
+			
+				
+				
+				chatWindowController.openChatWindow(contact);					
+				
+				
+				
+				datagrid_agent.selectedIndex = -1;
+				
 				
 				
 				
@@ -105,29 +117,31 @@
 		
 		
 		
-		<s:VGroup left="10" width="412" horizontalAlign="left" verticalCenter="0">
-			<s:Label fontSize="16" fontWeight="normal" text="Administrar agentes"/>
-			
-			<s:TextInput x="37" width="375" prompt="encuentra un agente"/>
-			
-		</s:VGroup>
+		<s:Button x="405" width="125" height="28" label="Agregar agente" chromeColor="#F66E00"
+				  color="#FFFFFF" cornerRadius="0" fontWeight="bold" verticalCenter="12"/>
+		<s:Label left="10" fontSize="16" fontWeight="normal" text="Administrar agentes"
+				 verticalCenter="-12"/>
+		<s:TextInput left="10" width="375" height="28" prompt="encuentra un agente"
+					 verticalCenter="12"/>
 		
 		
 	</s:BorderContainer>
 	<s:DataGrid width="100%" borderVisible="false" height="100%" requestedRowCount="4" dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_agent}"
-				id="datagrid_visit"
-				
+				id="datagrid_agent"
+			
 				selectionChange="datagrid_visit_selectionChangeHandler(event)"
 				
 				>
 		<s:columns>
 			<s:ArrayList>
+				<s:GridColumn  itemRenderer="renderer.agentList.AgentConnectedRenderer"   headerText="Conectado"></s:GridColumn>
+				<s:GridColumn  itemRenderer="renderer.agentList.AgentNickRenderer"   headerText="Mostrar Nombre"></s:GridColumn>
 				<s:GridColumn  itemRenderer="renderer.agentList.AgentNickRenderer"   headerText="Mostrar Nombre"></s:GridColumn>
 				<s:GridColumn  itemRenderer="renderer.agentList.AgentNameRenderer"  headerText="Nombre"></s:GridColumn>
 				<s:GridColumn   itemRenderer="renderer.agentList.AgentSurnameRenderer" headerText="Apellido"></s:GridColumn>
 				<s:GridColumn   itemRenderer="renderer.agentList.AgentEmailRenderer" headerText="Correo electronico"></s:GridColumn>
-				<s:GridColumn   itemRenderer="renderer.agentList.AgentIsAdminRenderer"  headerText="Admin"></s:GridColumn>
-				<s:GridColumn   itemRenderer="renderer.agentList.AgentEnabledRenderer" headerText="Habilitado"></s:GridColumn>
+				
+			
 			</s:ArrayList>
 		</s:columns>
 		

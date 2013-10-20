@@ -103,60 +103,6 @@ package com.controller
 		
 		
 		
-		public function openChatWindow(user:User):void
-		{
-			
-			//pregunto si el usuario esta en la cola de chat, si no la agrego
-			if(!mainModel.isQueueChat(user))
-				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(user);
-			
-				
-		        
-			// si no esta activo lo pongo activo y lo selecciono en el tab
-			if(mainModel.currentWorkSpaceDomain.currentActiveUser != user )
-			{
-				
-				
-				mainModel.currentWorkSpaceDomain.currentActiveUser = user;
-				mainView.tabBar_queueChat.selectedItem = mainModel.currentWorkSpaceDomain.currentActiveUser;
-				
-				
-				
-				
-					chatWindowView.isVisible = true;
-				
-				
-			}
-			
-		}
-		
-		
-		public function closeChatWindow(user:User):void
-		{
-			
-		
-		
-			
-			var userIndex:int = mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.getItemIndex(user);
-			
-			//	trace("user: " + mainModel.currentWorkSpaceDomain.currentActiveUser)
-			
-			if(mainModel.currentWorkSpaceDomain.currentActiveUser == user)
-			{
-				
-				mainModel.currentWorkSpaceDomain.currentActiveUser = null;
-				chatWindowView.isVisible = false;
-				
-				
-			}
-			
-			
-			mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.removeItemAt(userIndex);
-			
-		
-				
-			
-		}
 		
 		
 		

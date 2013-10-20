@@ -1,11 +1,16 @@
 package com.model
 {
+	import mx.collections.ArrayCollection;
+	
 	import org.igniterealtime.xiff.conference.InviteListener;
 	import org.igniterealtime.xiff.conference.Room;
 	import org.igniterealtime.xiff.core.EscapedJID;
+	import org.igniterealtime.xiff.core.UnescapedJID;
 	import org.igniterealtime.xiff.core.XMPPConnection;
 	import org.igniterealtime.xiff.core.XMPPTLSConnection;
 	import org.igniterealtime.xiff.im.Roster;
+	
+	import util.classes.Contact;
 
 	[Bindable]
 	public class ChatManagerModel
@@ -23,6 +28,13 @@ package com.model
 		
 		
 		
+		/**
+		 * 
+		 * contiene los contact de todo el roster
+		 *   
+		 * 
+		 * */
+		public var arrayCollection_contact:ArrayCollection = new ArrayCollection();
 		
 		
 		
@@ -64,7 +76,30 @@ package com.model
 		
 		
 		
-
+		public function getContactByJid(jid:UnescapedJID):Contact
+		{
+			
+			
+			
+			var contact:Contact;
+			
+			for each(var contactItem:Contact in arrayCollection_contact)
+			{
+				
+				if(contactItem.jid.bareJID == jid.bareJID)
+				{
+					
+					contact = contactItem;
+				}
+					
+				
+			}
+			
+			
+			return contact;
+			
+		}
+		
 		
 		
 		

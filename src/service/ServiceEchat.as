@@ -150,7 +150,15 @@ package service
 		
 		
 	
-		
+		public function getAgents(func:Function,ids:String):void
+		{
+			
+			
+			_func=func;
+			
+			remoteObj.getAgents(ids);
+			
+		}
 		
 		
 		

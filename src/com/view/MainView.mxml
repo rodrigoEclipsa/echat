@@ -18,6 +18,9 @@
 
 	<fx:Script>
 		<![CDATA[
+		
+			
+			import com.controller.ChatWindowController;
 			import com.controller.MainController;
 			import com.event.ChatManagerEvent;
 			import com.event.MainEvent;
@@ -81,6 +84,10 @@
 			[ViewAdded]
 			public var chatWindowView:ChatWindowView;
 
+			
+			[Bindable]
+			[Inject]
+			public var chatWindowController:ChatWindowController;
 
 			public var is_writing:Boolean=false;
 			
@@ -189,8 +196,16 @@
 			protected function list_domains_changeHandler(event:IndexChangeEvent):void
 			{
 
+				
 				mainModel.currentWorkSpaceDomain=list_domains.selectedItem as WorkSpaceDomain;
 
+				if(!mainModel.currentWorkSpaceDomain.currentActiveContact)
+				{
+					group_chatWindow.visible = false;
+					
+				}
+				
+				
 			}
 
 
@@ -229,9 +244,9 @@
 			protected function tabBar_queueChat_closeHandler(event:TabBarChatEvent):void
 			{
 				
-		
+		          
 				
-				mainController.closeChatWindow(event.user);
+				chatWindowController.closeChatWindow(event.contact);
 				
 				
 			}
@@ -244,16 +259,16 @@
 			{
 				
 				trace(tabBar_queueChat.selectedIndex)
-				var user:User = tabBar_queueChat.selectedItem as User;
+				var iContact:Object = tabBar_queueChat.selectedItem ;
 				
 				
 				//	trace("aver : " + mainModel.currentWorkSpaceDomain.currentActiveUser)
-				if(user)
+				if(iContact)
 				{
 					
 					trace("abre")
-					mainModel.currentWorkSpaceDomain.currentActiveUser = user;
-					chatWindowView.isVisible = true;
+					mainModel.currentWorkSpaceDomain.currentActiveContact = iContact;
+					group_chatWindow.visible = true;
 					
 				}
 				else
@@ -261,14 +276,17 @@
 					
 					
 					trace("cierra")
-					mainModel.currentWorkSpaceDomain.currentActiveUser = null;
-					chatWindowView.isVisible = false;
+					mainModel.currentWorkSpaceDomain.currentActiveContact = null;
+					group_chatWindow.visible = false;
 					
 					
 					
 					
 					
 				}
+				
+				
+			
 			}
 			
 		]]>
@@ -585,7 +603,7 @@
 							
 					
 						
-							<s:HorizontalLayout verticalAlign="bottom"/>
+							<s:HorizontalLayout gap="2" verticalAlign="bottom"/>
 						
                       </customComponent:layout>
 						
@@ -594,9 +612,9 @@
 
 			</s:VGroup>
 		
-		<s:Group id="group_chatWindow" height="100%" minWidth="0">
+		<s:Group id="group_chatWindow" visible="false" width="{group_chatWindow.visible ? 730 : 0}" height="100%" minWidth="0">
 			
-			<chatWindow:ChatWindowView/>
+			<chatWindow:ChatWindowView   visible="{group_chatWindow.visible}"/>
 			
 		</s:Group>
 

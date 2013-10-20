@@ -3,9 +3,11 @@
 					  xmlns:s="library://ns.adobe.com/flex/spark"
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
 					 creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
-					  width="{isVisible ? 730 : 0}" height="100%" 
+					  width="100%" height="100%" 
 					    minWidth="0"
-						 visible="{isVisible}"
+					
+					 currentState="{mainModel.currentWorkSpaceDomain.currentActiveContact is User ? 'User' : 'Agent'}"
+						    
 					 >
 	
 	
@@ -14,6 +16,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+		
+			
 			import com.controller.ChatWindowController;
 			import com.event.ChatManagerEvent;
 			import com.event.MainEvent;
@@ -27,6 +31,7 @@
 			import flashx.textLayout.elements.ParagraphElement;
 			import flashx.textLayout.elements.SpanElement;
 			
+			import mx.binding.utils.ChangeWatcher;
 			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
 			import mx.events.ValidationResultEvent;
@@ -45,13 +50,14 @@
 			
 			import util.DateManager;
 			import util.app.ConfigParameters;
+			import util.classes.Agent;
 			import util.classes.Chat;
+			import util.classes.Contact;
 			import util.classes.QueueChat;
+			import util.classes.User;
 			
 			
-			[Bindable]
-			public var  isVisible:Boolean = false;
-
+		
 			private var loadWait:LoadWait;
 			
 			[Bindable]
@@ -82,7 +88,10 @@
 			[Bindable]
 			private var typicalItem:Chat;
 			
-			
+			[Bindable]
+			private var user:User;
+			[Bindable]
+			private var agent:Agent;
 			
 			
 		
@@ -221,7 +230,7 @@
 				
 			
 				chatWindowController.minimizeChatWindow();
-				
+		
 			}
 			
 			
@@ -231,12 +240,51 @@
 			protected function skinnablecontainer1_creationCompleteHandler(event:FlexEvent):void
 			{
 				
+				//var host:Icontact = mainModel.currentWorkSpaceDomain.currentActiveContact;
+			
+				ChangeWatcher.watch(mainModel.currentWorkSpaceDomain,"currentActiveContact",dataChange);
+				
+				//text="{mainModel.currentWorkSpaceDomain.currentActiveContact.userVO.id.toString()}"
 				
 				
 			}
 			
+			
+			public function dataChange(e:Event):void
+			{
+				
+				trace("datachange ..............")
+				//el objeto puede ser un usuario o un agente
+				if(mainModel.currentWorkSpaceDomain.currentActiveContact is User)
+				{
+					user = mainModel.currentWorkSpaceDomain.currentActiveContact as User;
+					this.currentState = "User";
+					trace("es un usuario .................")
+					
+				}
+				else 
+				{
+					agent = mainModel.currentWorkSpaceDomain.currentActiveContact as Agent;
+					
+					this.currentState = "Agent";
+					
+					
+				}
+				
+				
+				
+			}
+			
+			
+			
+			
+			
 		]]>
 	</fx:Script>
+	<s:states>
+		<s:State name="Agent"/>
+		<s:State name="User"/>
+	</s:states>
 	
 	
 	
@@ -254,7 +302,7 @@
 		<s:SkinnableContainer width="100%" height="40" backgroundColor="#383838">
 			<s:Button id="button_close" click="button_close_clickHandler(event)" right="5" width="22" height="22" label="x" verticalCenter="0" />
 			<s:Button id="button_mininize"  click="button_mininize_clickHandler(event)" right="34" width="22" height="22" label="-" verticalCenter="0"/>
-			<s:Label id="label_nameVisitor" text="{mainModel.currentWorkSpaceDomain.currentActiveUser.userVO.id.toString()}" left="50" color="#FFFFFF" verticalCenter="0" />
+			<s:Label id="label_nameVisitor" left="50" color="#FFFFFF" verticalCenter="0" text.Agent="{agent.agentVO.name}" text.User="{user.userVO.id}" />
 			<s:Image left="12" width="20" height="20" verticalCenter="0"/>
 			
 		</s:SkinnableContainer>
@@ -335,7 +383,7 @@
 			<s:TextArea width="100%" height="100" borderColor="#9C9C9C"
 						prompt="Agregar nota del visitante"/>
 			<mx:HRule width="100%"/>
-			<s:BorderContainer width="100%" height="343" borderColor="#9C9C9C" cornerRadius="2">
+			<s:BorderContainer includeIn="User" width="100%" height="343" borderColor="#9C9C9C" cornerRadius="2">
 				<s:layout>
 					<s:VerticalLayout paddingBottom="5" paddingLeft="5" paddingRight="5"
 									  paddingTop="5"/>

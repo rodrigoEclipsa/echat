@@ -14,6 +14,8 @@
 	
 	<fx:Script>
 		<![CDATA[
+		
+			import com.controller.ChatWindowController;
 			import com.controller.MainController;
 			import com.controller.VisitListController;
 			import com.model.ChatManagerModel;
@@ -55,6 +57,9 @@
 			public var chatManagerModel:ChatManagerModel;
 			
 			
+			[Bindable]
+			[Inject]
+			public var chatWindowController:ChatWindowController;
 		
 			
 		
@@ -75,15 +80,15 @@
 			{
 				
 				
-				var user:User = datagrid_visit.selectedItem as User;
+				var contact:Object = datagrid_visit.selectedItem  ;
 				
 				
 				
 				//pregunto si el usuario esta en el tab, si no lo agrego 
-				mainController.openChatWindow(user);					
+				chatWindowController.openChatWindow(contact);					
 				
 				
-				
+				datagrid_visit.selectedIndex = -1;
 				
 			}
 			
