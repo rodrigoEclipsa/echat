@@ -32,4 +32,6 @@
 	<model:AgentListModel id="agentListModel"/>
 	
 	
+	<controller:TimerController id="timerController"/>
+	
 </swiz:BeanProvider>

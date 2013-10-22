@@ -43,6 +43,7 @@ package com.controller
 	import util.classes.QueueChat;
 	import util.classes.User;
 	import util.classes.WorkSpaceDomain;
+	import util.classes.functionReturn.UserDomain;
 	import util.vo.ResultVO;
 	import util.vo.entities.DomainVO;
 
@@ -86,6 +87,10 @@ package com.controller
 		[ViewAdded]
 		public var chatWindowView:ChatWindowView;
 		
+		
+		[Bindable]
+		[Inject]
+		public var chatWindowController:ChatWindowController;
 		
 		//namespace ns = "http://www.eclipsait.com/echat";
 		
@@ -149,37 +154,44 @@ package com.controller
 
 		
 		
-	
-			
-		
 		[EventHandler(event="ChatManagerEvent.message",properties="message")]
-		public function onMessage( message:Message ):void
+		public function ChatManagerEvent_messageHandler(message:Message):void
 		{
-		
-		///	Alert.show("message: " + " type : " +message.type + "body : "+  message.body + "from : " + message.from.bareJID)	
-	          //si el type es command es un comando enviado desde un cliente , si el id es command es un comando enviado desde el server
 			
+			var splitName:Array=message.from.node.split("_");
 			
-			/*
-			if(message.type == "command" || message.id == "command" )
+			var prefix:String=splitName[0];
+			var contactId:String=splitName[1];
+			
+			var userDomain:UserDomain;
+			
+			if(prefix == "user")
 			{
-              
 				
-				
-				message_command(message);
+				userDomain = mainModel.getUserDomainById(int(contactId),true);
+			}
+			else
+			{
+				userDomain = mainModel.getUserDomainById(int(contactId),false);
 				
 			}
-			else if(message.type == Message.TYPE_CHAT)
+			
+			if(!mainModel.isQueueChat(userDomain.contact))
 			{
-				
-				message_chat(message);
+				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(userDomain.contact);
+				//chatWindowController.openChatWindow(	
+			}
+			
+			
+			
+			userDomain.contact.historyText += message.body+"\n";
+			
+			
+		}
 	
-			}
-			 */
-			 
 			
-		   }
-		  
+		
+	
 			
 		   
 		

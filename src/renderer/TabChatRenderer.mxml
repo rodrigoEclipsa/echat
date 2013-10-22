@@ -13,6 +13,7 @@
 	
 	<fx:Script>
 		<![CDATA[
+			import Interface.Icontact;
 			
 			import com.event.MainEvent;
 			import com.event.customComponent.TabBarChatEvent;
@@ -99,7 +100,7 @@
 				
 			
 				var tabBarChatEvent_closeEvent:TabBarChatEvent = new TabBarChatEvent(TabBarChatEvent.close);
-				tabBarChatEvent_closeEvent.contact = data;
+				tabBarChatEvent_closeEvent.contact = data as Icontact;
 				
 				this.owner.dispatchEvent(tabBarChatEvent_closeEvent);
 			

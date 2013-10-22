@@ -4,6 +4,8 @@ package com.model
 	
 	
 	
+	import Interface.Icontact;
+	
 	import com.view.MainView;
 	import com.view.chatWindow.ChatWindowView;
 	
@@ -22,9 +24,11 @@ package com.model
 	import util.app.ConfigParameters;
 	import util.classes.Agent;
 	import util.classes.Chat;
+	import util.classes.Domain;
 	import util.classes.QueueChat;
 	import util.classes.User;
 	import util.classes.WorkSpaceDomain;
+	import util.classes.functionReturn.UserDomain;
 
 	
 	
@@ -72,11 +76,84 @@ package com.model
 		
 		
 		
-	public function isQueueChat(contact:Object):Boolean
+		/**
+		 * 
+		 * obtiene el IContact del provedor de pestañas queueChat
+		 * 
+		 * 
+		 * **/
+		public function getUserDomainById(id:int,isUser:Boolean):UserDomain
+		{
+			var userDomain:UserDomain;
+			var contact:Icontact;
+			
+			for each(var workSpaceDomainItem:WorkSpaceDomain in arrayCollection_workSpacedomains )
+			{
+				
+				if(isUser)
+				{
+					
+						for each(var userItem:User in workSpaceDomainItem.arrayCollection_users)
+						{
+							
+							if(userItem.userVO.id == id)
+							{
+								userDomain = new UserDomain()
+								userDomain.contact = userItem;
+								userDomain.workSpaceDomain = workSpaceDomainItem;
+								
+								return userDomain;
+								
+							}
+							
+						}
+					
+					
+				}
+				else
+				{
+					
+					
+					
+					for each(var agentItem:Agent in workSpaceDomainItem.arrayCollection_agent)
+					{
+						
+						if(agentItem.agentVO.id == id)
+						{
+							userDomain = new UserDomain()
+							userDomain.contact = agentItem;
+							userDomain.workSpaceDomain = workSpaceDomainItem;
+							
+							return userDomain;
+							
+						}
+						
+					}
+					
+					
+				}
+				
+		
+				
+				
+			}
+			
+			
+			
+			
+			
+			return userDomain;
+			
+		}	
+		
+		
+		
+		
+	public function isQueueChat(contact:Icontact):Boolean
 	{
 		var exist:Boolean = false;
 		
-		for each(var iContactItem:Object in currentWorkSpaceDomain.arrayCollection_queueChat)
+		for each(var iContactItem:Icontact in currentWorkSpaceDomain.arrayCollection_queueChat)
 		{
 			
 			if(iContactItem == contact)

@@ -3,6 +3,8 @@ package com.controller
 	
 	
 	
+	import Interface.Icontact;
+	
 	import com.model.MainModel;
 	import com.view.MainView;
 	import com.view.chatWindow.ChatWindowView;
@@ -20,14 +22,22 @@ package com.controller
 		[ViewAdded]
 		public var mainView:MainView;
 		
+		
+		[Bindable]
+		[ViewAdded]
+		public var chatWindowView:ChatWindowView;
+
+		
 		public function ChatWindowController()
 		{
 		}
 		
 		
 		
-		public function openChatWindow(contact:Object):void
+		public function openChatWindow(contact:Icontact):void
 		{
+			
+			
 			
 			//pregunto si el usuario esta en la cola de chat, si no la agrego
 			if(!mainModel.isQueueChat(contact))
@@ -54,10 +64,14 @@ package com.controller
 				
 			}
 			
+			chatWindowView.dataChange();
+			
+			
+			
 		}
 		
 		
-		public function closeChatWindow(contact:Object):void
+		public function closeChatWindow(contact:Icontact):void
 		{
 			
 			
@@ -69,7 +83,7 @@ package com.controller
 			
 			if(mainModel.currentWorkSpaceDomain.currentActiveContact == contact)
 			{
-				
+			
 				mainModel.currentWorkSpaceDomain.currentActiveContact = null;
 				mainView.group_chatWindow.visible = false;
 				

@@ -2,6 +2,9 @@ package util.classes
 {
 	
 	
+	import Interface.Icontact;
+	
+	import flash.events.EventDispatcher;
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
@@ -10,18 +13,25 @@ package util.classes
 	import mx.events.PropertyChangeEvent;
 	
 	import org.igniterealtime.xiff.collections.events.CollectionEventKind;
+	import org.swizframework.core.IDisposable;
 	
 	import util.vo.entities.UserVO;
 	import util.vo.entities.WebVO;
 	
     
 	[Bindable]
-	public class User 
+	public class User extends EventDispatcher implements IDisposable,Icontact
 	{
 		
-		public var type:String="user";
-
-		public var contact:Contact;
+		
+		///---------IContact
+		
+		private var _historyText:String = "";
+		private var _contact:Contact;
+		//------------
+		
+		
+		
 		
 		public var userVO:UserVO;
 		
@@ -30,66 +40,64 @@ package util.classes
 		
 		
 		public var minuteConnect:Number = 0;
-		private var interval:uint;
 		
-		private var stampTime:Number = new Date().time;
+		
+		public var createAt:Number = new Date().time;
 		
 		public function User()
 		{
 		 
 			arrayList_session.addEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_session_changeHandler);
 			
-			interval = setInterval(interval_minuteHadler,60000);
+		
 		   
 			
 		}
 		
 		
-	
 		
-		
-		
+
+		public function get historyText():String
+		{
+			return _historyText;
+		}
+
+		public function set historyText(value:String):void
+		{
+			_historyText = value;
+		}
+
+		public function get contact():Contact
+		{
+			return _contact;
+		}
+
+		public function set contact(value:Contact):void
+		{
+			_contact = value;
+		}
 
 		private function arrayList_session_changeHandler(event:CollectionEvent):void
 		{
 			var dispatcherEvent:PropertyChangeEvent = new PropertyChangeEvent(PropertyChangeEvent.PROPERTY_CHANGE);
 			this.dispatchEvent(dispatcherEvent);
-			
-		}
 		
-		
-		public function interval_minuteHadler():void
-		{
-			
-			
-			var date:Date = new Date();
-			
-			date.time = date.time - stampTime;
-			
-			minuteConnect = date.seconds;
-			
 		}
 		
 		
 		
-		public function stopInterval():void
+		
+		
+		
+		public function destroy():void 
 		{
 			
-			clearInterval(interval);
-		}
+			contact = null;
 		
-		public function startInterval():void
-		{
-			interval = setInterval(interval_minuteHadler,60000);
-		}
-		
-		
-		public function clearClass():void
-		{
-			
 			arrayList_session.removeEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_session_changeHandler);
-			stopInterval();
+		
 		}
+
 		
 		
 		

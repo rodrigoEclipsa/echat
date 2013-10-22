@@ -2,6 +2,8 @@ package util.classes
 {
 	
 	
+	import Interface.Icontact;
+	
 	import com.model.MainModel;
 	import com.view.MainView;
 	
@@ -46,7 +48,7 @@ package util.classes
 		 * 
 		 * 
 		 * */
-		public var currentActiveContact:Object;
+		public var currentActiveContact:Icontact;
 		
 		
 		
@@ -55,7 +57,7 @@ package util.classes
 		
 		cola de chat 
 		
-		se produce cuando atendio a un usuario en llamada
+		provedor  de pesatañas
 		**/
 		public var arrayCollection_queueChat:ArrayCollection = new ArrayCollection();
 		

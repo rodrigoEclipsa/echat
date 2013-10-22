@@ -9,20 +9,20 @@ package com.controller
 	import com.model.LoginModel;
 	import com.model.MainModel;
 	import com.wirelust.as3zlib.System;
-	
+
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
 	import flash.system.Security;
 	import flash.utils.Timer;
-	
+
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.core.Application;
 	import mx.core.FlexGlobals;
 	import mx.utils.ObjectUtil;
-	
+
 	import org.igniterealtime.xiff.auth.External;
 	import org.igniterealtime.xiff.auth.Plain;
 	import org.igniterealtime.xiff.conference.InviteListener;
@@ -57,9 +57,9 @@ package com.controller
 	import org.igniterealtime.xiff.events.RosterEvent;
 	import org.igniterealtime.xiff.events.XIFFErrorEvent;
 	import org.igniterealtime.xiff.im.Roster;
-	
+
 	import service.ServiceEchat;
-	
+
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
 	import util.ExtensionsXiff.EchatExtension;
@@ -102,7 +102,7 @@ package com.controller
 		[Inject]
 		public var loginModel:LoginModel;
 
-	
+
 
 		namespace space="http://www.eclipsait.com/echat";
 
@@ -198,7 +198,7 @@ package com.controller
 			chatManagerModel.connection.addEventListener(MessageEvent.MESSAGE, onMessage);
 
 
-			
+
 		}
 
 
@@ -207,21 +207,21 @@ package com.controller
 
 
 			chatManagerModel.roster=new Roster();
-			chatManagerModel.roster.addEventListener( RosterEvent.ROSTER_LOADED, onRosterLoaded );
+			chatManagerModel.roster.addEventListener(RosterEvent.ROSTER_LOADED, onRosterLoaded);
 			chatManagerModel.roster.addEventListener(RosterEvent.SUBSCRIPTION_DENIAL, onSubscriptionDenial);
 			chatManagerModel.roster.addEventListener(RosterEvent.SUBSCRIPTION_REQUEST, onSubscriptionRequest);
 			chatManagerModel.roster.addEventListener(RosterEvent.SUBSCRIPTION_REVOCATION, onSubscriptionRevocation);
-			chatManagerModel.roster.addEventListener( RosterEvent.USER_ADDED, onUserAdded );
+			chatManagerModel.roster.addEventListener(RosterEvent.USER_ADDED, onUserAdded);
 			chatManagerModel.roster.addEventListener(RosterEvent.USER_AVAILABLE, onUserAvailable);
 			chatManagerModel.roster.addEventListener(RosterEvent.USER_PRESENCE_UPDATED, onUserPresenceUpdated);
 			chatManagerModel.roster.addEventListener(RosterEvent.USER_REMOVED, onUserRemoved);
 			chatManagerModel.roster.addEventListener(RosterEvent.USER_SUBSCRIPTION_UPDATED, onUserSubscriptionUpdated);
 			chatManagerModel.roster.addEventListener(RosterEvent.USER_UNAVAILABLE, onUserUnavailable);
 
-			
+
 			chatManagerModel.roster.connection=chatManagerModel.connection;
 
-			
+
 
 		}
 
@@ -231,161 +231,161 @@ package com.controller
 		private function onRosterLoaded(event:RosterEvent):void
 		{
 
-			
+
 			//una ves logueado envio mensage de presencia con una extencion y asigno la conexion a roster
 			var xml:XML=chatManagerModel.getExtensionPresence(loginModel.agentVO.name, loginModel.agentVO.email);
-			
-			
+
+
 			var presence:Presence=new Presence(null, chatManagerModel.connection.jid.escaped, Presence.SHOW_CHAT, Presence.SHOW_CHAT);
-			
+
 			var echatExtension:EchatExtension=new EchatExtension();
-			
+
 			echatExtension.setDataExtension(xml);
-			
-			
+
+
 			presence.addExtension(echatExtension);
-			
-			
+
+
 			chatManagerModel.connection.send(presence);
 
 			//-------------------------------------------------------------envio evento
-	
-			var chatManagerEvent_rosterLoaded:ChatManagerEvent = new ChatManagerEvent(ChatManagerEvent.rosterLoaded,true);
-		
-			
-			chatManagerEvent_rosterLoaded.rosterEvent = event;
-			
-			dispatcher.dispatchEvent(chatManagerEvent_rosterLoaded);
-		
-			//---------------------------------------------------------------
-			
-			
-			
-			
-			
-			
-			
 
-			var arrayIds:Array = new Array();	
-			
-			
-			for each(var rosterItemVO:RosterItemVO in chatManagerModel.roster)
+			var chatManagerEvent_rosterLoaded:ChatManagerEvent=new ChatManagerEvent(ChatManagerEvent.rosterLoaded, true);
+
+
+			chatManagerEvent_rosterLoaded.rosterEvent=event;
+
+			dispatcher.dispatchEvent(chatManagerEvent_rosterLoaded);
+
+			//---------------------------------------------------------------
+
+
+
+
+
+
+
+
+			var arrayIds:Array=new Array();
+
+
+			for each (var rosterItemVO:RosterItemVO in chatManagerModel.roster)
 			{
-				
-				var splitName:Array= rosterItemVO.jid.node.split("_");
-				
+
+				var splitName:Array=rosterItemVO.jid.node.split("_");
+
 				var prefix:String=splitName[0];
 				var contactId:String=splitName[1];
-				
-				
-				if(prefix == "agent")
+
+
+				if (prefix == "agent")
 				{
-					
+
 					arrayIds.push(contactId);
-					
-					
+
+
 				}
-				
-				
-				
-				
+
+
+
+
 			}
-			
-			
-			var serviceEchat:ServiceEchat = new ServiceEchat();
-			
-			var stringIds:String = arrayIds.join(",");
-			
-			
-			
-			serviceEchat.getAgents(serviceEchat_getAgentsHandler,arrayIds.join(","));
-			
-			
-			
-			
-			
-			
-			
-			
-			
-			trace("rosterLoaded...................." )
+
+
+			var serviceEchat:ServiceEchat=new ServiceEchat();
+
+			var stringIds:String=arrayIds.join(",");
+
+
+
+			serviceEchat.getAgents(serviceEchat_getAgentsHandler, arrayIds.join(","));
+
+
+
+
+
+
+
+
+
+			trace("rosterLoaded....................")
 
 		}
-		
-		
-		
-		
+
+
+
+
 		private function serviceEchat_getAgentsHandler(result:Object):void
 		{
-			
-			if(result is ErrorServiceEvent)
+
+			if (result is ErrorServiceEvent)
 			{
-				
-				Alert.show("Se produjo un error","Error");
-				
-				
+
+				Alert.show("Se produjo un error", "Error");
+
+
 			}
 			else
 			{
-				
-				var resultVO:ResultVO= result as ResultVO;
-				
-				if(resultVO.success)
+
+				var resultVO:ResultVO=result as ResultVO;
+
+				if (resultVO.success)
 				{
-					
-					var agents:Array = resultVO.data.agents;
-					
+
+					var agents:Array=resultVO.data.agents;
+
 					var workSpaceDomain:WorkSpaceDomain;
-					var contact:Contact ;
-					for each(var agentItem:Object in agents)
+					var contact:Contact;
+					for each (var agentItem:Object in agents)
 					{
-						
-						var agentVO:AgentVO = agentItem.agent;
-						
-						var ujid:UnescapedJID = new UnescapedJID("agent_"+agentVO.id+"@"+ConfigParameters.server);
-						
-						contact = chatManagerModel.getContactByJid(ujid);
-						
-					
-						
-						var agent:Agent = new Agent(agentVO);
-						agent.roleVO = agentItem.roles;
-						agent.contact = contact;
-						
-						for each(var domainId:int in agentItem.domainsIds)
+
+						var agentVO:AgentVO=agentItem.agent;
+
+						var ujid:UnescapedJID=new UnescapedJID("agent_" + agentVO.id + "@" + ConfigParameters.server);
+
+						contact=chatManagerModel.getContactByJid(ujid);
+
+
+
+						var agent:Agent=new Agent(agentVO);
+						agent.roleVO=agentItem.roles;
+						agent.contact=contact;
+
+						for each (var domainId:int in agentItem.domainsIds)
 						{
-							
+
 							workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
-							
+
 							workSpaceDomain.arrayCollection_agent.addItem(agent);
-							
-							
-							
+
+
+
 						}
-						
-						
+
+
 					}
-					
-					
-					
-					
+
+
+
+
 				}
-				
-				
-				
-				
-				
+
+
+
+
+
 			}
-			
-			
-			
+
+
+
 		}
-		
-		
-	
-		
-		
-		
+
+
+
+
+
+
 
 		private function onSubscriptionDenial(event:RosterEvent):void
 		{
@@ -405,127 +405,126 @@ package com.controller
 		private function onUserAdded(event:RosterEvent):void
 		{
 
-			var contact:Contact = new Contact(event.jid);
-			
-			chatManagerModel.arrayCollection_contact.addItem(contact);
-			/*
+
+
 			var splitName:Array=event.jid.node.split("_");
-			
+
 			var prefix:String=splitName[0];
-			var contactId:int=int(splitName[1]);
-			
+			var contactId:String=splitName[1];
+
+
 			if (prefix == "agent")
 			{
-			
-			var agentVO:AgentVO = new AgentVO();
-			agentVO.name = extension.name;
-			agentVO.email = extension.email;
-			agentVO.nick = extension.nick;
-			
-			var agent:Agent = new Agent(agentVO);
-			
-			for each(var domainItem:XML in extension.domain_id )
-			{
-				
-				workSpaceDomain=mainModel.getWorkSpacedomainById(int(domainItem));
-				
-				if(workSpaceDomain)
-				{
-					
-					workSpaceDomain.arrayCollection_agent.addItem(agent);
-					
-				}
-				
-				
+
+				var contact:Contact=new Contact(event.jid);
+
+				chatManagerModel.arrayCollection_contact.addItem(contact);
+
+
 			}
-			
-			
-			}
-			*/
-			
-			
-		
-			
-			
-		
-			
-			
-			trace("added...................." )
+			/*
+			   var splitName:Array=event.jid.node.split("_");
+
+			   var prefix:String=splitName[0];
+			   var contactId:int=int(splitName[1]);
+
+			   if (prefix == "agent")
+			   {
+
+			   var agentVO:AgentVO = new AgentVO();
+			   agentVO.name = extension.name;
+			   agentVO.email = extension.email;
+			   agentVO.nick = extension.nick;
+
+			   var agent:Agent = new Agent(agentVO);
+
+			   for each(var domainItem:XML in extension.domain_id )
+			   {
+
+			   workSpaceDomain=mainModel.getWorkSpacedomainById(int(domainItem));
+
+			   if(workSpaceDomain)
+			   {
+
+			   workSpaceDomain.arrayCollection_agent.addItem(agent);
+
+			   }
+
+
+			   }
+
+
+			   }
+			 */
+
+
+
+
+			trace("added....................")
 
 		}
+
+
 
 		private function onUserRemoved(event:RosterEvent):void
 		{
-			
-			
-			var splitName:Array=event.jid.node.split("_");
-			
-			var prefix:String=splitName[0];
-			var contactId:String=splitName[1];
-			
-			
-			var contact:Contact = chatManagerModel.getContactByJid(event.jid);
-			contact.online = false;
-			
-			//remuevo el contact
-			chatManagerModel.arrayCollection_contact.removeItemAt(chatManagerModel.arrayCollection_contact.getItemIndex(contact));
-			
+
+
+
+
 		}
-		
-		
-		
+
+
+
 		private function onUserUnavailable(event:RosterEvent):void
 		{
-			
-			
-		
-			
+
+
+
+
 			var splitName:Array=event.jid.node.split("_");
-			
+
 			var prefix:String=splitName[0];
 			var contactId:String=splitName[1];
-			
+
 			var workSpaceDomain:WorkSpaceDomain;
-			
-			var contact:Contact = chatManagerModel.getContactByJid(event.jid);
-			contact.online = false;
-			
-			
+
+			var contact:Contact=chatManagerModel.getContactByJid(event.jid);
+			contact.online=false;
+
+
 			//seguen el prefix se si es un agente o un usuario
 			if (prefix == "user")
 			{
-				
-				var domainId:int = int(splitName[2]);
-				
+
+
+				//remuevo el contact
+				chatManagerModel.arrayCollection_contact.removeItemAt(chatManagerModel.arrayCollection_contact.getItemIndex(contact));
+
+
+				var domainId:int=int(splitName[2]);
+
 				workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
-				
-				var user:User = mainModel.getUserById(workSpaceDomain,int(contactId));
-				user.clearClass();
-				
+
+				var user:User=mainModel.getUserById(workSpaceDomain, int(contactId));
+				user.destroy();
+
 				workSpaceDomain.arrayCollection_users.removeItemAt(workSpaceDomain.arrayCollection_users.getItemIndex(user));
-			
-			
-				
-				
+
+
+
+
 			}
 			else if (prefix == "agent")
 			{
-				
-				
-				
-				workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
-				
-			//	trace("workSpaceDomain...... : " + workSpaceDomain)
-				//var agent:Agent = mainModel.getAgentById(workSpaceDomain,int(contactId));
-				
-				
-				//agent.contact.online = false;
-				
-				
-				
+
+
+
+
+
 			}
-			
-	
+
+
 		}
 
 
@@ -535,116 +534,132 @@ package com.controller
 			trace("user available ..................................")
 			use namespace space;
 
-			
+
 			var presence:Presence=event.data as Presence;
-		
-           //pregunto si muestra un estado
-           if(presence.show)
-		   {
-			   
-			   
-			try
-			{
-			
-				var extension:XML=XML(presence.xml.echat.root);
-			
-			}
-			catch(error:Error)
-			{
-				
-				trace("Surgio un error al recirbir evento de presencia","Error");
-				return;
-			
-			}
-			
-			
-			var workSpaceDomain:WorkSpaceDomain;
 
-            //descompongo en nombre en prefijo y id
-			var splitName:Array=presence.from.node.split("_");
+			//pregunto si muestra un estado
+			if (presence.show)
+			{
 
-			var prefix:String=splitName[0];
-			var contactId:String = splitName[1];
+
+				try
+				{
+
+					var extension:XML=XML(presence.xml.echat.root);
+
+				}
+				catch (error:Error)
+				{
+
+					trace("Surgio un error al recirbir evento de presencia", "Error");
+					return;
+
+				}
+
+
+				var workSpaceDomain:WorkSpaceDomain;
+
+				//descompongo en nombre en prefijo y id
+				var splitName:Array=presence.from.node.split("_");
+
+				var prefix:String=splitName[0];
+				var contactId:String=splitName[1];
+
+				//obtengo el objeto de contacto y pongo en online
+				var contact:Contact;
 			
-		    //genero el objeto de contacto y pongo en online
-		    var contact:Contact = chatManagerModel.getContactByJid(presence.from.unescaped);
-			contact.online = true;
 
 				//seguen el prefix se si es un agente o un usuario
 				//como solo me interesan los usuarios conectados cargo todos los datos de usuarios aca, si es un agente solo actualizo
-			     if (prefix == "user")
-				 {
+				if (prefix == "user")
+				{
 
-					var domainId:int = int(splitName[2]);
-					
+					var domainId:int=int(splitName[2]);
+
 					workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
 
-					if(workSpaceDomain)
+					
+					if (workSpaceDomain)
 					{
-					//	trace("roster : " + ObjectUtilchatManagerModel.roster.source)
+						//	trace("roster : " + ObjectUtilchatManagerModel.roster.source)
 
-
-					//compruevo si el usuario ya tiene una sesion
-					
-					var webVO:WebVO=new WebVO();
-					webVO.title=extension.web.title;
-					webVO.url=extension.web.url;
-					
-					
-					
-					
-					var user_exist:User=mainModel.getUserById(workSpaceDomain, int(contactId));
-					
-					var session:Session = new Session(presence.from.resource);
-					session.resource = presence.from.resource;
-					session.webVO = webVO;
-
-					//compruevo que este usuario no tenga una sesion iniciada en el dominio
-					if (user_exist)
-					{
 
 						
-						user_exist.arrayList_session.addItem(session);
 						
-						
+					
+						var webVO:WebVO=new WebVO();
+						webVO.title=extension.web.title;
+						webVO.url=extension.web.url;
+
+
+
+
+						var user_exist:User=mainModel.getUserById(workSpaceDomain, int(contactId));
+
+						var session:Session=new Session(presence.from.resource);
+						session.resource=presence.from.resource;
+						session.webVO=webVO;
+
+						//compruevo que este usuario no tenga una sesion iniciada en el dominio
+						if (user_exist)
+						{
+
+
+							user_exist.arrayList_session.addItem(session);
+
+
+						}
+						else
+						{
+
+                            //creo el objeto contact
+						    contact=new Contact(event.jid);
+							chatManagerModel.arrayCollection_contact.addItem(contact);
+							
+							
+							
+							var userVO:UserVO=new UserVO();
+							userVO.email=extension.email;
+							userVO.name=extension.name;
+							userVO.id=int(contactId);
+
+
+
+							var user:User=new User();
+							user.userVO=userVO;
+							user.arrayList_session.addItem(session);
+							user.contact=contact;
+
+							workSpaceDomain.arrayCollection_users.addItem(user);
+
+
+						}
+
 					}
-					else
-					{
+				}
+				else if (prefix == "agent")
+				{
 
-						
-						var userVO:UserVO=new UserVO();
-						userVO.email=extension.email;
-						userVO.name=extension.name;
-						userVO.id=int(contactId);
-						
-				
-						
-						var user:User=new User();
-						user.userVO=userVO;
-						user.arrayList_session.addItem(session);
-						user.contact = contact;
-
-						workSpaceDomain.arrayCollection_users.addItem(user);
+                      
+					contact = chatManagerModel.getContactByJid(presence.from.unescaped);
+					contact.online = true;
 
 
-					}
-
-					}
-				} 
-			
+				}
 
 
-			
 
-			
-			
-		   }
-			
-			
+
+
+
+
+			}
+
+
 		}
 
-		
-		
+
+
 		private function onUserPresenceUpdated(event:RosterEvent):void
 		{
 
@@ -659,14 +674,14 @@ package com.controller
 
 		}
 
-		
+
 
 		private function onUserSubscriptionUpdated(event:RosterEvent):void
 		{
 
 		}
 
-	
+
 
 
 		private function onMessage(event:MessageEvent):void
@@ -681,6 +696,8 @@ package com.controller
 
 			if (message.type == Message.TYPE_ERROR)
 			{
+				
+				
 				var xiffErrorEvent:XIFFErrorEvent=new XIFFErrorEvent();
 				xiffErrorEvent.errorCode=message.errorCode;
 				xiffErrorEvent.errorCondition=message.errorCondition;
@@ -763,12 +780,12 @@ package com.controller
 		private function onLogin(event:LoginEvent):void
 		{
 
-			
-		
 
 
 
-			
+
+
+
 
 
 		}
@@ -835,27 +852,13 @@ package com.controller
 
 				dispatcher.dispatchEvent(event);
 			}
+			
+			
+			
 		}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+		
+		
 
 
 	}

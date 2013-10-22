@@ -2,12 +2,9 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 					  xmlns:s="library://ns.adobe.com/flex/spark"
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
-					 creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
-					  width="100%" height="100%" 
-					    minWidth="0"
-					
-					 currentState="{mainModel.currentWorkSpaceDomain.currentActiveContact is User ? 'User' : 'Agent'}"
-						    
+					  width="100%" height="100%" minWidth="1"
+					  creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
+					  currentState="{mainModel.currentWorkSpaceDomain.currentActiveContact is User ? 'User' : 'Agent'}"
 					 >
 	
 	
@@ -240,9 +237,11 @@
 			protected function skinnablecontainer1_creationCompleteHandler(event:FlexEvent):void
 			{
 				
+				
+			
 				//var host:Icontact = mainModel.currentWorkSpaceDomain.currentActiveContact;
 			
-				ChangeWatcher.watch(mainModel.currentWorkSpaceDomain,"currentActiveContact",dataChange);
+				//ChangeWatcher.watch(mainModel.currentWorkSpaceDomain,"currentActiveContact",dataChange);
 				
 				//text="{mainModel.currentWorkSpaceDomain.currentActiveContact.userVO.id.toString()}"
 				
@@ -250,7 +249,14 @@
 			}
 			
 			
-			public function dataChange(e:Event):void
+			private function textArea_input_enterHandler(event:FlexEvent):void
+			{
+				
+				trace("enter ");
+			}
+			
+			
+			public function dataChange():void
 			{
 				
 				trace("datachange ..............")
@@ -278,6 +284,34 @@
 			
 			
 			
+			protected function textArea_input_keyDownHandler(event:KeyboardEvent):void
+			{
+				
+				if (event.keyCode == Keyboard.ENTER && event.shiftKey)
+				{
+					
+					textArea_input.dispatchEvent(new FlexEvent(FlexEvent.ENTER));
+					
+					
+				}
+				else
+				{
+					
+					
+					
+					if (event.keyCode == Keyboard.ENTER)
+					{
+						
+						
+						enter_inputChat();
+						event.preventDefault();
+					}
+					
+					
+				}
+				
+				
+			}
 			
 		]]>
 	</fx:Script>
@@ -323,7 +357,7 @@
 		
 			
 		
-			<s:TextArea id="list_historyChat" width="100%" height="100%" />
+			<s:TextArea id="textArea_history" width="100%" height="100%" text="{mainModel.currentWorkSpaceDomain.currentActiveContact.historyText}" />
 		
 		
 			
@@ -342,7 +376,7 @@
 				</s:Group>
 				
 				
-				<s:TextArea  width="100%" height="143"/>
+				<s:TextArea id="textArea_input" width="100%" height="143" keyDown="textArea_input_keyDownHandler(event)"  />
 			
 					
 					

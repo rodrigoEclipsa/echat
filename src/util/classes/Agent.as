@@ -4,33 +4,40 @@ package util.classes
 	
 	
 	
+	import Interface.Icontact;
+	
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
 	import org.igniterealtime.xiff.data.im.RosterItemVO;
+	import org.swizframework.core.IDisposable;
 	
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.RoleVO;
 	
 	[Bindable]
-	public class Agent 
+	public class Agent implements IDisposable,Icontact
 	{
-		public var type:String="agent";
+		
 		
 		public var roleVO:RoleVO;
 		public var agentVO:AgentVO;
 	
 		
+		///---------IContact
 		
-		public var contact:Contact;
+		private var _historyText:String = "";
+		private var _contact:Contact;
+		//------------
 		
 		
-		public var arrayList_roles:RoleVO;
+		
+		
 		
 		public var minuteConnect:Number = 0;
-		private var interval:uint;
+	
+		public var createAt:Number = new Date().time;
 		
-		private var stampTime:Number = new Date().time;
 		
 		public function Agent(agentVO:AgentVO)
 		{
@@ -43,37 +50,33 @@ package util.classes
 		}
 		
 		
-		public function interval_minuteHadler():void
+		
+		public function get historyText():String
 		{
-			
-			
-			var date:Date = new Date();
-			
-			date.time = date.time - stampTime;
-			
-			minuteConnect = date.seconds;
-			
+			return _historyText;
 		}
 		
-		
-		
-		public function stopInterval():void
+		public function set historyText(value:String):void
 		{
-			
-			clearInterval(interval);
+			_historyText = value;
 		}
+
 		
-		public function startInterval():void
+		public function get contact():Contact
 		{
-			interval = setInterval(interval_minuteHadler,60000);
+			return _contact;
 		}
-		
-		
-		public function clearClass():void
+
+		public function set contact(value:Contact):void
 		{
+			_contact = value;
+		}
+
+		public function destroy():void
+		{
+			contact = null;
 			
 			
-			stopInterval();
 		}
 		
 		

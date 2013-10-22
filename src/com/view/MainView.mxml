@@ -18,10 +18,11 @@
 
 	<fx:Script>
 		<![CDATA[
-		
+			import Interface.Icontact;
 			
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
+			import com.controller.TimerController;
 			import com.event.ChatManagerEvent;
 			import com.event.MainEvent;
 			import com.event.customComponent.TabBarChatEvent;
@@ -40,6 +41,7 @@
 			import mx.events.FlexEvent;
 			import mx.events.ValidationResultEvent;
 			import mx.managers.PopUpManager;
+			import mx.utils.ObjectProxy;
 			import mx.utils.ObjectUtil;
 			import mx.utils.StringUtil;
 			
@@ -60,6 +62,7 @@
 			import util.classes.QueueChat;
 			import util.classes.User;
 			import util.classes.WorkSpaceDomain;
+			import util.classes.functionReturn.UserDomain;
 
 
 
@@ -79,16 +82,22 @@
 			[Inject]
 			public var loginModel:LoginModel;
 
-
+			
 			[Bindable]
 			[ViewAdded]
 			public var chatWindowView:ChatWindowView;
 
 			
+			
 			[Bindable]
 			[Inject]
 			public var chatWindowController:ChatWindowController;
 
+			
+			[Bindable]
+			[Inject]
+			public var timerController:TimerController;
+			
 			public var is_writing:Boolean=false;
 			
 
@@ -197,14 +206,20 @@
 			{
 
 				
+			
+				
 				mainModel.currentWorkSpaceDomain=list_domains.selectedItem as WorkSpaceDomain;
 
+				//pregunto si este dominio tiene un usuario activo en chat, si es asi abro la ventana
 				if(!mainModel.currentWorkSpaceDomain.currentActiveContact)
 				{
 					group_chatWindow.visible = false;
 					
 				}
 				
+				
+				
+				timerController.updateTimer();
 				
 			}
 
@@ -229,6 +244,7 @@
 			
 			
 			
+		
 			
 			
 			
@@ -258,17 +274,21 @@
 			protected function tabBar_queueChat_changeHandler(event:IndexChangeEvent):void
 			{
 				
-				trace(tabBar_queueChat.selectedIndex)
-				var iContact:Object = tabBar_queueChat.selectedItem ;
+			//	trace(tabBar_queueChat.selectedIndex)
+				var contact:Icontact = tabBar_queueChat.selectedItem ;
 				
 				
 				//	trace("aver : " + mainModel.currentWorkSpaceDomain.currentActiveUser)
-				if(iContact)
+				if(contact)
 				{
 					
 					trace("abre")
-					mainModel.currentWorkSpaceDomain.currentActiveContact = iContact;
+					mainModel.currentWorkSpaceDomain.currentActiveContact = contact;
+					
+					if(!group_chatWindow.visible)
 					group_chatWindow.visible = true;
+					
+					chatWindowView.dataChange();
 					
 				}
 				else
@@ -286,8 +306,14 @@
 				}
 				
 				
+				
+				
 			
 			}
+			
+			
+			
+			
 			
 		]]>
 	</fx:Script>
@@ -371,7 +397,7 @@
 								contentBackgroundAlpha="1.0"
 								id="list_domains"
 								 requireSelection="true"
-								  selectedItem="{mainModel.currentWorkSpaceDomain}"
+								
 								change="list_domains_changeHandler(event)"
 								dataProvider="{mainModel.arrayCollection_workSpacedomains}"
 								itemRenderer="renderer.DomainRenderer"
@@ -603,7 +629,7 @@
 							
 					
 						
-							<s:HorizontalLayout gap="2" verticalAlign="bottom"/>
+							<s:HorizontalLayout gap="0" verticalAlign="bottom"/>
 						
                       </customComponent:layout>
 						
