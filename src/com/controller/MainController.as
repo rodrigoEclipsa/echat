@@ -38,6 +38,7 @@ package com.controller
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
 	import util.app.ConfigParameters;
+	import util.classes.Agent;
 	import util.classes.Chat;
 	import util.classes.Domain;
 	import util.classes.QueueChat;
@@ -165,30 +166,111 @@ package com.controller
 			
 			var userDomain:UserDomain;
 			
+			var textHead:String;
+
 			if(prefix == "user")
 			{
 				
 				userDomain = mainModel.getUserDomainById(int(contactId),true);
+				
+				
+				var user:User = userDomain.contact as User;
+				
+				
+				textHead = user.userVO.name ? user.userVO.name : user.userVO.id.toString(16);
+				
+				
 			}
 			else
 			{
+				
 				userDomain = mainModel.getUserDomainById(int(contactId),false);
+				
+				
+				
+				var agent:Agent = userDomain.contact as Agent;
+				
+				
+				
+				textHead = agent.agentVO.name;
+				
+				
 				
 			}
 			
-			if(!mainModel.isQueueChat(userDomain.contact))
+			
+		
+	
+				
+		          //si el usuario no fue el ultimo que escribio o no hay nada escrito entonces escribo el header, si no solo el body
+				if(!userDomain.contact.lastAppendText || !userDomain.contact.historyText.numChildren)
+				{
+					
+					
+					
+					userDomain.contact.historyText.addChild(chatWindowView.getFormatTextChat(message.body,textHead));		
+					
+					
+					userDomain.contact.lastAppendText = true;
+				}
+				else
+				{
+					
+					userDomain.contact.historyText.addChild(chatWindowView.getFormatTextChat(message.body));		
+					
+				}
+				
+				
+			
+		
+		
+			
+			
+		
+			
+			//pregunto si el usuario tiene una pestaña
+			if(mainModel.isQueueChat(userDomain.contact))
 			{
+				
+				//si el usuario esta en cola me fijo si tiene la ventana activa, entonces actualizo scroll
+				if(mainModel.currentWorkSpaceDomain.currentActiveContact)
+				{
+					
+				if(mainModel.currentWorkSpaceDomain.currentActiveContact.contact.jid.node == message.from.node )
+				{
+					
+					chatWindowView.updateScroll();
+				}
+			
+				}
+			}
+			else
+			{
+				//agrego la pestaña
 				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(userDomain.contact);
-				//chatWindowController.openChatWindow(	
+				
+				
 			}
 			
 			
 			
-			userDomain.contact.historyText += message.body+"\n";
+			
+			
+			
 			
 			
 		}
 	
+		
+		
+		
+		public function sendMesage(message:Message):void
+		{
+			
+			
+			chatManagerModel.connection.send(message);
+		}
+		
 			
 		
 	

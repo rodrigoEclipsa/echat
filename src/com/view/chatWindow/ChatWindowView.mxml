@@ -5,7 +5,7 @@
 					  width="100%" height="100%" minWidth="1"
 					  creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
 					  currentState="{mainModel.currentWorkSpaceDomain.currentActiveContact is User ? 'User' : 'Agent'}"
-					 >
+					  >
 	
 	
 	
@@ -13,9 +13,10 @@
 	
 	<fx:Script>
 		<![CDATA[
-		
+			import Interface.Icontact;
 			
 			import com.controller.ChatWindowController;
+			import com.controller.MainController;
 			import com.event.ChatManagerEvent;
 			import com.event.MainEvent;
 			import com.model.ChatManagerModel;
@@ -25,6 +26,9 @@
 			
 			import customComponent.LoadWait;
 			
+			import flashx.textLayout.conversion.TextConverter;
+			import flashx.textLayout.elements.BreakElement;
+			import flashx.textLayout.elements.FlowElement;
 			import flashx.textLayout.elements.ParagraphElement;
 			import flashx.textLayout.elements.SpanElement;
 			
@@ -62,7 +66,7 @@
 			public var mainModel:MainModel;
 			
 			
-			[Bindable]
+		
 			[Inject]
 			public var chatWindowController:ChatWindowController;
 			
@@ -91,6 +95,9 @@
 			private var agent:Agent;
 			
 			
+			
+			[Inject]
+			public var mainController:MainController;
 		
 			
 			
@@ -132,84 +139,12 @@
 			
 			
 			
-			protected function richEditableText_inputChat_keyDownHandler(event:KeyboardEvent):void
-			{
-				
-				
-				if (event.keyCode == Keyboard.ENTER && event.shiftKey)
-				{
-					
-					
-					
-					
-				}
-				else
-				{
-					
-					
-					
-					if (event.keyCode == Keyboard.ENTER)
-					{
-						
-						
-						
-						
-						enter_inputChat();
-						event.preventDefault();
-					}
-					
-					
-				}
-				
-				
-			}
-			
-			
-			
-			
-			
-			private function enter_inputChat():void
-			{
-				
-				
-			
-					updateScroll();
-					
-					
-			
-				
-			}
-			
-			
-			public function writing():void
-			{
-				
-			
-				
 		
-				
-			}
+		
 			
 			
 			
 		
-			public function updateScroll():void
-			{
-				
-				
-				//	scroller_historyChat.verticalScrollBar.value=scroller_historyChat.verticalScrollBar.maximum;
-				
-				/*
-				
-				list_historyChat.callLater(function update():void
-				{
-				list_historyChat.ensureIndexIsVisible(mainModel.currentQueueChatVO.arrayList_historyChat.length-1);
-				})
-				*/
-				
-			}
-			
-			
 			
 		
 			protected function button_close_clickHandler(event:MouseEvent):void
@@ -237,7 +172,8 @@
 			protected function skinnablecontainer1_creationCompleteHandler(event:FlexEvent):void
 			{
 				
-				
+				//textArea_history.scroller.verticalScrollBar.addEventListener(FlexEvent.UPDATE_COMPLETE,textArea_history_updateCompleteHandler);
+			//	textArea_history.scroller.verticalScrollBar.addEventListener(Event.RENDER,textArea_history_valueCommitHandler);
 			
 				//var host:Icontact = mainModel.currentWorkSpaceDomain.currentActiveContact;
 			
@@ -283,7 +219,7 @@
 			
 			
 			
-			
+
 			protected function textArea_input_keyDownHandler(event:KeyboardEvent):void
 			{
 				
@@ -291,6 +227,7 @@
 				{
 					
 					textArea_input.dispatchEvent(new FlexEvent(FlexEvent.ENTER));
+					
 					
 					
 				}
@@ -302,9 +239,10 @@
 					if (event.keyCode == Keyboard.ENTER)
 					{
 						
-						
-						enter_inputChat();
+						sendMessage();
 						event.preventDefault();
+						
+						
 					}
 					
 					
@@ -312,6 +250,149 @@
 				
 				
 			}
+			
+			
+			
+			
+			private function sendMessage():void
+			{
+				
+				
+				var message:Message=new Message(mainModel.currentWorkSpaceDomain.currentActiveContact.contact.jid.escaped, null, textArea_input.text, null, Message.TYPE_CHAT, null);
+				
+				
+				mainController.sendMesage(message);
+				
+				var textHead:String;
+				
+				if(mainModel.currentWorkSpaceDomain.currentActiveContact is User)
+				{
+					
+					
+					
+					textHead = user.userVO.name ? user.userVO.name : user.userVO.id.toString(16);
+					
+					
+				}
+				else
+				{
+					
+	
+					textHead = agent.agentVO.name;
+					
+					
+					
+				}
+				
+				
+				
+				//si el usuario no fue el ultimo que escribio o no hay nada escrito entonces escribo el header, si no solo el body
+				if(mainModel.currentWorkSpaceDomain.currentActiveContact.lastAppendText || !mainModel.currentWorkSpaceDomain.currentActiveContact.historyText.numChildren)
+				{
+					
+					
+					
+					mainModel.currentWorkSpaceDomain.currentActiveContact.historyText.addChild(getFormatTextChat(textArea_input.text,textHead));		
+					mainModel.currentWorkSpaceDomain.currentActiveContact.lastAppendText = true;
+					
+					
+				}
+				else
+				{
+					
+					mainModel.currentWorkSpaceDomain.currentActiveContact.historyText.addChild(getFormatTextChat(message.body));		
+					
+				}
+				
+				
+				
+				
+				textArea_input.text = "";
+				
+				updateScroll();
+				
+				
+				
+				
+				
+			}
+			
+			
+			
+			public function updateScroll():void
+			{
+				
+				if(textArea_history)
+				{
+					
+				
+					callLater(function update():void
+					{
+						
+						textArea_history.scroller.verticalScrollBar.value = textArea_history.scroller.verticalScrollBar.maximum;			
+					}
+					);
+			
+				
+					
+				}
+			}
+			
+		
+			
+			
+		
+			
+		public function getFormatTextChat(body:String,head:String = null):FlowElement
+		{
+			
+			var paragraph:ParagraphElement=new ParagraphElement();
+			
+			
+			if(head)
+			{
+				
+				
+				var spanHeader:SpanElement=new SpanElement();
+				
+				spanHeader.text= head;
+				spanHeader.fontWeight="bold";
+				spanHeader.lineHeight=20;
+				
+				
+				paragraph.addChild(spanHeader);
+				
+				var br:BreakElement = new BreakElement();
+				
+				paragraph.addChild(br);
+				
+				
+				
+				
+				
+			}
+			
+			
+			
+			
+			var spanBody:SpanElement=new SpanElement();
+			
+			
+			spanBody.text=body;
+			
+			
+			paragraph.addChild(spanBody);
+			
+			
+			
+			return paragraph;
+			
+			
+			
+		}
+			
+		
+		
 			
 		]]>
 	</fx:Script>
@@ -357,7 +438,7 @@
 		
 			
 		
-			<s:TextArea id="textArea_history" width="100%" height="100%" text="{mainModel.currentWorkSpaceDomain.currentActiveContact.historyText}" />
+			<s:TextArea id="textArea_history" width="100%"    editable="false" height="100%"  textFlow="{mainModel.currentWorkSpaceDomain.currentActiveContact.historyText}" />
 		
 		
 			
@@ -376,7 +457,7 @@
 				</s:Group>
 				
 				
-				<s:TextArea id="textArea_input" width="100%" height="143" keyDown="textArea_input_keyDownHandler(event)"  />
+				<s:TextArea id="textArea_input" width="100%" height="143" keyDown="textArea_input_keyDownHandler(event)"   />
 			
 					
 					

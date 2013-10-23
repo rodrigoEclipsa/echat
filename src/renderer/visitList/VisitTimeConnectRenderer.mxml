@@ -15,16 +15,25 @@
 				
 				if(data)
 				{
-				itemData = data as User;
+				
+					itemData = data as User;
+				
+				
 				}
 				
 				
 			}
 			
 			
+			
+			
+			
+			
+			
+			
 		]]>
 	</fx:Script>
 	
-	<s:Label id="lblData" top="9" left="7" text="{itemData.minuteConnect}"/>
+	<s:Label id="lblData" top="9" left="7" text="{itemData.secondConnect}"/>
 	
 </s:GridItemRenderer>

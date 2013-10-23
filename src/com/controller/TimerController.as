@@ -33,11 +33,11 @@ package com.controller
 		public function loginEvent_loginSuccess():void
 		{
 		
-		//	timer = new Timer(60000);
+			timer = new Timer(6000);
 			
-		//	timer.addEventListener(TimerEvent.TIMER,timer_timerHandler);
-		//	
-		//	timer.start();
+			timer.addEventListener(TimerEvent.TIMER,timer_timerHandler);
+			
+			timer.start();
 			
 			
 		}
@@ -60,11 +60,9 @@ package com.controller
 		
 		public function updateTimer():void
 		{
-			/*
+			
 			var date:Date = new Date();
 			var epochTimer:Number = date.time;
-			
-			
 			
 			
 			for each(var userItem:User in mainModel.currentWorkSpaceDomain.arrayCollection_users)
@@ -72,7 +70,7 @@ package com.controller
 				
 				date.time = epochTimer - userItem.createAt;
 				
-				userItem.minuteConnect =date.minutes;
+				userItem.secondConnect =date.seconds;
 				
 				
 				
@@ -83,12 +81,12 @@ package com.controller
 			{
 				date.time = epochTimer - userItem.createAt;
 				
-				agentItem.minuteConnect =date.minutes;
+				agentItem.secondConnect = date.seconds;
 				
 			}
 			
 			
-		*/	
+		
 		}
 		
 		
