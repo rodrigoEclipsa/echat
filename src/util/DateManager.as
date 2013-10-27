@@ -4,7 +4,7 @@ package util
 
 	public class DateManager
 	{
-		
+		/*
 		public static function formatDate(date:Date):String
 		{
 			
@@ -164,8 +164,10 @@ package util
 		}
 		
 		
+		*/
 		
-		public static function epochHSMIN():String
+		
+		public static function formatDate(date:Date,format:String = "HH:mm"):String
 		{
 			
 			var date:Date = new Date();
@@ -173,7 +175,7 @@ package util
 			var formatter:DateTimeFormatter = new DateTimeFormatter();
 			
 			
-			formatter.dateTimePattern = "HH:mm";
+			formatter.dateTimePattern = format;
 			
 			
 			var strHs:String = formatter.format(date);

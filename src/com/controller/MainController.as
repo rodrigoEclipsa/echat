@@ -1,5 +1,7 @@
 package com.controller
 {
+	import Interface.IContact;
+	
 	import com.event.ChatManagerEvent;
 	import com.event.MainEvent;
 	import com.model.ChatManagerModel;
@@ -163,36 +165,35 @@ package com.controller
 			
 			var prefix:String=splitName[0];
 			var contactId:String=splitName[1];
+			var domainId:String=splitName[2];
+
 			
-			var userDomain:UserDomain;
+		    var iContact:IContact;
+			var workSpaceDomain:WorkSpaceDomain;
 			
 			var textHead:String;
 
+			
+			
 			if(prefix == "user")
 			{
 				
-				userDomain = mainModel.getUserDomainById(int(contactId),true);
+				workSpaceDomain = mainModel.getWorkSpacedomainById(int(domainId));
 				
 				
-				var user:User = userDomain.contact as User;
+				iContact = mainModel.getUserById(workSpaceDomain,int(contactId)) as IContact;
 				
 				
-				textHead = user.userVO.name ? user.userVO.name : user.userVO.id.toString(16);
+				
+				
 				
 				
 			}
 			else
 			{
 				
-				userDomain = mainModel.getUserDomainById(int(contactId),false);
 				
-				
-				
-				var agent:Agent = userDomain.contact as Agent;
-				
-				
-				
-				textHead = agent.agentVO.name;
+			
 				
 				
 				
@@ -200,57 +201,37 @@ package com.controller
 			
 			
 		
-	
+
 				
-		          //si el usuario no fue el ultimo que escribio o no hay nada escrito entonces escribo el header, si no solo el body
-				if(!userDomain.contact.lastAppendText || !userDomain.contact.historyText.numChildren)
-				{
-					
-					
-					
-					userDomain.contact.historyText.addChild(chatWindowView.getFormatTextChat(message.body,textHead));		
-					
-					
-					userDomain.contact.lastAppendText = true;
-				}
-				else
-				{
-					
-					userDomain.contact.historyText.addChild(chatWindowView.getFormatTextChat(message.body));		
-					
-				}
-				
-				
-			
-		
-		
-			
-			
-		
 			
 			//pregunto si el usuario tiene una pestaña
-			if(mainModel.isQueueChat(userDomain.contact))
+			if(mainModel.isQueueChat(iContact))
 			{
 				
-				//si el usuario esta en cola me fijo si tiene la ventana activa, entonces actualizo scroll
-				if(mainModel.currentWorkSpaceDomain.currentActiveContact)
-				{
-					
-				if(mainModel.currentWorkSpaceDomain.currentActiveContact.contact.jid.node == message.from.node )
-				{
-					
-					chatWindowView.updateScroll();
-				}
-			
-				}
+				
 			}
 			else
 			{
 				//agrego la pestaña
-				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(userDomain.contact);
+				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(iContact);
 				
 				
 			}
+			
+			
+			
+			
+			
+			
+			
+			chatWindowView.appendFormatTextChat(message.body,iContact,false);
+				
+				
+				
+				
+				
+				
+		
 			
 			
 			

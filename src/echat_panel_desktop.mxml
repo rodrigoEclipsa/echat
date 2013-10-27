@@ -28,6 +28,8 @@
 			import com.event.MainEvent;
 			import com.view.chatWindow.ChatWindowView;
 			
+			import flashx.textLayout.elements.TextFlow;
+			
 			import mx.controls.Alert;
 			import mx.core.BitmapAsset;
 			import mx.core.FlexGlobals;
@@ -49,6 +51,8 @@
 			
 			protected function windowedapplication_applicationCompleteHandler(event:FlexEvent):void
 			{
+				
+			
 				
 				var mainEvent:MainEvent = new MainEvent(MainEvent.applicationComplete,true);
 				

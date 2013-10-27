@@ -3,7 +3,7 @@ package com.controller
 	
 	
 	
-	import Interface.Icontact;
+	import Interface.IContact;
 	
 	import com.model.MainModel;
 	import com.view.MainView;
@@ -34,7 +34,7 @@ package com.controller
 		
 		
 		
-		public function openChatWindow(contact:Icontact):void
+		public function openChatWindow(contact:IContact):void
 		{
 			
 			
@@ -71,7 +71,7 @@ package com.controller
 		}
 		
 		
-		public function closeChatWindow(contact:Icontact):void
+		public function closeChatWindow(contact:IContact):void
 		{
 			
 			

@@ -14,7 +14,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import Interface.Icontact;
+			import Interface.IContact;
 			
 			import com.controller.ChatWindowController;
 			import com.controller.VisitListController;
@@ -82,7 +82,7 @@
 			protected function datagrid_visit_selectionChangeHandler(event:GridSelectionEvent):void
 			{
 				
-				var contact:Icontact= datagrid_agent.selectedItem as Icontact ;
+				var contact:IContact= datagrid_agent.selectedItem as IContact ;
 				
 			
 				

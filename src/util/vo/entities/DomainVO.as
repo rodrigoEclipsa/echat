@@ -10,8 +10,8 @@ package util.vo.entities
 		
 		public var id:int;
 		public var plan_id:int;
-		public var created_at:String;
-		public var updated_at:String;
+		public var created_at:Number;
+		public var updated_at:Number;
 		public var description:String;
 		public var name:String;
 

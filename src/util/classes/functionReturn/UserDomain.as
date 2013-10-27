@@ -1,6 +1,6 @@
 package util.classes.functionReturn
 {
-	import Interface.Icontact;
+	import Interface.IContact;
 	
 	import util.classes.WorkSpaceDomain;
 	
@@ -11,7 +11,7 @@ package util.classes.functionReturn
 		
 		
 		public var workSpaceDomain:WorkSpaceDomain;
-		public var contact:Icontact;
+		public var iContact:IContact;
 		
 		public function UserDomain()
 		{

@@ -2,7 +2,7 @@ package util.classes
 {
 	
 	
-	import Interface.Icontact;
+	import Interface.IContact;
 	
 	import com.model.MainModel;
 	import com.view.MainView;
@@ -48,7 +48,7 @@ package util.classes
 		 * 
 		 * 
 		 * */
-		public var currentActiveContact:Icontact;
+		public var currentActiveContact:IContact;
 		
 		
 		

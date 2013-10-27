@@ -344,8 +344,7 @@ package com.controller
 
 						var ujid:UnescapedJID=new UnescapedJID("agent_" + agentVO.id + "@" + ConfigParameters.server);
 
-						contact=chatManagerModel.getContactByJid(ujid);
-
+						contact=chatManagerModel.getContactByJid(ujid.node);
 
 
 						var agent:Agent=new Agent(agentVO);
@@ -406,22 +405,10 @@ package com.controller
 		{
 
 
+			var contact:Contact=new Contact(event.jid);
 
-			var splitName:Array=event.jid.node.split("_");
+			chatManagerModel.arrayCollection_contact.addItem(contact);
 
-			var prefix:String=splitName[0];
-			var contactId:String=splitName[1];
-
-
-			if (prefix == "agent")
-			{
-
-				var contact:Contact=new Contact(event.jid);
-
-				chatManagerModel.arrayCollection_contact.addItem(contact);
-
-
-			}
 			/*
 			   var splitName:Array=event.jid.node.split("_");
 
@@ -467,19 +454,54 @@ package com.controller
 
 
 		private function onUserRemoved(event:RosterEvent):void
-		{
+		{	
+			
+			
+			
+			var splitName:Array=event.jid.node.split("_");
+			
+			var prefix:String=splitName[0];
+			var contactId:String=splitName[1];
+			
+			var workSpaceDomain:WorkSpaceDomain;
+			
+			var contact:Contact=chatManagerModel.getContactByJid(event.jid.node);
+			contact.online=false;
+			
+			
+			//seguen el prefix se si es un agente o un usuario
+			if (prefix == "user")
+			{
+				
+			
+				
+				
+				//remuevo el contact
+				chatManagerModel.arrayCollection_contact.removeItemAt(chatManagerModel.arrayCollection_contact.getItemIndex(contact));
+				
+				
+				var domainId:int=int(splitName[2]);
+				
+				workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
+				
+				var user:User=mainModel.getUserById(workSpaceDomain, int(contactId));
+				user.destroy();
+				
+				workSpaceDomain.arrayCollection_users.removeItemAt(workSpaceDomain.arrayCollection_users.getItemIndex(user));
+				
+				
+				
+				
+			}
 
-
-
-
+			
+			
 		}
 
 
 
 		private function onUserUnavailable(event:RosterEvent):void
 		{
-
-
 
 
 			var splitName:Array=event.jid.node.split("_");
@@ -489,7 +511,7 @@ package com.controller
 
 			var workSpaceDomain:WorkSpaceDomain;
 
-			var contact:Contact=chatManagerModel.getContactByJid(event.jid);
+			var contact:Contact=chatManagerModel.getContactByJid(event.jid.node);
 			contact.online=false;
 
 
@@ -498,19 +520,7 @@ package com.controller
 			{
 
 
-				//remuevo el contact
-				chatManagerModel.arrayCollection_contact.removeItemAt(chatManagerModel.arrayCollection_contact.getItemIndex(contact));
-
-
-				var domainId:int=int(splitName[2]);
-
-				workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
-
-				var user:User=mainModel.getUserById(workSpaceDomain, int(contactId));
-				user.destroy();
-
-				workSpaceDomain.arrayCollection_users.removeItemAt(workSpaceDomain.arrayCollection_users.getItemIndex(user));
-
+				
 
 
 
@@ -565,8 +575,12 @@ package com.controller
 				var prefix:String=splitName[0];
 				var contactId:String=splitName[1];
 
+				
+				
 				//obtengo el objeto de contacto y pongo en online
-				var contact:Contact;
+				var contact:Contact  = chatManagerModel.getContactByJid(presence.from.node);
+				contact.online = true;
+			
 			
 
 				//seguen el prefix se si es un agente o un usuario
@@ -612,9 +626,7 @@ package com.controller
 						else
 						{
 
-                            //creo el objeto contact
-						    contact=new Contact(event.jid);
-							chatManagerModel.arrayCollection_contact.addItem(contact);
+                          
 							
 							
 							
@@ -641,8 +653,7 @@ package com.controller
 				{
 
                       
-					contact = chatManagerModel.getContactByJid(presence.from.unescaped);
-					contact.online = true;
+				
 
 
 				}

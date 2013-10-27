@@ -21,6 +21,8 @@ package com.controller
 		
 		public var timer:Timer
 		
+		//public var dateStamp:Date = new Date();
+		
 		[PostConstruct]
 		public function postContruct_timerController():void
 		{
@@ -61,14 +63,16 @@ package com.controller
 		public function updateTimer():void
 		{
 			
+			//dateStamp = new Date();
 			var date:Date = new Date();
-			var epochTimer:Number = date.time;
+		
+			var timeStamp:Number = date.time;
 			
 			
 			for each(var userItem:User in mainModel.currentWorkSpaceDomain.arrayCollection_users)
 			{
 				
-				date.time = epochTimer - userItem.createAt;
+				date.time =timeStamp - userItem.createAt;
 				
 				userItem.secondConnect =date.seconds;
 				
@@ -79,7 +83,7 @@ package com.controller
 			
 			for each(var agentItem:Agent in mainModel.currentWorkSpaceDomain.arrayCollection_agent)
 			{
-				date.time = epochTimer - userItem.createAt;
+				date.time = timeStamp - agentItem.createAt;
 				
 				agentItem.secondConnect = date.seconds;
 				

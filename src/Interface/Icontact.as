@@ -2,13 +2,16 @@ package Interface
 {
 	import flashx.textLayout.elements.TextFlow;
 	
+	import org.igniterealtime.xiff.core.UnescapedJID;
+	
 	import util.classes.Contact;
 
 	[Bindable]
-	public interface Icontact
+	public interface IContact
 	{
 		
 		
+			
 		function get contact():Contact;
 		
 		function get historyText():TextFlow;
@@ -16,11 +19,20 @@ package Interface
 		
 		
 		/**
-		 * si es true el usuario fue el ultimo que escribio, si es false fue el agente
+		 * jid del ultimo contacto que realizo un chat
 		 * **/
-		function get lastAppendText():Boolean;
-		function set lastAppendText(value:Boolean):void;
+		function get lastChatJid():UnescapedJID;
+		function set lastChatJid(value:UnescapedJID):void;
 		
+		
+		
+		function get lastChatTimeStamp():Number;
+		function set lastChatTimeStamp(value:Number):void;
+		
+		
+		function getContactId():int
+			
+		function getContactName():String
 		
 	}
 }

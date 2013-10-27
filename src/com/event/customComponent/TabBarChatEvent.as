@@ -2,7 +2,7 @@ package com.event.customComponent
 {
 	
 	
-	import Interface.Icontact;
+	import Interface.IContact;
 	
 	import flash.events.Event;
 	
@@ -15,7 +15,7 @@ package com.event.customComponent
 		public static const close:String = "close";
 		
 		
-		public var contact:Icontact;
+		public var contact:IContact;
 		
 		public function TabBarChatEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false)
 		{

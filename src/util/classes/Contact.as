@@ -1,5 +1,8 @@
 package util.classes
 {
+	import flashx.textLayout.elements.Configuration;
+
+	
 	import org.igniterealtime.xiff.core.UnescapedJID;
 
 	[Bindable]
@@ -11,9 +14,15 @@ package util.classes
 		public var show:String;
 		public var jid:UnescapedJID;
 		
+		
+	
+		
 		public function Contact(jid:UnescapedJID)
 		{
 			this.jid = jid;
 		}
+
+	
+
 	}
 }

@@ -15,7 +15,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import Interface.Icontact;
+			import Interface.IContact;
 			
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
@@ -83,7 +83,7 @@
 			{
 				
 				
-				var contact:Icontact = datagrid_visit.selectedItem as Icontact  ;
+				var contact:IContact = datagrid_visit.selectedItem as IContact  ;
 				
 				
 				

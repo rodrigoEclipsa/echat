@@ -18,7 +18,7 @@
 
 	<fx:Script>
 		<![CDATA[
-			import Interface.Icontact;
+			import Interface.IContact;
 			
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
@@ -275,7 +275,7 @@
 			{
 				
 			//	trace(tabBar_queueChat.selectedIndex)
-				var contact:Icontact = tabBar_queueChat.selectedItem ;
+				var contact:IContact = tabBar_queueChat.selectedItem ;
 				
 				
 				//	trace("aver : " + mainModel.currentWorkSpaceDomain.currentActiveUser)

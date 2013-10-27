@@ -76,7 +76,7 @@ package com.model
 		
 		
 		
-		public function getContactByJid(jid:UnescapedJID):Contact
+		public function getContactByJid(jidNode:String):Contact
 		{
 			
 			
@@ -86,7 +86,7 @@ package com.model
 			for each(var contactItem:Contact in arrayCollection_contact)
 			{
 				
-				if(contactItem.jid.bareJID == jid.bareJID)
+				if(contactItem.jid.node== jidNode)
 				{
 					
 					contact = contactItem;

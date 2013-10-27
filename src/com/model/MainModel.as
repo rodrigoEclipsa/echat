@@ -4,7 +4,7 @@ package com.model
 	
 	
 	
-	import Interface.Icontact;
+	import Interface.IContact;
 	
 	import com.view.MainView;
 	import com.view.chatWindow.ChatWindowView;
@@ -82,10 +82,11 @@ package com.model
 		 * 
 		 * 
 		 * **/
+		/*
 		public function getUserDomainById(id:int,isUser:Boolean):UserDomain
 		{
 			var userDomain:UserDomain;
-			var contact:Icontact;
+			var contact:IContact;
 			
 			for each(var workSpaceDomainItem:WorkSpaceDomain in arrayCollection_workSpacedomains )
 			{
@@ -99,7 +100,7 @@ package com.model
 							if(userItem.userVO.id == id)
 							{
 								userDomain = new UserDomain()
-								userDomain.contact = userItem;
+								userDomain.iContact = userItem;
 								userDomain.workSpaceDomain = workSpaceDomainItem;
 								
 								return userDomain;
@@ -121,7 +122,7 @@ package com.model
 						if(agentItem.agentVO.id == id)
 						{
 							userDomain = new UserDomain()
-							userDomain.contact = agentItem;
+							userDomain.iContact = agentItem;
 							userDomain.workSpaceDomain = workSpaceDomainItem;
 							
 							return userDomain;
@@ -146,14 +147,14 @@ package com.model
 			
 		}	
 		
+		*/
 		
 		
-		
-	public function isQueueChat(contact:Icontact):Boolean
+	public function isQueueChat(contact:IContact):Boolean
 	{
 		var exist:Boolean = false;
 		
-		for each(var iContactItem:Icontact in currentWorkSpaceDomain.arrayCollection_queueChat)
+		for each(var iContactItem:IContact in currentWorkSpaceDomain.arrayCollection_queueChat)
 		{
 			
 			if(iContactItem == contact)
@@ -200,6 +201,10 @@ package com.model
 		
 	}
 	 
+	
+	
+	
+	
 	
 	
 	/**

@@ -2,12 +2,13 @@ package util.classes
 {
 	
 	
-	import Interface.Icontact;
+	import Interface.IContact;
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
+	import flashx.textLayout.elements.ParagraphElement;
 	import flashx.textLayout.elements.TextFlow;
 	
 	import mx.collections.ArrayList;
@@ -15,6 +16,7 @@ package util.classes
 	import mx.events.PropertyChangeEvent;
 	
 	import org.igniterealtime.xiff.collections.events.CollectionEventKind;
+	import org.igniterealtime.xiff.core.UnescapedJID;
 	import org.swizframework.core.IDisposable;
 	
 	import util.vo.entities.UserVO;
@@ -22,7 +24,7 @@ package util.classes
 	
     
 	[Bindable]
-	public class User extends EventDispatcher implements IDisposable,Icontact
+	public class User extends EventDispatcher implements IDisposable,IContact
 	{
 		
 		
@@ -31,7 +33,12 @@ package util.classes
 		private var _historyText:TextFlow;
 		private var _contact:Contact;
 		
-		private var _lastAppendText:Boolean = false;
+		private var _lastChatJid:UnescapedJID;
+		
+		private var _lastChatTimeStamp:Number;
+		
+		
+		
 		//------------
 		
 		
@@ -60,30 +67,62 @@ package util.classes
 		
 		
 		
-
-		/**
-		 * si es true el usuario fue el ultimo que escribio, si es false fue el agente
-		 * **/
-		public function get lastAppendText():Boolean
+		public function getContactId():int
 		{
-			return _lastAppendText;
+			
+			return userVO.id;
+			
+		}
+		
+		public function getContactName():String
+		{
+			
+			return userVO.name;
+			
+		}
+		
+		
+
+		public function get lastChatTimeStamp():Number
+		{
+			return _lastChatTimeStamp;
+		}
+
+		public function set lastChatTimeStamp(value:Number):void
+		{
+			_lastChatTimeStamp = value;
 		}
 
 		
-	
-		public function set lastAppendText(value:Boolean):void
+		public function get lastChatJid():UnescapedJID
 		{
-			_lastAppendText = value;
+			return _lastChatJid;
+		}
+
+		
+		public function set lastChatJid(value:UnescapedJID):void
+		{
+			_lastChatJid = value;
 		}
 
 		public function get historyText():TextFlow
 		{
+			
+			
 			if(!_historyText)
+			{
+				
+				
 				_historyText = new TextFlow();
 				
+				var p:ParagraphElement = new ParagraphElement();
+				_historyText.addChild(p);
+				
+				
+			}
 			return _historyText;
 		}
-
+		
 		public function set historyText(value:TextFlow):void
 		{
 			_historyText = value;
@@ -114,8 +153,8 @@ package util.classes
 		public function destroy():void 
 		{
 			
-			contact = null;
-		
+			_contact = null;
+			
 			arrayList_session.removeEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_session_changeHandler);
 		
 		}
