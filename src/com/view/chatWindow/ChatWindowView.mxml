@@ -295,6 +295,7 @@
 					callLater(function update():void
 					{
 					
+			
 						richEditableText_history.appendText(" ");
 					//	scroller_historyText.verticalScrollBar.value = scroller_historyText.verticalScrollBar.maximum;			
 					
