@@ -45,11 +45,15 @@ package com.model
 		{
 			
 			
-			var xml:XML = <ex_echat_presence id="agent">
+			var xml:XML = <echat >
+				              <root>
 									<name>{name}</name>	
 									 <email>{email}</email>
 									
-									  </ex_echat_presence>;
+			
+			                        </root>
+			                  </echat>
+									;
 			
 			
 			
@@ -76,34 +80,16 @@ package com.model
 		
 		
 		
-		public function getContactByJid(jidNode:String):Contact
+		
+		
+		
+		
+		public function destroy():void
 		{
-			
-			
-			
-			var contact:Contact;
-			
-			for each(var contactItem:Contact in arrayCollection_contact)
-			{
-				
-				if(contactItem.jid.node== jidNode)
-				{
-					
-					contact = contactItem;
-				}
-					
-				
-			}
-			
-			
-			return contact;
+			connection = null;
+			roster = null;
 			
 		}
-		
-		
-		
-		
-		
 		
 		
 		

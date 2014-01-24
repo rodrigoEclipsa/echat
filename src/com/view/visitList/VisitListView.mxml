@@ -33,7 +33,7 @@
 			
 			import util.classes.Session;
 			import util.classes.User;
-			import util.classes.WorkSpaceDomain;
+			import util.classes.DomainWorkSpace;
 			import util.vo.entities.UserVO;
 			import util.vo.entities.WebVO;
 			
@@ -124,7 +124,7 @@
 		
 		
 	</s:BorderContainer>
-	<s:DataGrid width="100%" borderVisible="false" height="100%" requestedRowCount="4"  dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_users}"
+	<s:DataGrid width="100%" borderVisible="false" height="100%" requestedRowCount="4"  dataProvider="{mainModel.currentDomainWorkSpace.arrayCollection_users}"
 				 id="datagrid_visit"
 				  
 				  selectionChange="datagrid_visit_selectionChangeHandler(event)"

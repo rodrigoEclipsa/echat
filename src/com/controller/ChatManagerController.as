@@ -67,10 +67,10 @@ package com.controller
 	import util.XmlFuncUtil;
 	import util.app.ConfigParameters;
 	import util.classes.Agent;
-	import util.classes.Contact;
+	
 	import util.classes.Session;
 	import util.classes.User;
-	import util.classes.WorkSpaceDomain;
+	import util.classes.DomainWorkSpace;
 	import util.vo.ResultVO;
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.UserVO;
@@ -113,8 +113,7 @@ package com.controller
 			Security.loadPolicyFile("xmlsocket://" + ConfigParameters.server + ":5229");
 
 
-			setupConnection();
-			setupRoster();
+			
 
 			timerKeepAlive=new Timer(60000);
 
@@ -143,6 +142,9 @@ package com.controller
 		public function login(username:String, password:String):void
 		{
 
+			setupConnection();
+			setupRoster();
+			
 			chatManagerModel.connection.username=username;
 			chatManagerModel.connection.password=password;
 			chatManagerModel.connection.server=ConfigParameters.server;
@@ -160,7 +162,7 @@ package com.controller
 		public function disconnect():void
 		{
 
-
+			chatManagerModel.destroy();
 			chatManagerModel.connection.disconnect();
 		}
 
@@ -298,7 +300,7 @@ package com.controller
 
 
 
-			serviceEchat.getAgents(serviceEchat_getAgentsHandler, arrayIds.join(","));
+			serviceEchat.getAgentsByIds(serviceEchat_getAgentsByIdsHandler, arrayIds.join(","));
 
 
 
@@ -315,7 +317,7 @@ package com.controller
 
 
 
-		private function serviceEchat_getAgentsHandler(result:Object):void
+		private function serviceEchat_getAgentsByIdsHandler(result:Object):void
 		{
 
 			if (result is ErrorServiceEvent)
@@ -335,8 +337,8 @@ package com.controller
 
 					var agents:Array=resultVO.data.agents;
 
-					var workSpaceDomain:WorkSpaceDomain;
-					var contact:Contact;
+					var workSpaceDomain:DomainWorkSpace;
+				
 					for each (var agentItem:Object in agents)
 					{
 
@@ -344,24 +346,17 @@ package com.controller
 
 						var ujid:UnescapedJID=new UnescapedJID("agent_" + agentVO.id + "@" + ConfigParameters.server);
 
-						contact=chatManagerModel.getContactByJid(ujid.node);
+						
 
 
 						var agent:Agent=new Agent(agentVO);
 						agent.roleVO=agentItem.roles;
-						agent.contact=contact;
+					
 
-						for each (var domainId:int in agentItem.domainsIds)
-						{
-
-							workSpaceDomain=mainModel.getWorkSpacedomainById(domainId);
-
-							workSpaceDomain.arrayCollection_agent.addItem(agent);
-
-
-
-						}
-
+						
+						mainModel.arrayCollection_agent.addItem(agent);
+						
+				
 
 					}
 
@@ -404,12 +399,8 @@ package com.controller
 		private function onUserAdded(event:RosterEvent):void
 		{
 
-
-			var contact:Contact=new Contact(event.jid);
-
-			chatManagerModel.arrayCollection_contact.addItem(contact);
-
-			/*
+			var presence:Presence=event.data as Presence;
+		
 			   var splitName:Array=event.jid.node.split("_");
 
 			   var prefix:String=splitName[0];
@@ -419,30 +410,24 @@ package com.controller
 			   {
 
 			   var agentVO:AgentVO = new AgentVO();
-			   agentVO.name = extension.name;
-			   agentVO.email = extension.email;
-			   agentVO.nick = extension.nick;
+			   agentVO.name = presence.xml.name;
+			   agentVO.email = presence.xml.email;
+			   agentVO.nick = presence.xml.nick;
 
 			   var agent:Agent = new Agent(agentVO);
 
-			   for each(var domainItem:XML in extension.domain_id )
+			 
+
+
+			   }
+			   else if(prefix == "user")
 			   {
-
-			   workSpaceDomain=mainModel.getWorkSpacedomainById(int(domainItem));
-
-			   if(workSpaceDomain)
-			   {
-
-			   workSpaceDomain.arrayCollection_agent.addItem(agent);
-
+				   
+				   
+				   
+				   
 			   }
-
-
-			   }
-
-
-			   }
-			 */
+			 
 
 
 
@@ -463,7 +448,7 @@ package com.controller
 			var prefix:String=splitName[0];
 			var contactId:String=splitName[1];
 			
-			var workSpaceDomain:WorkSpaceDomain;
+			var workSpaceDomain:DomainWorkSpace;
 			
 			var contact:Contact=chatManagerModel.getContactByJid(event.jid.node);
 			contact.online=false;
@@ -509,7 +494,7 @@ package com.controller
 			var prefix:String=splitName[0];
 			var contactId:String=splitName[1];
 
-			var workSpaceDomain:WorkSpaceDomain;
+			var workSpaceDomain:DomainWorkSpace;
 
 			var contact:Contact=chatManagerModel.getContactByJid(event.jid.node);
 			contact.online=false;
@@ -541,7 +526,7 @@ package com.controller
 		private function onUserAvailable(event:RosterEvent):void
 		{
 
-			trace("user available ..................................")
+			
 			use namespace space;
 
 
@@ -562,12 +547,13 @@ package com.controller
 				{
 
 					trace("Surgio un error al recirbir evento de presencia", "Error");
+					trace("prefix : ............" + presence.xml)
 					return;
 
 				}
 
 
-				var workSpaceDomain:WorkSpaceDomain;
+				var workSpaceDomain:DomainWorkSpace;
 
 				//descompongo en nombre en prefijo y id
 				var splitName:Array=presence.from.node.split("_");
@@ -627,8 +613,6 @@ package com.controller
 						{
 
                           
-							
-							
 							
 							var userVO:UserVO=new UserVO();
 							userVO.email=extension.email;

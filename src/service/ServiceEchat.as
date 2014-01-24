@@ -150,13 +150,13 @@ package service
 		
 		
 	
-		public function getAgents(func:Function,ids:String):void
+		public function getAgentsByIds(func:Function,ids):void
 		{
 			
 			
 			_func=func;
 			
-			remoteObj.getAgents(ids);
+			remoteObj.getAgentsByIds(ids);
 			
 		}
 		

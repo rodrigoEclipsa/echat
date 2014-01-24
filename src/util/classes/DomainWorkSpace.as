@@ -17,7 +17,7 @@ package util.classes
 
 	
 	[Bindable]
-	public class WorkSpaceDomain
+	public class DomainWorkSpace
 	{
 		
 		
@@ -29,12 +29,7 @@ package util.classes
 		public var arrayCollection_users:ArrayCollection = new ArrayCollection();
 		
 		
-		/**
-		 * 
-		 * arrayCollection de agentes
-		 * 
-		 * **/
-		public var arrayCollection_agent:ArrayCollection = new ArrayCollection();
+	
 		
 		
 		
@@ -74,7 +69,7 @@ package util.classes
 		
 
 		
-		public function WorkSpaceDomain()
+		public function DomainWorkSpace()
 		{
 		}
 		

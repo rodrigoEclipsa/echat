@@ -45,7 +45,7 @@ package com.controller
 	import util.classes.Domain;
 	import util.classes.QueueChat;
 	import util.classes.User;
-	import util.classes.WorkSpaceDomain;
+	import util.classes.DomainWorkSpace;
 	import util.classes.functionReturn.UserDomain;
 	import util.vo.ResultVO;
 	import util.vo.entities.DomainVO;
@@ -126,11 +126,11 @@ package com.controller
 				
 				var domain:Domain = new Domain(domainVOItem);
 				
-				var workSpaceDomain:WorkSpaceDomain = new WorkSpaceDomain();
+				var workSpaceDomain:DomainWorkSpace = new DomainWorkSpace();
 				
 				workSpaceDomain.domain = domain;
 				
-				mainModel.arrayCollection_workSpacedomains.addItem(workSpaceDomain);
+				mainModel.arrayCollection_domainsWorkSpace.addItem(workSpaceDomain);
 				
 				
 			}
@@ -139,12 +139,12 @@ package com.controller
 			
 			
 			//selecciono el primer domino por defecto
-			if(mainModel.arrayCollection_workSpacedomains.source.length)
+			if(mainModel.arrayCollection_domainsWorkSpace.source.length)
 			{
 				
 				
-				mainModel.currentWorkSpaceDomain = mainModel.arrayCollection_workSpacedomains.getItemAt(0) as WorkSpaceDomain;
-				mainView.list_domains.selectedItem = mainModel.currentWorkSpaceDomain;
+				mainModel.currentDomainWorkSpace = mainModel.arrayCollection_domainsWorkSpace.getItemAt(0) as DomainWorkSpace;
+				mainView.list_domains.selectedItem = mainModel.currentDomainWorkSpace;
 				
 			}
 			
@@ -169,7 +169,7 @@ package com.controller
 
 			
 		    var iContact:IContact;
-			var workSpaceDomain:WorkSpaceDomain;
+			var workSpaceDomain:DomainWorkSpace;
 			
 			var textHead:String;
 
@@ -213,7 +213,7 @@ package com.controller
 			else
 			{
 				//agrego la pestaña
-				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(iContact);
+				mainModel.currentDomainWorkSpace.arrayCollection_queueChat.addItem(iContact);
 				
 				
 			}

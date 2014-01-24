@@ -31,12 +31,19 @@ package util.classes
 		///---------IContact
 		
 		private var _historyText:TextFlow;
-		private var _contact:Contact;
+	
 		
 		private var _lastChatJid:UnescapedJID;
 		
 		private var _lastChatTimeStamp:Number;
 		
+		private var _createAt:Number = new Date().time;
+		
+		
+		
+		public var online:Boolean =false;
+		public var show:String;
+		public var jid:UnescapedJID;
 		
 		
 		//------------
@@ -53,7 +60,7 @@ package util.classes
 		public var secondConnect:Number = 0;
 		
 		
-		public var createAt:Number = new Date().time;
+		
 		
 		public function User()
 		{
@@ -67,6 +74,16 @@ package util.classes
 		
 		
 		
+		public function get createAt():Number
+		{
+			return _createAt;
+		}
+
+		public function set createAt(value:Number):void
+		{
+			_createAt = value;
+		}
+
 		public function getContactId():int
 		{
 			
@@ -128,15 +145,7 @@ package util.classes
 			_historyText = value;
 		}
 
-		public function get contact():Contact
-		{
-			return _contact;
-		}
-
-		public function set contact(value:Contact):void
-		{
-			_contact = value;
-		}
+		
 
 		private function arrayList_session_changeHandler(event:CollectionEvent):void
 		{

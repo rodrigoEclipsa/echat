@@ -27,7 +27,7 @@ package com.model
 	import util.classes.Domain;
 	import util.classes.QueueChat;
 	import util.classes.User;
-	import util.classes.WorkSpaceDomain;
+	import util.classes.DomainWorkSpace;
 	import util.classes.functionReturn.UserDomain;
 
 	
@@ -53,15 +53,20 @@ package com.model
 	 * ya que cada dominio tiene sus propias caracteristicas
 	 * 
 	 **/
-	 public var arrayCollection_workSpacedomains:ArrayCollection = new ArrayCollection();
+	 public var arrayCollection_domainsWorkSpace:ArrayCollection = new ArrayCollection();
 		
 		
-		
+	 /**
+	  * 
+	  * arrayCollection de agentes
+	  * 
+	  * **/
+	 public var arrayCollection_agent:ArrayCollection = new ArrayCollection();
 	 
 	 
 	 
 	 
-	 public var currentWorkSpaceDomain:WorkSpaceDomain;	
+	 public var currentDomainWorkSpace:DomainWorkSpace;	
 		
 		
 	
@@ -154,7 +159,7 @@ package com.model
 	{
 		var exist:Boolean = false;
 		
-		for each(var iContactItem:IContact in currentWorkSpaceDomain.arrayCollection_queueChat)
+		for each(var iContactItem:IContact in currentDomainWorkSpace.arrayCollection_queueChat)
 		{
 			
 			if(iContactItem == contact)
@@ -181,12 +186,12 @@ package com.model
 	  * 
 	  * 
 	  * **/
-	public function getWorkSpacedomainById(id:int):WorkSpaceDomain
+	public function getWorkSpacedomainById(id:int):DomainWorkSpace
 	{
 		
-		var workSpaceDomain:WorkSpaceDomain;
+		var workSpaceDomain:DomainWorkSpace;
 		
-		for each(var workSpaceDomainItem:WorkSpaceDomain in arrayCollection_workSpacedomains)
+		for each(var workSpaceDomainItem:DomainWorkSpace in arrayCollection_domainsWorkSpace)
 		{
 			
 			if(workSpaceDomainItem.domain.domainVO.id == id  )
@@ -213,7 +218,7 @@ package com.model
 	 * 
 	 * 
 	 * **/
-	public function getUserById(workSpaceDomain:WorkSpaceDomain, userId:int):User
+	public function getUserById(workSpaceDomain:DomainWorkSpace, userId:int):User
 	{
 		
 	
@@ -237,7 +242,7 @@ package com.model
 	
 	
 	
-	public function getAgentById(workSpaceDomain:WorkSpaceDomain, agentId:int):Agent
+	public function getAgentById(workSpaceDomain:DomainWorkSpace, agentId:int):Agent
 	{
 		
 		

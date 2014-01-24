@@ -61,7 +61,7 @@
 			import util.classes.Chat;
 			import util.classes.QueueChat;
 			import util.classes.User;
-			import util.classes.WorkSpaceDomain;
+			import util.classes.DomainWorkSpace;
 			import util.classes.functionReturn.UserDomain;
 
 
@@ -208,10 +208,10 @@
 				
 			
 				
-				mainModel.currentWorkSpaceDomain=list_domains.selectedItem as WorkSpaceDomain;
+				mainModel.currentDomainWorkSpace=list_domains.selectedItem as DomainWorkSpace;
 
 				//pregunto si este dominio tiene un usuario activo en chat, si es asi abro la ventana
-				if(!mainModel.currentWorkSpaceDomain.currentActiveContact)
+				if(!mainModel.currentDomainWorkSpace.currentActiveContact)
 				{
 					group_chatWindow.visible = false;
 					
@@ -283,7 +283,7 @@
 				{
 					
 					trace("abre")
-					mainModel.currentWorkSpaceDomain.currentActiveContact = contact;
+					mainModel.currentDomainWorkSpace.currentActiveContact = contact;
 					
 					if(!group_chatWindow.visible)
 					group_chatWindow.visible = true;
@@ -296,7 +296,7 @@
 					
 					
 					trace("cierra")
-					mainModel.currentWorkSpaceDomain.currentActiveContact = null;
+					mainModel.currentDomainWorkSpace.currentActiveContact = null;
 					group_chatWindow.visible = false;
 					
 					
@@ -399,7 +399,7 @@
 								 requireSelection="true"
 								
 								change="list_domains_changeHandler(event)"
-								dataProvider="{mainModel.arrayCollection_workSpacedomains}"
+								dataProvider="{mainModel.arrayCollection_domainsWorkSpace}"
 								itemRenderer="renderer.DomainRenderer"
 								contentBackgroundColor="#686868"/>
 						<s:VGroup width="100%" gap="0">
@@ -568,7 +568,7 @@
 						   fontSize="11"
 						   fontWeight="bold"
 						   horizontalCenter="0"
-						   text="{mainModel.currentWorkSpaceDomain.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' +mainModel.currentWorkSpaceDomain.arrayCollection_queueCall.length}"
+						   text="{mainModel.currentDomainWorkSpace.arrayCollection_queueCall.length == 0 ? 'NO HAY PETICIONES DE CHAT ' : 'ATENDER PETICIONES DE CHAT ' +mainModel.currentDomainWorkSpace.arrayCollection_queueCall.length}"
 						   textAlign="center"
 						   verticalAlign="middle"
 						   verticalCenter="0"/>
@@ -619,7 +619,7 @@
 							  width="100%" height="42"
 							    requireSelection="false"
 							    change="tabBar_queueChat_changeHandler(event)"
-							  dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_queueChat}"
+							  dataProvider="{mainModel.currentDomainWorkSpace.arrayCollection_queueChat}"
 							 minWidth="140"
 							   itemRenderer="renderer.TabChatRenderer"
 							      

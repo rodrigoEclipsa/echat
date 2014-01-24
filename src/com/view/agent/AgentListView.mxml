@@ -126,7 +126,7 @@
 		
 		
 	</s:BorderContainer>
-	<s:DataGrid width="100%" borderVisible="false" height="100%" requestedRowCount="4" dataProvider="{mainModel.currentWorkSpaceDomain.arrayCollection_agent}"
+	<s:DataGrid width="100%" borderVisible="false" height="100%" requestedRowCount="4" dataProvider="{mainModel.currentDomainWorkSpace.arrayCollection_agent}"
 				id="datagrid_agent"
 			
 				selectionChange="datagrid_visit_selectionChangeHandler(event)"

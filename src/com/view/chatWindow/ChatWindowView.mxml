@@ -4,7 +4,7 @@
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
 					  width="100%" height="100%" minWidth="1"
 					  creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
-					  currentState="{mainModel.currentWorkSpaceDomain.currentActiveContact is User ? 'User' : 'Agent'}"
+					  currentState="{mainModel.currentDomainWorkSpace.currentActiveContact is User ? 'User' : 'Agent'}"
 					  width.Agent="100%">
 	
 	
@@ -203,16 +203,16 @@
 				
 				//trace("datachange ..............")
 				///el objeto puede ser un usuario o un agente
-				if(mainModel.currentWorkSpaceDomain.currentActiveContact is User)
+				if(mainModel.currentDomainWorkSpace.currentActiveContact is User)
 				{
-					user = mainModel.currentWorkSpaceDomain.currentActiveContact as User;
+					user = mainModel.currentDomainWorkSpace.currentActiveContact as User;
 					this.currentState = "User";
 					trace("es un usuario .................")
 					
 				}
 				else 
 				{
-					agent = mainModel.currentWorkSpaceDomain.currentActiveContact as Agent;
+					agent = mainModel.currentDomainWorkSpace.currentActiveContact as Agent;
 					
 					this.currentState = "Agent";
 					
@@ -266,13 +266,13 @@
 			{
 				
 				
-				var message:Message=new Message(mainModel.currentWorkSpaceDomain.currentActiveContact.contact.jid.escaped, null, richEditableText_input.text, null, Message.TYPE_CHAT, null);
+				var message:Message=new Message(mainModel.currentDomainWorkSpace.currentActiveContact.contact.jid.escaped, null, richEditableText_input.text, null, Message.TYPE_CHAT, null);
 				
 				
 				mainController.sendMesage(message);
 				
 	
-			   appendFormatTextChat(richEditableText_input.text,mainModel.currentWorkSpaceDomain.currentActiveContact,true)
+			   appendFormatTextChat(richEditableText_input.text,mainModel.currentDomainWorkSpace.currentActiveContact,true)
 						
 		
 				
@@ -524,6 +524,7 @@
 					  paddingTop="10"
 					  width.Agent="408">
 				
+				
 		
 		
 			<s:BorderContainer width="100%" height="100%">
@@ -533,7 +534,7 @@
 										
 										 heightInLines="12"
 										paddingLeft="2" paddingTop="2"
-										textFlow="{mainModel.currentWorkSpaceDomain.currentActiveContact.historyText}"
+										textFlow="{mainModel.currentDomainWorkSpace.currentActiveContact.historyText}"
 										/>
 				</s:Scroller>
 			</s:BorderContainer>	

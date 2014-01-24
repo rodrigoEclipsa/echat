@@ -13,7 +13,7 @@ package com.controller
 	import service.ServiceEchat;
 	
 	import util.classes.Agent;
-	import util.classes.WorkSpaceDomain;
+	import util.classes.DomainWorkSpace;
 	import util.vo.ResultVO;
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.DomainVO;

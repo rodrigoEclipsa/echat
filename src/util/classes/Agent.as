@@ -35,6 +35,16 @@ package util.classes
 		private var _lastChatJid:UnescapedJID;
 
 		private var _lastChatTimeStamp:Number;
+		
+		private var _createAt:Number=new Date().time;
+		
+		
+		
+		public var online:Boolean =false;
+		public var show:String;
+		public var jid:UnescapedJID;
+		
+		
 		//------------
 
 
@@ -43,7 +53,7 @@ package util.classes
 
 		public var secondConnect:Number=0;
 
-		public var createAt:Number=new Date().time;
+		
 
 
 		public function Agent(agentVO:AgentVO)
@@ -58,6 +68,16 @@ package util.classes
 
 
 
+
+		public function get createAt():Number
+		{
+			return _createAt;
+		}
+
+		public function set createAt(value:Number):void
+		{
+			_createAt = value;
+		}
 
 		public function get lastChatJid():UnescapedJID
 		{

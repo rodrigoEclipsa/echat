@@ -41,17 +41,17 @@ package com.controller
 			
 			//pregunto si el usuario esta en la cola de chat, si no la agrego
 			if(!mainModel.isQueueChat(contact))
-				mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.addItem(contact);
+				mainModel.currentDomainWorkSpace.arrayCollection_queueChat.addItem(contact);
 			
 			
 			
 			// si no esta activo lo pongo activo y lo selecciono en el tab
-			if(mainModel.currentWorkSpaceDomain.currentActiveContact != contact )
+			if(mainModel.currentDomainWorkSpace.currentActiveContact != contact )
 			{
 				
 				
-				mainModel.currentWorkSpaceDomain.currentActiveContact = contact;
-				mainView.tabBar_queueChat.selectedItem = mainModel.currentWorkSpaceDomain.currentActiveContact;
+				mainModel.currentDomainWorkSpace.currentActiveContact = contact;
+				mainView.tabBar_queueChat.selectedItem = mainModel.currentDomainWorkSpace.currentActiveContact;
 				
 				
 			
@@ -77,21 +77,21 @@ package com.controller
 			
 			
 			
-			var userIndex:int = mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.getItemIndex(contact);
+			var userIndex:int = mainModel.currentDomainWorkSpace.arrayCollection_queueChat.getItemIndex(contact);
 			
 			//	trace("user: " + mainModel.currentWorkSpaceDomain.currentActiveUser)
 			
-			if(mainModel.currentWorkSpaceDomain.currentActiveContact == contact)
+			if(mainModel.currentDomainWorkSpace.currentActiveContact == contact)
 			{
 			
-				mainModel.currentWorkSpaceDomain.currentActiveContact = null;
+				mainModel.currentDomainWorkSpace.currentActiveContact = null;
 				mainView.group_chatWindow.visible = false;
 				
 				
 			}
 			
 			
-			mainModel.currentWorkSpaceDomain.arrayCollection_queueChat.removeItemAt(userIndex);
+			mainModel.currentDomainWorkSpace.arrayCollection_queueChat.removeItemAt(userIndex);
 			
 			
 			
@@ -104,7 +104,7 @@ package com.controller
 		{
 				
 			mainView.tabBar_queueChat.selectedIndex = -1;
-			mainModel.currentWorkSpaceDomain.currentActiveContact = null;
+			mainModel.currentDomainWorkSpace.currentActiveContact = null;
 			
 			mainView.group_chatWindow.visible = false;
 			

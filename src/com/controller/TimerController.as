@@ -7,7 +7,7 @@ package com.controller
 	
 	import util.classes.Agent;
 	import util.classes.User;
-	import util.classes.WorkSpaceDomain;
+	import util.classes.DomainWorkSpace;
 
 	public class TimerController
 	{
@@ -69,7 +69,7 @@ package com.controller
 			var timeStamp:Number = date.time;
 			
 			
-			for each(var userItem:User in mainModel.currentWorkSpaceDomain.arrayCollection_users)
+			for each(var userItem:User in mainModel.currentDomainWorkSpace.arrayCollection_users)
 			{
 				
 				date.time =timeStamp - userItem.createAt;
@@ -81,7 +81,7 @@ package com.controller
 			}
 			
 			
-			for each(var agentItem:Agent in mainModel.currentWorkSpaceDomain.arrayCollection_agent)
+			for each(var agentItem:Agent in mainModel.currentDomainWorkSpace.arrayCollection_agent)
 			{
 				date.time = timeStamp - agentItem.createAt;
 				

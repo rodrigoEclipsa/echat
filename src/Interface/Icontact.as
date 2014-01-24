@@ -10,7 +10,9 @@ package Interface
 	public interface IContact
 	{
 		
-		
+		function get createAt():Number
+		function set createAt(value:Number):void
+			
 			
 		function get contact():Contact;
 		

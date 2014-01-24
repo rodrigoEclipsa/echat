@@ -11,6 +11,7 @@ package com.controller
 	import com.view.login.LoginView;
 	
 	import flash.events.IEventDispatcher;
+	import flash.utils.getTimer;
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
@@ -72,7 +73,7 @@ package com.controller
 		public function login(email:String,password:String):void
 		{
 			
-			
+		
 			loginView.showLoad();
 	
 	   
@@ -81,15 +82,13 @@ package com.controller
 		
 		service_echat.login(service_chat_loginHandler,email,SHA1.hash(password));
 			
-			
+		
+		
 			
 		function service_chat_loginHandler(result:Object):void
 		{
 			
-				
-			
-			
-			
+		
 			if(result is ErrorServiceEvent)
 			{
 				
