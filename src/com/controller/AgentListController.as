@@ -1,6 +1,6 @@
 package com.controller
 {
-	import com.event.ErrorServiceEvent;
+	
 	import com.model.ChatManagerModel;
 	import com.model.MainModel;
 	

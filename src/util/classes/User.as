@@ -2,7 +2,7 @@ package util.classes
 {
 	
 	
-	import Interface.IContact;
+	import util.Interface.IContact;
 	
 	import flash.events.EventDispatcher;
 	import flash.utils.clearInterval;
@@ -41,9 +41,9 @@ package util.classes
 		
 		
 		
-		public var online:Boolean =false;
-		public var show:String;
-		public var jid:UnescapedJID;
+		private var _online:Boolean =false;
+		private var _show:String;
+		private var _jid:UnescapedJID;
 		
 		
 		//------------
@@ -74,6 +74,36 @@ package util.classes
 		
 		
 		
+		public function get jid():UnescapedJID
+		{
+			return _jid;
+		}
+
+		public function set jid(value:UnescapedJID):void
+		{
+			_jid = value;
+		}
+
+		public function get show():String
+		{
+			return _show;
+		}
+
+		public function set show(value:String):void
+		{
+			_show = value;
+		}
+
+		public function get online():Boolean
+		{
+			return _online;
+		}
+
+		public function set online(value:Boolean):void
+		{
+			_online = value;
+		}
+
 		public function get createAt():Number
 		{
 			return _createAt;
@@ -162,7 +192,7 @@ package util.classes
 		public function destroy():void 
 		{
 			
-			_contact = null;
+		
 			
 			arrayList_session.removeEventListener(CollectionEvent.COLLECTION_CHANGE,arrayList_session_changeHandler);
 		

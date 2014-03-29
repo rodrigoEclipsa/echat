@@ -1,10 +1,10 @@
-package Interface
+package util.Interface
 {
 	import flashx.textLayout.elements.TextFlow;
 	
 	import org.igniterealtime.xiff.core.UnescapedJID;
 	
-	import util.classes.Contact;
+	
 
 	[Bindable]
 	public interface IContact
@@ -14,7 +14,7 @@ package Interface
 		function set createAt(value:Number):void
 			
 			
-		function get contact():Contact;
+	
 		
 		function get historyText():TextFlow;
 		function set historyText(value:TextFlow):void;
@@ -32,6 +32,16 @@ package Interface
 		function set lastChatTimeStamp(value:Number):void;
 		
 		
+		
+		
+		
+		function get jid():UnescapedJID
+		function get show():String
+		function get online():Boolean
+		
+			
+			
+			
 		function getContactId():int
 			
 		function getContactName():String

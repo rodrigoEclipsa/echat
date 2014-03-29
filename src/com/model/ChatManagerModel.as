@@ -10,7 +10,7 @@ package com.model
 	import org.igniterealtime.xiff.core.XMPPTLSConnection;
 	import org.igniterealtime.xiff.im.Roster;
 	
-	import util.classes.Contact;
+	
 
 	[Bindable]
 	public class ChatManagerModel

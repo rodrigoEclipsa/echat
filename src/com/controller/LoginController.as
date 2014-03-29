@@ -1,8 +1,9 @@
 package com.controller
 {
+	import com.adobe.crypto.MD5;
 	import com.adobe.crypto.SHA1;
 	import com.event.ChatManagerEvent;
-	import com.event.ErrorServiceEvent;
+	
 	import com.event.LoginEvent;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
@@ -15,6 +16,7 @@ package com.controller
 	
 	import mx.controls.Alert;
 	import mx.core.FlexGlobals;
+	import mx.rpc.Fault;
 	import mx.utils.ObjectUtil;
 	
 	import org.igniterealtime.xiff.core.EscapedJID;
@@ -26,6 +28,7 @@ package com.controller
 	
 	import util.app.ConfigParameters;
 	import util.vo.ResultVO;
+	import util.vo.entities.AgentVO;
 	import util.vo.entities.DomainVO;
 	
 	public class LoginController
@@ -80,7 +83,7 @@ package com.controller
 			
 		var service_echat:ServiceEchat = new ServiceEchat();
 		
-		service_echat.login(service_chat_loginHandler,email,SHA1.hash(password));
+		service_echat.login(service_chat_loginHandler,email,MD5.hash(password));
 			
 		
 		
@@ -89,7 +92,9 @@ package com.controller
 		{
 			
 		
-			if(result is ErrorServiceEvent)
+			
+		
+			if(result is Fault)
 			{
 				
 				Alert.show("Se produjo un error","Error");
@@ -110,7 +115,7 @@ package com.controller
 						
 				//		trace("loggued : " + ObjectUtil.toString(resultVO.data))
 			
-						loginModel.agentVO = resultVO.data.agentVO;
+						loginModel.agentVO = resultVO.data.agentVO as AgentVO;
 						
 						
 						
@@ -123,7 +128,7 @@ package com.controller
 						
 						
 						
-						chatManagerController.login("agent_"+resultVO.data.agentVO.id,SHA1.hash(password)); 
+						chatManagerController.login("agent_"+resultVO.data.agentVO.id,MD5.hash(password)); 
 						
 						
 						
@@ -207,5 +212,9 @@ package com.controller
 		}
 		
 		
+		
+		
+		
 	}
 }
+

@@ -4,8 +4,6 @@ package util.classes
 
 
 
-	import Interface.IContact;
-	
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
@@ -16,6 +14,7 @@ package util.classes
 	import org.igniterealtime.xiff.data.im.RosterItemVO;
 	import org.swizframework.core.IDisposable;
 	
+	import util.Interface.IContact;
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.RoleVO;
 
@@ -26,11 +25,12 @@ package util.classes
 
 		public var roleVO:RoleVO;
 		public var agentVO:AgentVO;
-
+        
+		private var _domainsIds:Array = new Array();
 
 		///---------IContact
 		private var _historyText:TextFlow;
-		private var _contact:Contact;
+	
 
 		private var _lastChatJid:UnescapedJID;
 
@@ -40,9 +40,9 @@ package util.classes
 		
 		
 		
-		public var online:Boolean =false;
-		public var show:String;
-		public var jid:UnescapedJID;
+		private var _online:Boolean =false;
+		private var _show:String;
+		private var _jid:UnescapedJID;
 		
 		
 		//------------
@@ -66,8 +66,47 @@ package util.classes
 
 		}
 
+		
 
+		public function get domainsIds():Array
+		{
+			return _domainsIds;
+		}
 
+		public function set domainsIds(value:Array):void
+		{
+			_domainsIds = value;
+		}
+
+		public function get jid():UnescapedJID
+		{
+			return _jid;
+		}
+
+		public function set jid(value:UnescapedJID):void
+		{
+			_jid = value;
+		}
+
+		public function get show():String
+		{
+			return _show;
+		}
+
+		public function set show(value:String):void
+		{
+			_show = value;
+		}
+
+		public function get online():Boolean
+		{
+			return _online;
+		}
+
+		public function set online(value:Boolean):void
+		{
+			_online = value;
+		}
 
 		public function get createAt():Number
 		{
@@ -145,21 +184,13 @@ package util.classes
 		}
 
 
-		public function get contact():Contact
-		{
-			return _contact;
-		}
-
-		public function set contact(value:Contact):void
-		{
-			_contact=value;
-		}
+	
 
 		public function destroy():void
 		{
 
 
-			_contact=null;
+		
 
 
 		}

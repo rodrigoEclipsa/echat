@@ -81,7 +81,7 @@ package com.controller
 			}
 			
 			
-			for each(var agentItem:Agent in mainModel.currentDomainWorkSpace.arrayCollection_agent)
+			for each(var agentItem:Agent in mainModel.arrayCollection_agent)
 			{
 				date.time = timeStamp - agentItem.createAt;
 				

@@ -2,10 +2,6 @@ package service
 {
 	
 	
-	
-	
-	import com.event.ErrorServiceEvent;
-	
 	import flash.utils.clearInterval;
 	import flash.utils.setInterval;
 	
@@ -19,18 +15,15 @@ package service
 	import util.app.ConfigParameters;
 	
 
-
-
-	
 	
 	public class ServiceEchat 
 	{
 		
-		public var gatewayUrl:String= "http://" + ConfigParameters.server + "/amfphp_echat/index.php/amf/gateway/";
+		public var gatewayUrl:String= "http://" + ConfigParameters.server + "/space_eclipsa/server/amfphp_echat/index.php/amf/gateway/";
 		public var remoteObj:RemoteObject;
 		public var _func:Function;
 		
-		private var interval:uint;
+		
 		
 		public function ServiceEchat()
 		{
@@ -41,25 +34,18 @@ package service
 			
 			remoteObj.source = "service_echat";
 			
+			remoteObj.showBusyCursor = true;
+			remoteObj.requestTimeout = 40;
+			
 			remoteObj.addEventListener(ResultEvent.RESULT,getResult);
 			remoteObj.addEventListener(FaultEvent.FAULT,onFault);
 			
-			interval = setInterval(timeOut,60000);
+			
 			
 		}
 		
 		
-		private function timeOut():void
-		{
-			
-			var errorServiceEvent:ErrorServiceEvent = new ErrorServiceEvent(ErrorServiceEvent.timeOut);
-			
-			_func(errorServiceEvent);
-			
-			disconnect();
-			destroy();
-			
-		}
+	
 	
 		
 		public function disconnect():void
@@ -84,38 +70,35 @@ package service
 		{
 			
 			
-			trace("ERROR: " + event.fault);
-			
-			
-			//Alert.show(event.fault.faultString);
-			
-			var errorServiceEvent:ErrorServiceEvent = new ErrorServiceEvent(ErrorServiceEvent.timeOut);
-			
-			errorServiceEvent.message = event.message.body.toString();
-            _func(errorServiceEvent);
+
+            _func(event.fault);
 			
 			destroy();
 			
 		}
 		
 		
-		
-	    private function destroy():void
+		private function destroy():void
 		{
-			clearInterval(interval);
+			
 			remoteObj=null;
 			_func = null;
-			
-			
 			
 			
 		}
 		
 		
-		
 		////-----------------------------------------------------------------------------------funciones del servicio
 		
 		
+		public function test(func:Function):void
+		{
+			
+			_func=func;
+			
+			remoteObj.test();
+			
+		}
 		
 		
 		
@@ -150,7 +133,7 @@ package service
 		
 		
 	
-		public function getAgentsByIds(func:Function,ids):void
+		public function getAgentsByIds(func:Function,ids:Array):void
 		{
 			
 			

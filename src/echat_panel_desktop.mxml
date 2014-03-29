@@ -38,6 +38,8 @@
 			import mx.events.FlexNativeMenuEvent;
 			import mx.utils.ObjectUtil;
 			
+			import service.ServiceEchat;
+			
 			[Bindable]
 			[Inject]
 			public var loginController:LoginController;
@@ -59,8 +61,19 @@
 				
 				dispatchEvent(mainEvent);
 				
+			//	var serviceEchat:ServiceEchat = new ServiceEchat();
+			//	serviceEchat.test(testHandler);
+				
 			}
 			
+			
+			
+			public function testHandler(result:Object):void
+			{
+				
+				trace(result);
+				
+			}
 			
 			
 			protected function windowedapplication1_creationCompleteHandler(event:FlexEvent):void

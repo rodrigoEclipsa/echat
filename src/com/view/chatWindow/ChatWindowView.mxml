@@ -13,7 +13,7 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import Interface.IContact;
+			import util.Interface.IContact;
 			
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
@@ -57,7 +57,7 @@
 			import util.app.ConfigParameters;
 			import util.classes.Agent;
 			import util.classes.Chat;
-			import util.classes.Contact;
+		
 			import util.classes.QueueChat;
 			import util.classes.User;
 			
@@ -266,7 +266,7 @@
 			{
 				
 				
-				var message:Message=new Message(mainModel.currentDomainWorkSpace.currentActiveContact.contact.jid.escaped, null, richEditableText_input.text, null, Message.TYPE_CHAT, null);
+				var message:Message=new Message(mainModel.currentDomainWorkSpace.currentActiveContact.jid.escaped, null, richEditableText_input.text, null, Message.TYPE_CHAT, null);
 				
 				
 				mainController.sendMesage(message);
@@ -336,7 +336,7 @@
 			else
 			{
 				
-				contactJid = iContact.contact.jid;
+				contactJid = iContact.jid;
 			}
 
 			

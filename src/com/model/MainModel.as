@@ -4,7 +4,7 @@ package com.model
 	
 	
 	
-	import Interface.IContact;
+	import util.Interface.IContact;
 	
 	import com.view.MainView;
 	import com.view.chatWindow.ChatWindowView;
@@ -249,7 +249,7 @@ package com.model
 		
 		var agent:Agent;
 		
-		for each(var agentItem:Agent in workSpaceDomain.arrayCollection_agent)
+		for each(var agentItem:Agent in arrayCollection_agent)
 		{
 			
 			if(agentItem.agentVO.id == agentId)

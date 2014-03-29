@@ -23,7 +23,7 @@
 	</fx:Script>
 	
 	
-	<s:BorderContainer width="12" height="12" backgroundColor="{itemData.contact.online ? 0x81E935 : 0xdedede}" cornerRadius="20"
+	<s:BorderContainer width="12" height="12" backgroundColor="{itemData.online ? 0x81E935 : 0xdedede}" cornerRadius="20"
 					   horizontalCenter="0" verticalCenter="0"/>
 	
 	

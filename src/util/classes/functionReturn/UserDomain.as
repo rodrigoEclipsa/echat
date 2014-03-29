@@ -1,6 +1,6 @@
 package util.classes.functionReturn
 {
-	import Interface.IContact;
+	import util.Interface.IContact;
 	
 	import util.classes.DomainWorkSpace;
 	

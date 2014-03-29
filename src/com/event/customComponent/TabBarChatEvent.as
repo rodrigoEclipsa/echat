@@ -2,7 +2,7 @@ package com.event.customComponent
 {
 	
 	
-	import Interface.IContact;
+	import util.Interface.IContact;
 	
 	import flash.events.Event;
 	

@@ -2,7 +2,7 @@ package util.classes
 {
 	
 	
-	import Interface.IContact;
+	import util.Interface.IContact;
 	
 	import com.model.MainModel;
 	import com.view.MainView;

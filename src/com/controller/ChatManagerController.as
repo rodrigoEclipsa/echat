@@ -2,27 +2,27 @@ package com.controller
 {
 	import com.adobe.crypto.SHA1;
 	import com.event.ChatManagerEvent;
-	import com.event.ErrorServiceEvent;
 	import com.hurlant.crypto.tls.TLSConfig;
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
 	import com.wirelust.as3zlib.System;
-
+	
 	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
 	import flash.system.Capabilities;
 	import flash.system.Security;
 	import flash.utils.Timer;
-
+	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
 	import mx.core.Application;
 	import mx.core.FlexGlobals;
+	import mx.rpc.Fault;
 	import mx.utils.ObjectUtil;
-
+	
 	import org.igniterealtime.xiff.auth.External;
 	import org.igniterealtime.xiff.auth.Plain;
 	import org.igniterealtime.xiff.conference.InviteListener;
@@ -34,6 +34,7 @@ package com.controller
 	import org.igniterealtime.xiff.core.XMPPConnection;
 	import org.igniterealtime.xiff.core.XMPPTLSConnection;
 	import org.igniterealtime.xiff.data.IQ;
+	import org.igniterealtime.xiff.data.IXMPPStanza;
 	import org.igniterealtime.xiff.data.Message;
 	import org.igniterealtime.xiff.data.Presence;
 	import org.igniterealtime.xiff.data.XMPPStanza;
@@ -57,9 +58,9 @@ package com.controller
 	import org.igniterealtime.xiff.events.RosterEvent;
 	import org.igniterealtime.xiff.events.XIFFErrorEvent;
 	import org.igniterealtime.xiff.im.Roster;
-
+	
 	import service.ServiceEchat;
-
+	
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
 	import util.ExtensionsXiff.EchatExtension;
@@ -67,10 +68,9 @@ package com.controller
 	import util.XmlFuncUtil;
 	import util.app.ConfigParameters;
 	import util.classes.Agent;
-	
+	import util.classes.DomainWorkSpace;
 	import util.classes.Session;
 	import util.classes.User;
-	import util.classes.DomainWorkSpace;
 	import util.vo.ResultVO;
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.UserVO;
@@ -172,7 +172,7 @@ package com.controller
 		private function setupConnection():void
 		{
 
-
+		
 
 
 			chatManagerModel.connection=new XMPPTLSConnection();
@@ -237,7 +237,7 @@ package com.controller
 			//una ves logueado envio mensage de presencia con una extencion y asigno la conexion a roster
 			var xml:XML=chatManagerModel.getExtensionPresence(loginModel.agentVO.name, loginModel.agentVO.email);
 
-
+		
 			var presence:Presence=new Presence(null, chatManagerModel.connection.jid.escaped, Presence.SHOW_CHAT, Presence.SHOW_CHAT);
 
 			var echatExtension:EchatExtension=new EchatExtension();
@@ -273,7 +273,7 @@ package com.controller
 
 			for each (var rosterItemVO:RosterItemVO in chatManagerModel.roster)
 			{
-
+				
 				var splitName:Array=rosterItemVO.jid.node.split("_");
 
 				var prefix:String=splitName[0];
@@ -300,7 +300,7 @@ package com.controller
 
 
 
-			serviceEchat.getAgentsByIds(serviceEchat_getAgentsByIdsHandler, arrayIds.join(","));
+		//	serviceEchat.getAgentsByIds(serviceEchat_getAgentsByIdsHandler, arrayIds.join(","));
 
 
 
@@ -320,7 +320,7 @@ package com.controller
 		private function serviceEchat_getAgentsByIdsHandler(result:Object):void
 		{
 
-			if (result is ErrorServiceEvent)
+			if (result is Fault)
 			{
 
 				Alert.show("Se produjo un error", "Error");
@@ -397,10 +397,12 @@ package com.controller
 		}
 
 		private function onUserAdded(event:RosterEvent):void
-		{
-
-			var presence:Presence=event.data as Presence;
+	    {
 		
+			
+			var rosterItemVO:RosterItemVO=event.data as RosterItemVO;
+				
+			
 			   var splitName:Array=event.jid.node.split("_");
 
 			   var prefix:String=splitName[0];
@@ -409,16 +411,13 @@ package com.controller
 			   if (prefix == "agent")
 			   {
 
-			   var agentVO:AgentVO = new AgentVO();
-			   agentVO.name = presence.xml.name;
-			   agentVO.email = presence.xml.email;
-			   agentVO.nick = presence.xml.nick;
+				   var serviceEchat:ServiceEchat = new ServiceEchat();
+				   serviceEchat.getUserId(serviceEchat_getUserIdHandler,contactId);
+				   
+			
 
-			   var agent:Agent = new Agent(agentVO);
-
-			 
-
-
+			   
+			  
 			   }
 			   else if(prefix == "user")
 			   {
@@ -436,7 +435,56 @@ package com.controller
 
 		}
 
-
+private function serviceEchat_getUserIdHandler(result:Object):void
+{
+	
+	
+	
+	if(result is Fault)
+	{
+		
+		Alert.show("se produjo un error","Error")
+		
+	}
+	else
+	{
+		
+		var resultVO:ResultVO = result as ResultVO;
+		
+		if(resultVO.success)
+		{
+		var agentVO:AgentVO = new AgentVO();
+		
+		agentVO.name = resultVO.data.agentVO.name;
+		agentVO.nick = resultVO.data.agentVO.nick;
+		
+		
+		
+		var agent:Agent = new Agent(agentVO);
+		agent.domainsIds = resultVO.data.domainsIds as Array;
+		
+		
+		agent.roleVO = resultVO.data.roleVO;
+		
+		mainModel.arrayCollection_agent.addItem(agent);
+		
+		}
+		else
+		{
+			
+			Alert.show("se produjo un error al listar los agentes","Error")
+		}
+		
+		
+		
+	}
+	
+	
+}
+	
+		
+		
+		
 
 		private function onUserRemoved(event:RosterEvent):void
 		{	
@@ -449,9 +497,7 @@ package com.controller
 			var contactId:String=splitName[1];
 			
 			var workSpaceDomain:DomainWorkSpace;
-			
-			var contact:Contact=chatManagerModel.getContactByJid(event.jid.node);
-			contact.online=false;
+		
 			
 			
 			//seguen el prefix se si es un agente o un usuario
@@ -462,7 +508,7 @@ package com.controller
 				
 				
 				//remuevo el contact
-				chatManagerModel.arrayCollection_contact.removeItemAt(chatManagerModel.arrayCollection_contact.getItemIndex(contact));
+			//	chatManagerModel.arrayCollection_contact.removeItemAt(chatManagerModel.arrayCollection_contact.getItemIndex(contact));
 				
 				
 				var domainId:int=int(splitName[2]);
@@ -495,10 +541,6 @@ package com.controller
 			var contactId:String=splitName[1];
 
 			var workSpaceDomain:DomainWorkSpace;
-
-			var contact:Contact=chatManagerModel.getContactByJid(event.jid.node);
-			contact.online=false;
-
 
 			//seguen el prefix se si es un agente o un usuario
 			if (prefix == "user")
@@ -563,10 +605,7 @@ package com.controller
 
 				
 				
-				//obtengo el objeto de contacto y pongo en online
-				var contact:Contact  = chatManagerModel.getContactByJid(presence.from.node);
-				contact.online = true;
-			
+		
 			
 
 				//seguen el prefix se si es un agente o un usuario
@@ -624,7 +663,7 @@ package com.controller
 							var user:User=new User();
 							user.userVO=userVO;
 							user.arrayList_session.addItem(session);
-							user.contact=contact;
+				
 
 							workSpaceDomain.arrayCollection_users.addItem(user);
 

@@ -1,6 +1,6 @@
 package com.controller
 {
-	import Interface.IContact;
+	import util.Interface.IContact;
 	
 	import com.event.ChatManagerEvent;
 	import com.event.MainEvent;
