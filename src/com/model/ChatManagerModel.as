@@ -41,7 +41,7 @@ package com.model
 		
 	///--------------------------------------------------mensages xml	
 		
-		public function getExtensionPresence(name:String,email:String):XML
+		public function getExtensionPresence(name:String,email:String,domainId:int):XML
 		{
 			
 			
@@ -50,7 +50,7 @@ package com.model
 									<name>{name}</name>	
 									 <email>{email}</email>
 									
-			
+			                          <domain_id>{domainId}</domain_id>
 			                        </root>
 			                  </echat>
 									;

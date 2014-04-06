@@ -12,7 +12,7 @@ package com.model
 	import mx.utils.ObjectUtil;
 	
 	import util.sql.HistoryChatVO;
-	import util.classes.Chat;
+	import util.classes.ChatItem;
 	
 	
 	[Bindable]

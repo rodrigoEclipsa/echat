@@ -1,7 +1,5 @@
 package com.controller
 {
-	import util.Interface.IContact;
-	
 	import com.event.ChatManagerEvent;
 	import com.event.MainEvent;
 	import com.model.ChatManagerModel;
@@ -39,13 +37,14 @@ package com.controller
 	
 	import util.ArrayCollectionUtil;
 	import util.DateManager;
+	import util.Interface.IContact;
 	import util.app.ConfigParameters;
-	import util.classes.Agent;
-	import util.classes.Chat;
 	import util.classes.Domain;
-	import util.classes.QueueChat;
-	import util.classes.User;
 	import util.classes.DomainWorkSpace;
+
+	import util.classes.QueueChat;
+	import util.classes.Agent;
+	import util.classes.User;
 	import util.classes.functionReturn.UserDomain;
 	import util.vo.ResultVO;
 	import util.vo.entities.DomainVO;
@@ -130,7 +129,7 @@ package com.controller
 				
 				workSpaceDomain.domain = domain;
 				
-				mainModel.arrayCollection_domainsWorkSpace.addItem(workSpaceDomain);
+				mainModel.arrayCollection_domainWorkSpace.addItem(workSpaceDomain);
 				
 				
 			}
@@ -139,11 +138,11 @@ package com.controller
 			
 			
 			//selecciono el primer domino por defecto
-			if(mainModel.arrayCollection_domainsWorkSpace.source.length)
+			if(mainModel.arrayCollection_domainWorkSpace.source.length)
 			{
 				
 				
-				mainModel.currentDomainWorkSpace = mainModel.arrayCollection_domainsWorkSpace.getItemAt(0) as DomainWorkSpace;
+				mainModel.currentDomainWorkSpace = mainModel.arrayCollection_domainWorkSpace.getItemAt(0) as DomainWorkSpace;
 				mainView.list_domains.selectedItem = mainModel.currentDomainWorkSpace;
 				
 			}
@@ -165,37 +164,33 @@ package com.controller
 			
 			var prefix:String=splitName[0];
 			var contactId:String=splitName[1];
-			var domainId:String=splitName[2];
+			var domainId:String = splitName[2];
 
-			
 		    var iContact:IContact;
-			var workSpaceDomain:DomainWorkSpace;
+			var domainWorkSpace:DomainWorkSpace;
 			
 			var textHead:String;
 
 			
 			
+			
+			
 			if(prefix == "user")
 			{
 				
-				workSpaceDomain = mainModel.getWorkSpacedomainById(int(domainId));
+				domainWorkSpace = mainModel.getDomaintWorkSpaceById(int(domainId));
 				
 				
-				iContact = mainModel.getUserById(workSpaceDomain,int(contactId)) as IContact;
-				
-				
-				
+				iContact = mainModel.getUserById(domainWorkSpace,int(contactId));
 				
 				
 				
 			}
-			else
+			else if(prefix == "agent")
 			{
 				
-				
+				iContact = mainModel.getAgentById(int(contactId));
 			
-				
-				
 				
 			}
 			
@@ -205,40 +200,19 @@ package com.controller
 				
 			
 			//pregunto si el usuario tiene una pestaña
-			if(mainModel.isQueueChat(iContact))
+			if(!mainModel.isQueueChat(iContact))
 			{
-				
-				
-			}
-			else
-			{
-				//agrego la pestaña
+				trace("se genera tab")
 				mainModel.currentDomainWorkSpace.arrayCollection_queueChat.addItem(iContact);
-				
-				
 			}
-			
-			
-			
-			
-			
-			
-			
-			chatWindowView.appendFormatTextChat(message.body,iContact,false);
-				
-				
-				
-				
-				
-				
 		
 			
 			
 			
 			
-			
-			
-			
+			chatWindowView.appendFormatTextChat(message.body,iContact,message.id,false);
+				
+				
 			
 		}
 	

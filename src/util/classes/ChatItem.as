@@ -2,7 +2,7 @@ package util.classes
 {
 	
 	[Bindable]
-	public class Chat
+	public class ChatItem
 	{
 		
 	
@@ -10,12 +10,19 @@ package util.classes
 		
 		public var body:String;
 		
-		public var state:String;
+		
 	
 		public var uid:String;
 		
-		public var hs:String;
+		public var time:Number;
 		
+		
+		public var name:String;
+		
+		
+		public var isHeaer:Boolean = false;
+		
+		public var contactId:int;
 		
 		public var checkedMessage:Boolean = false;
 		

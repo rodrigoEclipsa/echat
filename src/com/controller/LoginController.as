@@ -3,7 +3,6 @@ package com.controller
 	import com.adobe.crypto.MD5;
 	import com.adobe.crypto.SHA1;
 	import com.event.ChatManagerEvent;
-	
 	import com.event.LoginEvent;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
@@ -22,6 +21,7 @@ package com.controller
 	import org.igniterealtime.xiff.core.EscapedJID;
 	import org.igniterealtime.xiff.events.ConnectionSuccessEvent;
 	import org.igniterealtime.xiff.events.RoomEvent;
+	import org.igniterealtime.xiff.events.RosterEvent;
 	import org.igniterealtime.xiff.events.XIFFErrorEvent;
 	
 	import service.ServiceEchat;
@@ -128,6 +128,8 @@ package com.controller
 						
 						
 						
+						
+						
 						chatManagerController.login("agent_"+resultVO.data.agentVO.id,MD5.hash(password)); 
 						
 						
@@ -163,8 +165,12 @@ package com.controller
 		
 		
 		
-		[EventHandler("ChatManagerEvent.connectSuccess",properties="connectionSuccessEvent")]
-		public function chatManagerEvent_connectSuccess(connectionSuccessEvent:ConnectionSuccessEvent):void
+		
+		
+		
+		
+		[EventHandler("ChatManagerEvent.rosterLoaded",properties="rosterEvent")]
+		public function chatManagerEvent_connectSuccess(rosterEvent:RosterEvent):void
 		{
 			
 			loginView.removeLoad();

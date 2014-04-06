@@ -5,6 +5,7 @@ package com.model
 	import org.igniterealtime.xiff.core.EscapedJID;
 	import org.igniterealtime.xiff.core.UnescapedJID;
 	
+	import util.classes.Agent;
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.DomainVO;
 	import util.vo.entities.RoleVO;

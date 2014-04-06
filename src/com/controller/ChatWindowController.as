@@ -34,32 +34,29 @@ package com.controller
 		
 		
 		
-		public function openChatWindow(contact:IContact):void
+		public function openChatWindow(iContact:IContact):void
 		{
 			
 			
 			
 			//pregunto si el usuario esta en la cola de chat, si no la agrego
-			if(!mainModel.isQueueChat(contact))
-				mainModel.currentDomainWorkSpace.arrayCollection_queueChat.addItem(contact);
+			if(!mainModel.isQueueChat(iContact))
+				mainModel.currentDomainWorkSpace.arrayCollection_queueChat.addItem(iContact);
 			
 			
 			
 			// si no esta activo lo pongo activo y lo selecciono en el tab
-			if(mainModel.currentDomainWorkSpace.currentActiveContact != contact )
+			if(mainModel.currentDomainWorkSpace.currentActiveContact != iContact )
 			{
 				
 				
-				mainModel.currentDomainWorkSpace.currentActiveContact = contact;
+				mainModel.currentDomainWorkSpace.currentActiveContact = iContact;
 				mainView.tabBar_queueChat.selectedItem = mainModel.currentDomainWorkSpace.currentActiveContact;
 				
 				
 			
 				
-				
 				mainView.group_chatWindow.visible = true;
-				
-				
 				
 				
 			}

@@ -4,8 +4,6 @@ package com.model
 	
 	
 	
-	import util.Interface.IContact;
-	
 	import com.view.MainView;
 	import com.view.chatWindow.ChatWindowView;
 	
@@ -21,13 +19,14 @@ package com.model
 	import org.igniterealtime.xiff.core.UnescapedJID;
 	import org.igniterealtime.xiff.data.Message;
 	
+	import util.Interface.IContact;
 	import util.app.ConfigParameters;
 	import util.classes.Agent;
-	import util.classes.Chat;
+	
 	import util.classes.Domain;
+	import util.classes.DomainWorkSpace;
 	import util.classes.QueueChat;
 	import util.classes.User;
-	import util.classes.DomainWorkSpace;
 	import util.classes.functionReturn.UserDomain;
 
 	
@@ -48,12 +47,19 @@ package com.model
 		
 	
 		
+		public function MainModel()
+		{
+			
+			arrayCollection_agent.filterFunction = filter_arrayCollection_gent;
+			
+		}
+		
 	/**
 	 * array de dominios , de aqui parten todos los datos 
 	 * ya que cada dominio tiene sus propias caracteristicas
 	 * 
 	 **/
-	 public var arrayCollection_domainsWorkSpace:ArrayCollection = new ArrayCollection();
+	 public var arrayCollection_domainWorkSpace:ArrayCollection = new ArrayCollection();
 		
 		
 	 /**
@@ -81,78 +87,39 @@ package com.model
 		
 		
 		
-		/**
-		 * 
-		 * obtiene el IContact del provedor de pestañas queueChat
-		 * 
-		 * 
-		 * **/
-		/*
-		public function getUserDomainById(id:int,isUser:Boolean):UserDomain
+		
+		
+		
+		
+		
+		
+		private function filter_arrayCollection_gent(item:Object):Boolean
 		{
-			var userDomain:UserDomain;
-			var contact:IContact;
 			
-			for each(var workSpaceDomainItem:WorkSpaceDomain in arrayCollection_workSpacedomains )
-			{
+			var result:Boolean = false;
+			
+			var agent:Agent = item as Agent;
+			
+			var currentDomainId:int = currentDomainWorkSpace.domain.domainVO.id;
+			
+		  for each(var domainId:int in agent.domainsIds)
+		  {
+			  
+			  if(domainId == currentDomainId)
+				  result = true;
+			  
+		  }
+			
 				
-				if(isUser)
-				{
-					
-						for each(var userItem:User in workSpaceDomainItem.arrayCollection_users)
-						{
-							
-							if(userItem.userVO.id == id)
-							{
-								userDomain = new UserDomain()
-								userDomain.iContact = userItem;
-								userDomain.workSpaceDomain = workSpaceDomainItem;
-								
-								return userDomain;
-								
-							}
-							
-						}
-					
-					
-				}
-				else
-				{
-					
-					
-					
-					for each(var agentItem:Agent in workSpaceDomainItem.arrayCollection_agent)
-					{
-						
-						if(agentItem.agentVO.id == id)
-						{
-							userDomain = new UserDomain()
-							userDomain.iContact = agentItem;
-							userDomain.workSpaceDomain = workSpaceDomainItem;
-							
-							return userDomain;
-							
-						}
-						
-					}
-					
-					
-				}
 				
+				return result;
+		}
 		
-				
-				
-			}
-			
-			
-			
-			
-			
-			return userDomain;
-			
-		}	
 		
-		*/
+		
+		
+	
+	
 		
 		
 	public function isQueueChat(contact:IContact):Boolean
@@ -186,12 +153,12 @@ package com.model
 	  * 
 	  * 
 	  * **/
-	public function getWorkSpacedomainById(id:int):DomainWorkSpace
+	public function getDomaintWorkSpaceById(id:int):DomainWorkSpace
 	{
 		
 		var workSpaceDomain:DomainWorkSpace;
 		
-		for each(var workSpaceDomainItem:DomainWorkSpace in arrayCollection_domainsWorkSpace)
+		for each(var workSpaceDomainItem:DomainWorkSpace in arrayCollection_domainWorkSpace)
 		{
 			
 			if(workSpaceDomainItem.domain.domainVO.id == id  )
@@ -225,12 +192,15 @@ package com.model
 		
 		var user:User;
 		
+		
 		for each(var userItem:User in workSpaceDomain.arrayCollection_users)
 		{
 			
 			if(userItem.userVO.id == userId)
+			{
 				user = userItem
-			
+			break;
+			}
 		}
 
 
@@ -242,19 +212,22 @@ package com.model
 	
 	
 	
-	public function getAgentById(workSpaceDomain:DomainWorkSpace, agentId:int):Agent
+	public function getAgentById(agentId:int):Agent
 	{
 		
 		
 		
 		var agent:Agent;
 		
-		for each(var agentItem:Agent in arrayCollection_agent)
+		for each(var agentItem:Agent in arrayCollection_agent.source)
 		{
-			
+		
 			if(agentItem.agentVO.id == agentId)
+			{
 				agent = agentItem;
 			
+				break;
+			}
 		}
 		
 		

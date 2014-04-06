@@ -2,19 +2,20 @@
 <s:SkinnableContainer xmlns:fx="http://ns.adobe.com/mxml/2009"
 					  xmlns:s="library://ns.adobe.com/flex/spark"
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
-					  width="100%" height="100%" minWidth="1"
+					  width="100%"
+					  height="100%"
+					  minWidth="1"
 					  creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
+					  show="skinnablecontainer1_showHandler(event)"
 					  currentState="{mainModel.currentDomainWorkSpace.currentActiveContact is User ? 'User' : 'Agent'}"
-					  width.Agent="100%">
-	
-	
-	
-	
-	
+					  width.Agent="100%" xmlns:customComponent="customComponent.*">
+
+
+
+
+
 	<fx:Script>
 		<![CDATA[
-			import util.Interface.IContact;
-			
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
 			import com.controller.TimerController;
@@ -43,6 +44,7 @@
 			import mx.managers.PopUpManager;
 			import mx.utils.ObjectUtil;
 			import mx.utils.StringUtil;
+			import mx.utils.UIDUtil;
 			
 			import org.igniterealtime.xiff.core.EscapedJID;
 			import org.igniterealtime.xiff.core.UnescapedJID;
@@ -52,188 +54,305 @@
 			
 			import spark.events.IndexChangeEvent;
 			import spark.events.TextOperationEvent;
+			import spark.utils.DataItem;
 			
 			import util.DateManager;
+			import util.Interface.IContact;
 			import util.app.ConfigParameters;
 			import util.classes.Agent;
-			import util.classes.Chat;
-		
+			import util.classes.ChatItem;
 			import util.classes.QueueChat;
 			import util.classes.User;
-			
-			
-		
+
+
+
 			private var loadWait:LoadWait;
-			
+
 			[Bindable]
 			[Inject]
 			public var mainModel:MainModel;
-			
-			
-		
+
+
+
 			[Inject]
 			public var chatWindowController:ChatWindowController;
-			
-			
+
+
 			[Bindable]
 			[Inject]
 			public var loginModel:LoginModel;
-		
+
 			[Bindable]
 			[ViewAdded]
 			public var mainView:MainView;
-			
-			
-			
-	
-			
+
+
+
+
+
 			public var is_writing:Boolean=false;
+
+
 			
-			
-			[Bindable]
-			private var typicalItem:Chat;
-			
+
 			[Bindable]
 			private var user:User;
 			[Bindable]
 			private var agent:Agent;
-			
-			
-			
+
+
+
 			[Inject]
 			public var mainController:MainController;
+
+
+
+        
 			
 			
-		
-		
-			
-			
+
 			public function showLoad():void
 			{
-				
-				if(!loadWait)
+
+				if (!loadWait)
 				{
-					loadWait = new LoadWait();
-					
-					this.addElement(loadWait);		
-					
+					loadWait=new LoadWait();
+
+					this.addElement(loadWait);
+
 					this.mouseChildren=false;
 					this.tabChildren=false;
-					
+
 				}
 			}
-			
-			
-			
+
+
+
 			public function removeLoad():void
 			{
-				
-				
+
+
 				if (loadWait)
 				{
-					
+
 					this.removeElement(loadWait);
 					loadWait=null;
-					
+
 					this.mouseChildren=true;
 					this.tabChildren=true;
-					
+
 				}
-				
+
 			}
-			
-			
-			
-			
-			
-		
+
+
+
+
+
+
 			protected function button_close_clickHandler(event:MouseEvent):void
 			{
-			
-				
-				
-				
+
+
+
+
 			}
-			
-			
-			
+
+
+
 			protected function button_mininize_clickHandler(event:MouseEvent):void
 			{
-				
-			
+
+
 				chatWindowController.minimizeChatWindow();
-		
+
 			}
-			
-			
-			
-		
-			
+
+
+
+
+
 			protected function skinnablecontainer1_creationCompleteHandler(event:FlexEvent):void
 			{
-				
-				
+
+	
+				list_historyText.scroller.verticalScrollBar.addEventListener(MouseEvent.MOUSE_WHEEL, list_mouseWheelHandler);
 				//textArea_input.addEventListener(FlexEvent.ENTER,textArea_input_enterHandler);
-				
+
 				//textArea_history.scroller.verticalScrollBar.addEventListener(FlexEvent.UPDATE_COMPLETE,textArea_history_updateCompleteHandler);
-			//	textArea_history.scroller.verticalScrollBar.addEventListener(Event.RENDER,textArea_history_valueCommitHandler);
-			
+				//	textArea_history.scroller.verticalScrollBar.addEventListener(Event.RENDER,textArea_history_valueCommitHandler);
+
 				//var host:Icontact = mainModel.currentWorkSpaceDomain.currentActiveContact;
-			
+
 				//ChangeWatcher.watch(mainModel.currentWorkSpaceDomain,"currentActiveContact",dataChange);
-				
+
 				//text="{mainModel.currentWorkSpaceDomain.currentActiveContact.userVO.id.toString()}"
-				
-				
+
+
 			}
+
+			protected function list_mouseWheelHandler(event:MouseEvent):void
+			{
+				event.preventDefault();
+				///event.delta = event.delta > 0 ? 0.1 : -1;
+			
+			
+			
+			}
+			
 			
 			
 			private function textArea_input_enterHandler(event:FlexEvent):void
 			{
-				
-				
+
+
 				trace("enter ");
-				
-				
+
+
 			}
-			
-			
+
+
 			public function dataChange():void
 			{
-				
+
 				//trace("datachange ..............")
 				///el objeto puede ser un usuario o un agente
-				if(mainModel.currentDomainWorkSpace.currentActiveContact is User)
+				if (mainModel.currentDomainWorkSpace.currentActiveContact is User)
 				{
-					user = mainModel.currentDomainWorkSpace.currentActiveContact as User;
-					this.currentState = "User";
+					user=mainModel.currentDomainWorkSpace.currentActiveContact as User;
+					this.currentState="User";
 					trace("es un usuario .................")
-					
+
 				}
-				else 
+				else
 				{
-					agent = mainModel.currentDomainWorkSpace.currentActiveContact as Agent;
-					
-					this.currentState = "Agent";
-					
-					
+					agent=mainModel.currentDomainWorkSpace.currentActiveContact as Agent;
+
+					this.currentState="Agent";
+
+
 				}
-				
+
 				updateScroll();
-				
+
 			}
-			
-			
-			
+
+
+
 
 			protected function textArea_input_keyDownHandler(event:KeyboardEvent):void
 			{
-				
-				if (event.keyCode == Keyboard.ENTER && event.shiftKey)
+
+				if (event.keyCode == Keyboard.ENTER && !event.shiftKey)
 				{
 					
-					richEditableText_input.dispatchEvent(new FlexEvent(FlexEvent.ENTER));
+				//	richEditableText_input.dispatchEvent(new FlexEvent(FlexEvent.ENTER));
+
 					
+				sendMessage();
+      
+				}
+			
+				
+				
+				
+				
+			}
+
+
+
+
+			private function sendMessage():void
+			{
+
+
+				var message:Message=new Message(mainModel.currentDomainWorkSpace.currentActiveContact.jid.escaped, null, richEditableText_input.text, null, Message.TYPE_CHAT, null);
+
+
+				
+				mainController.sendMesage(message);
+
+				
+				appendFormatTextChat(richEditableText_input.text, mainModel.currentDomainWorkSpace.currentActiveContact, message.id,true)
+
+
+
+				richEditableText_input.text="";
+
+
+
+
+			}
+
+
+
+			public function updateScroll():void
+			{
+				
+				
+				
+				
+			//	list_historyText.scroller.verticalScrollBar.callLater(function callLater():void
+			//	{
+				
+				list_historyText.scroller.validateNow();
+				list_historyText.scroller.verticalScrollBar.value = list_historyText.scroller.verticalScrollBar.maximum;
+					//list_historyText.ensureIndexIsVisible(mainModel.currentDomainWorkSpace.currentActiveContact.historyText.length - 1);	
+					
+				//}
+					
+		//	);
+
+				
+			}
+
+			private function str_replace( replace_with:String, replace:String, original:String ):String
+			{
+				var array:Array = original.split(replace_with);
+				return array.join(replace);
+			}
+          
+			
+		
+			
+			public function appendFormatTextChat(body:String,iContact:IContact,messageId:String,isMy:Boolean):void
+			{
+				//normalizo el texto, por que cada vez que hago un salto de linea con shift genera un simbolo raro en vez de \n o \r
+				body = str_replace(" ","\n",body);
+				
+				var fromContactId:int ;
+				
+				var date:Date = new Date();
+				
+				
+			  var chatItem:ChatItem;
+			  
+			  
+				
+				
+				if(isMy)
+				{
+					
+					fromContactId = loginModel.agentVO.id;
+					//trace("contactJid : " + contactJid);
+					
+					
+				}
+				else
+				{
+					
+					fromContactId = iContact.getContactId();
+				}
+				
+				
+				//pregunto si el eltimo que escribio en el chat no fue el userId , o si lastChatUserId es falso entonces nadie escribio nada
+				//trace("contactId : " + contactJid )
+				if(!iContact.lastChatConatactId || iContact.lastChatConatactId != fromContactId)
+				{
+					
+					iContact.lastChatConatactId = fromContactId;
+					
+					insertHeader();
 					
 					
 				}
@@ -241,242 +360,114 @@
 				{
 					
 					
-					if (event.keyCode == Keyboard.ENTER)
+					
+					
+					var passedTime:Number = date.time - iContact.lastChatTimeStamp;
+					
+					if(passedTime > 60000)
 					{
 						
-						event.preventDefault();
-						
-						sendMessage();
-						
+							
+						insertHeader();
 						
 						
 					}
 					
 					
 					
-				}
-			
-				
-			}
-			
-			
-			
-			
-			private function sendMessage():void
-			{
-				
-				
-				var message:Message=new Message(mainModel.currentDomainWorkSpace.currentActiveContact.jid.escaped, null, richEditableText_input.text, null, Message.TYPE_CHAT, null);
-				
-				
-				mainController.sendMesage(message);
-				
-	
-			   appendFormatTextChat(richEditableText_input.text,mainModel.currentDomainWorkSpace.currentActiveContact,true)
-						
-		
-				
-				richEditableText_input.text = "";
-				
-			
-			
-				
-			}
-			
-			
-			
-			public function updateScroll():void
-			{
-				
-				if(richEditableText_history)
-				{
 					
-				
-					callLater(function update():void
-					{
 					
-			
-						richEditableText_history.appendText(" ");
-					//	scroller_historyText.verticalScrollBar.value = scroller_historyText.verticalScrollBar.maximum;			
-					
-						
-					}
-					);
-			
-				
 					
 				}
-			}
-			
-		
-			
-		
-			
-		public function appendFormatTextChat(body:String,iContact:IContact,isMy:Boolean):void
-		{
-			
-			var contactJid:UnescapedJID ;
-			
-			var date:Date = new Date();
-			
-			var dateChat:Date = new Date();
-			
-			var paragraph:ParagraphElement= iContact.historyText.getChildAt(0) as ParagraphElement;
-		
-			
-			
-			if(isMy)
-			{
-				
-				contactJid = loginModel.getAgentJid();
-				//trace("contactJid : " + contactJid);
-				
-				
-			}
-			else
-			{
-				
-				contactJid = iContact.jid;
-			}
-
-			
-			//pregunto si el eltimo que escribio en el chat no fue el userId , o si lastChatUserId es falso entonces nadie escribio nada
-			//trace("contactId : " + contactJid )
-			if(!iContact.lastChatJid)
-			{
-				
-				iContact.lastChatJid = contactJid;
-				insertHeader();
-				
-			}
-			else
-			{
 				
 			
-			if(iContact.lastChatJid.bareJID != contactJid.bareJID )
-			{
+			//	trace("body : " +body)
 			
+				var splitBreak:Array = body.split("\n");
+			//	trace("splitBreak : " + splitBreak.length);
 				
-				iContact.lastChatJid = contactJid;
-				insertHeader();
-				
-				
-			}
-			else
-			{
-				
-				dateChat.time = iContact.lastChatTimeStamp;
-		
-				if(date.day != dateChat.day || date.hours != dateChat.hours || date.minutes != dateChat.minutes)
+				for (var i:int = 0; i < splitBreak.length; i++) 
 				{
 					
 					
-					insertHeader();
 					
-				
+					chatItem = new ChatItem();
+					chatItem.body = splitBreak[i];
+					chatItem.contactId = iContact.getContactId();
+					
+					chatItem.uid = messageId;
+					
+					iContact.historyText.addItem(chatItem);	
+					
 					
 				}
 				
-				
-			}
-		
-			
-			
-			}
-		
-				
-			var spanText:SpanElement = new SpanElement();
-			spanText.text = "\n"+body;
-			paragraph.addChild(spanText);
-			
-			paragraph.addChild(spanText);
-			
-			
-			
-			updateScroll();
-			
-				function insertHeader():void
-				{
-				
-					
-				
-					
-					
-					var line:SpanElement = new SpanElement();
-					line.color = 0x909090;
-					line.text = "- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ";
-					
-					
-					var br:BreakElement = new BreakElement();
-					var br_a:BreakElement = new BreakElement();
-				
-					paragraph.addChild(br_a);
-					paragraph.addChild(line);
-					paragraph.addChild(br);
-					
-					
-					
-					var spanTime:SpanElement = new SpanElement();
-					spanTime.text = DateManager.formatDate(date); 
-					spanTime.color = 0x909090;
-					iContact.lastChatTimeStamp = date.time;
-					
-					
-					var spanHeader:SpanElement = new SpanElement();
-					spanHeader.fontWeight="bold";
-					if(isMy)
-					{
-						
-						spanHeader.text= loginModel.agentVO.name+ "          "  ;	
-						
-					}
-					else
-					{
-						
-						spanHeader.text= iContact.getContactName() ? iContact.getContactName() + "          "  : iContact.getContactId().toString()+ "          "  ;
-					}
-					
-				
-					
-					
-					
-					paragraph.addChild(spanHeader);
-					paragraph.addChild(spanTime);
-					
-				
-			
-					
-				
-				}
-				
-		
-
-			
-			
-		}
-			
-		
-			
-			
-			
-			protected function richEditableText_input_enterHandler(event:FlexEvent):void
-			{
-				
-				event.preventDefault();
-				sendMessage();
-			}
-			
-			
-			
-		
-			
-			
-			
-			protected function button1_clickHandler(event:MouseEvent):void
-			{
 				
 				
 				updateScroll();
+				
+				
+			
+				
+				
+				
+				
+				
+				function insertHeader():void
+				{
+					
+					var chatItem:ChatItem = new ChatItem();
+					chatItem.contactId = iContact.getContactId();
+					chatItem.time = date.time;
+					chatItem.name = isMy ? loginModel.agentVO.nick : iContact.getNickChat();
+					chatItem.isHeaer = true;
+					
+					
+					iContact.historyText.addItem(chatItem);
+					
+					
+				}
+				
+				
+				
+			}
+
+
+
+			protected function richEditableText_input_enterHandler(event:FlexEvent):void
+			{
+
+				event.preventDefault();
+				sendMessage();
+			}
+
+
+
+
+
+
+
+			protected function button1_clickHandler(event:MouseEvent):void
+			{
+
+			for (var i:int = 0; i < 1000; i++) 
+				{
+				
+				appendFormatTextChat(i.toString(),mainModel.currentDomainWorkSpace.currentActiveContact,"mgid",true);
+				
+				}
+			
+			
+
+			
+			}
+			
+			
+			
+			protected function skinnablecontainer1_showHandler(event:FlexEvent):void
+			{
+				list_historyText.dataProvider = mainModel.currentDomainWorkSpace.currentActiveContact.historyText;
+				
 			}
 			
 			
@@ -488,151 +479,227 @@
 		<s:State name="Agent"/>
 		<s:State name="User"/>
 	</s:states>
-	
-	
-	
-			
-	
-	
+
+
+
+
+
+
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	
-		<s:layout >
-			<s:VerticalLayout gap="0"  />
+
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+
+	<s:SkinnableContainer width="100%"
+						  height="40"
+						  backgroundColor="#383838">
+		<s:layout>
+			<s:HorizontalLayout/>
 		</s:layout>
-	
-		<s:SkinnableContainer width="100%" height="40" backgroundColor="#383838">
-			<s:Button id="button_close" click="button_close_clickHandler(event)" right="5" width="22" height="22" label="x" verticalCenter="0" />
-			<s:Button id="button_mininize"  click="button_mininize_clickHandler(event)" right="34" width="22" height="22" label="-" verticalCenter="0"/>
-			<s:Label id="label_nameVisitor" left="50" color="#FFFFFF" verticalCenter="0" text.Agent="{agent.agentVO.name}" text.User="{user.userVO.id}" />
-			<s:Image left="12" width="20" height="20" verticalCenter="0"/>
-			<s:Button x="134" y="10" label="Button" click="button1_clickHandler(event)"/>
-			
-		</s:SkinnableContainer>
 		
-	
-	
-	
-	<s:SkinnableContainer width="100%" height="100%" backgroundColor="#EEEEEE">
+		<s:Button id="button_close"
+				  click="button_close_clickHandler(event)"
+				  right="5"
+				  width="22"
+				  height="22"
+				  label="x"
+				  verticalCenter="0"/>
+		<s:Button id="button_mininize"
+				  click="button_mininize_clickHandler(event)"
+				  right="34"
+				  width="22"
+				  height="22"
+				  label="-"
+				  verticalCenter="0"/>
+		<s:Label id="label_nameVisitor"
+				 left="50"
+				 color="#FFFFFF"
+				 verticalCenter="0"
+				 text.Agent="{agent.agentVO.name}"
+				 text.User="{user.userVO.id}"/>
+		<s:Image left="12"
+				 width="20"
+				 height="20"
+				 verticalCenter="0"/>
+		<s:Button x="134"
+				  y="10"
+				  label="Button"
+				  click="button1_clickHandler(event)"/>
+		<s:Label text="{list_historyText.dataProvider.length}"/>
+
+	</s:SkinnableContainer>
+
+
+
+
+	<s:SkinnableContainer width="100%"
+						  height="100%"
+						  backgroundColor="#EEEEEE">
 		<s:layout>
 			<s:HorizontalLayout gap="0"/>
 		</s:layout>
+
+
+		<s:VGroup width="100%"
+				  height="100%"
+				  gap="0"
+				  paddingBottom="10"
+				  paddingLeft="10"
+				  paddingTop="10"
+				  width.Agent="408">
+
+
+			<s:List width="100%"
+					id="list_historyText"
+					height="100%"
+					 itemRenderer="renderer.ChatRenderer"
+				
+					   useVirtualLayout="true"
+					 	      
+					>
+				
+	<s:layout>
+		
 	
 		
-			<s:VGroup width="100%" height="100%" gap="0" paddingBottom="10" paddingLeft="10"
-					  paddingTop="10"
-					  width.Agent="408">
-				
-				
-		
-		
-			<s:BorderContainer width="100%" height="100%">
-		
-				<s:Scroller  width="100%" height="100%" id="scroller_historyText" horizontalScrollPolicy="off">
-					<s:RichEditableText id="richEditableText_history" editable="false"
+					<s:VerticalLayout id="vLayout_historyText"     variableRowHeight="false"  paddingLeft="5" paddingTop="5" gap="0"/>
+	
+	</s:layout>
+</s:List>
+
+			<s:Group width="100%"
+					 height="10">
+				<s:Label id="label_writing"
+						 top="0"
+						 fontSize="10"
+						 fontStyle="italic"
+						 fontWeight="normal"
+						 horizontalCenter="0"/>
+			</s:Group>
+
+			<s:BorderContainer width="100%"
+							   height="143">
+
+				<s:Scroller id="scroller_inputText"
+							width="100%"
+							height="100%">
+					<s:RichEditableText id="richEditableText_input"
+										width="100%"
+										height="100%"
 										
-										 heightInLines="12"
-										paddingLeft="2" paddingTop="2"
-										textFlow="{mainModel.currentDomainWorkSpace.currentActiveContact.historyText}"
-										/>
+										  
+										keyDown="textArea_input_keyDownHandler(event)"
+										paddingLeft="5"
+										paddingTop="5"/>
+
 				</s:Scroller>
-			</s:BorderContainer>	
-				
-		
-		
-		
-			
-			
-				<s:Group width="100%"
-						 height="10">
-					<s:Label id="label_writing" top="0" fontSize="10" fontStyle="italic"
-							 fontWeight="normal" horizontalCenter="0"
-							/>
-				</s:Group>
-				
-				<s:BorderContainer width="100%" height="143">
-					
-					<s:Scroller id="scroller_inputText"  width="100%" height="100%">
-				<s:RichEditableText id="richEditableText_input" width="100%" height="100%"
-									keyDown="textArea_input_keyDownHandler(event)" 
-								
-									paddingLeft="2" paddingTop="2"/>
-			
-					</s:Scroller>
-					
-				</s:BorderContainer>
-				
-				
-			</s:VGroup>
-				
-		<s:Scroller width="300"
-					 horizontalScrollPolicy="off"
-					  verticalScrollPolicy="off"
-					height="100%">
-			
-			
-		<s:VGroup id="vGroup_clientInfo" width="100%" height="100%" horizontalAlign="center"
-				  paddingBottom="10" paddingLeft="10" paddingRight="2" paddingTop="10">
-			
-			
-			
-			
-			<s:HGroup width="100%" verticalAlign="middle">
-				<s:Image width="50" height="50"/>
-				<s:BorderContainer width="100%" borderColor="#9C9C9C" >
-					
-					<s:layout>
-						<s:VerticalLayout gap="0"/>
-					</s:layout>
-					
-					<s:TextInput id="txt_nameVisitorInput" width="100%" borderColor="#DADADA"
-								 borderVisible="false" prompt="nombre"/>
-					<mx:HRule width="100%"/>
-					<s:TextInput id="txt_emailVisitor" width="100%" borderColor="#DADADA"
-								 borderVisible="false" prompt="email"/>
-					
-				</s:BorderContainer>
-				
-			</s:HGroup>
-			<s:TextArea width="100%" height="100" borderColor="#9C9C9C"
-						prompt="Agregar nota del visitante"/>
-			<mx:HRule width="100%"/>
-			<s:BorderContainer includeIn="User" width="100%" height="343" borderColor="#9C9C9C" cornerRadius="2">
-				<s:layout>
-					<s:VerticalLayout paddingBottom="5" paddingLeft="5" paddingRight="5"
-									  paddingTop="5"/>
-				</s:layout>
-				<s:VGroup x="10" y="43">
-					<s:Label color="#888888" text="Ubicacion"/>
-					<s:Label text="Label"/>
-				</s:VGroup>
-				<s:VGroup>
-					<s:Label color="#888888" text="Browser"/>
-					<s:Label text="Label"/>
-				</s:VGroup>
-				<s:VGroup>
-					<s:Label color="#888888" text="Plataforma"/>
-					<s:Label text="Label"/>
-				</s:VGroup>
-				<s:VGroup>
-					<s:Label color="#888888" text="Direccion ip"/>
-					<s:Label text="Label"/>
-				</s:VGroup>
+
 			</s:BorderContainer>
-			
-			
-			
+
+
 		</s:VGroup>
-		
+
+		<s:Scroller width="300"
+					horizontalScrollPolicy="off"
+					verticalScrollPolicy="off"
+					height="100%">
+
+
+			<s:VGroup id="vGroup_clientInfo"
+					  width="100%"
+					  height="100%"
+					  horizontalAlign="center"
+					  paddingBottom="10"
+					  paddingLeft="10"
+					  paddingRight="2"
+					  paddingTop="10">
+
+
+
+
+				<s:HGroup width="100%"
+						  verticalAlign="middle">
+					<s:Image width="50"
+							 height="50"/>
+					<s:BorderContainer width="100%"
+									   borderColor="#9C9C9C">
+
+						<s:layout>
+							<s:VerticalLayout gap="0"/>
+						</s:layout>
+
+						<s:TextInput id="txt_nameVisitorInput"
+									 width="100%"
+									 borderColor="#DADADA"
+									 borderVisible="false"
+									 prompt="nombre"/>
+						<mx:HRule width="100%"/>
+						<s:TextInput id="txt_emailVisitor"
+									 width="100%"
+									 borderColor="#DADADA"
+									 borderVisible="false"
+									 prompt="email"/>
+
+					</s:BorderContainer>
+
+				</s:HGroup>
+				<s:TextArea width="100%"
+							height="100"
+							borderColor="#9C9C9C"
+							prompt="Agregar nota del visitante"/>
+				<mx:HRule width="100%"/>
+				<s:BorderContainer includeIn="User"
+								   width="100%"
+								   height="343"
+								   borderColor="#9C9C9C"
+								   cornerRadius="2">
+					<s:layout>
+						<s:VerticalLayout paddingBottom="5"
+										  paddingLeft="5"
+										  paddingRight="5"
+										  paddingTop="5"/>
+					</s:layout>
+					<s:VGroup x="10"
+							  y="43">
+						<s:Label color="#888888"
+								 text="Ubicacion"/>
+						<s:Label text="Label"/>
+					</s:VGroup>
+					<s:VGroup>
+						<s:Label color="#888888"
+								 text="Browser"/>
+						<s:Label text="Label"/>
+					</s:VGroup>
+					<s:VGroup>
+						<s:Label color="#888888"
+								 text="Plataforma"/>
+						<s:Label text="Label"/>
+					</s:VGroup>
+					<s:VGroup>
+						<s:Label color="#888888"
+								 text="Direccion ip"/>
+						<s:Label text="Label"/>
+					</s:VGroup>
+				</s:BorderContainer>
+
+
+
+			</s:VGroup>
+
 		</s:Scroller>
-		<s:VScrollBar id="vScrollBar_infoClient" viewport="{vGroup_clientInfo}"    skinClass="skin.vScrollerWindowChatSkin" height="100%"/>
+		<s:VScrollBar id="vScrollBar_infoClient"
+					  viewport="{vGroup_clientInfo}"
+					  skinClass="skin.vScrollerWindowChatSkin"
+					  height="100%"/>
 	</s:SkinnableContainer>
 
-	
 
-	
-	
 
-	
+
+
+
+
 </s:SkinnableContainer>

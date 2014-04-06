@@ -122,12 +122,12 @@ package service
 		}
 		
 		
-		public function getUserId(func:Function,user_id:int):void
+		public function getAgentId(func:Function,agent_id:int):void
 		{
 			
 			_func=func;
 			
-			remoteObj.getUserId(user_id);
+			remoteObj.getAgentId(agent_id);
 			
 		}
 		

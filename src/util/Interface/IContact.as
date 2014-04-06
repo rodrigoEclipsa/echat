@@ -1,7 +1,10 @@
 package util.Interface
 {
+	
+	
 	import flashx.textLayout.elements.TextFlow;
 	
+	import org.apache.flex.collections.ArrayList;
 	import org.igniterealtime.xiff.core.UnescapedJID;
 	
 	
@@ -16,25 +19,24 @@ package util.Interface
 			
 	
 		
-		function get historyText():TextFlow;
-		function set historyText(value:TextFlow):void;
-		
-		
-		/**
-		 * jid del ultimo contacto que realizo un chat
-		 * **/
-		function get lastChatJid():UnescapedJID;
-		function set lastChatJid(value:UnescapedJID):void;
-		
+		function get historyText():ArrayList;
+		function set historyText(value:ArrayList):void;
 		
 		
 		function get lastChatTimeStamp():Number;
 		function set lastChatTimeStamp(value:Number):void;
 		
+	     function getNickChat():String
+	
+		 
+			 
+			 
+		function get lastChatConatactId():int
+	    function set lastChatConatactId(value:int):void
+	
 		
-		
-		
-		
+			
+			
 		function get jid():UnescapedJID
 		function get show():String
 		function get online():Boolean

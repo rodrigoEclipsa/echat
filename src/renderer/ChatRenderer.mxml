@@ -6,7 +6,7 @@
 			
 				 dataChange="itemrenderer1_dataChangeHandler(event)"
 				width="100%" 
-				
+				 currentState="{itemData.isHeaer ? 'Header' : 'Text'}"
 				xmlns:customComponent="customComponent.*">
 	<fx:Script>
 		<![CDATA[
@@ -17,19 +17,17 @@
 			import mx.utils.ObjectUtil;
 
 			import util.DateManager;
-			import util.classes.Chat;
+			import util.classes.ChatItem;
 
 
 
 
 
 			[Bindable]
-			private var itemData:Chat;
+			private var itemData:ChatItem;
 
 			
-			public static const state_other:String = "Other";
-			public static const state_my:String = "My";
-			public static const state_endChat:String = "EndChat";
+		
 
 			
 	
@@ -40,11 +38,10 @@
 				if (data) 
 				{
 					
-					itemData=data as Chat;
+					itemData=data as ChatItem;
 					
-					this.currentState=itemData.state;
-					
-					
+			
+		
 					
 				}
 				
@@ -59,75 +56,25 @@
 	</fx:Script>
 
 
-	<s:states>
-		<s:State name="Other"/>
-		<s:State name="My"/>
-		<s:State name="EndChat"/>
-	</s:states>
-
 	
-
-		<s:BitmapImage left="0"
-					   top="8"
-					   includeIn="My"
-					   source="{EmbeddedAssets.getInstance().arrow_agent}"/>
-
-
-		<s:BorderContainer top="0" width="70%" borderVisible="true" cornerRadius="4"
-						   top.EndChat="0" width.EndChat="80%" backgroundColor.EndChat="#FFC3C3"
-						   cornerRadius.EndChat="0" horizontalCenter.EndChat="0"
-						   left.My="12" backgroundColor.My="#e4f7ff" borderColor.My="#C8EFFF"
-						   right.Other="12" backgroundColor.Other="#F1F1F1"
-						   borderColor.Other="#E4E4E4">
-			<s:layout>
-				<s:VerticalLayout gap="0" paddingLeft="4" paddingRight="4" paddingTop="4"
-								  verticalAlign="middle"
-								  horizontalAlign.EndChat="center"/>
-			</s:layout>
-
-
-
-
-			<s:Label id="label_agent"
-								includeIn="My,Other"
-								
-								width="100%"
-								  
-								text="{itemData.body}"
-								minHeight="14"/>
-
-			<s:Group width="100%"
-					 includeIn="My,Other">
-
-				<s:BitmapImage includeIn="My"
-							   right="0"
-							   source="{itemData.checkedMessage ? EmbeddedAssets.getInstance().checkIcon :EmbeddedAssets.getInstance().relojIcon}"
-							   verticalCenter="0"/>
-
-
-				<s:Label right="0"
-						 fontSize="10"
-						 text="{itemData.hs}"
-						 verticalCenter="0"
-						 right.My="12"
-						 verticalCenter.My="0"
-						 color="#9F9F9F"/>
-			</s:Group>
-			<s:Label includeIn="EndChat" text="{itemData.body}"/>
-
-		</s:BorderContainer>
-
-		<s:BitmapImage includeIn="Other"
-					   right="0"
-					   top="8"
-					   depth="-1"
-					   source="{EmbeddedAssets.getInstance().arrow_user}"/>
-
-
-
-
-
-
+	<s:states>
+		<s:State name="Header" />
+		<s:State name="Text"/>
+	</s:states>
+	
+	<s:layout>
+		<s:VerticalLayout gap="0"/>
+	</s:layout>
+	
+	
+    <s:Label text.Header="{itemData.name}"
+			  text.Text="{itemData.body}"
+			 fontWeight.Text="normal" 
+			  fontWeight.Header="bold"
+			 />
+	
+		
+	
 
 
 </s:ItemRenderer>

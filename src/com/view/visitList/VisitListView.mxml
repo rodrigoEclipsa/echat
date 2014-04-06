@@ -15,8 +15,6 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import util.Interface.IContact;
-			
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
 			import com.controller.VisitListController;
@@ -31,9 +29,10 @@
 			
 			import spark.events.GridSelectionEvent;
 			
+			import util.Interface.IContact;
+			import util.classes.DomainWorkSpace;
 			import util.classes.Session;
 			import util.classes.User;
-			import util.classes.DomainWorkSpace;
 			import util.vo.entities.UserVO;
 			import util.vo.entities.WebVO;
 			
@@ -83,12 +82,12 @@
 			{
 				
 				
-				var contact:IContact = datagrid_visit.selectedItem as IContact  ;
+				var user:User = datagrid_visit.selectedItem as User;
 				
 				
 				
 				//pregunto si el usuario esta en el tab, si no lo agrego 
-				chatWindowController.openChatWindow(contact);					
+				chatWindowController.openChatWindow(user);					
 				
 				
 				datagrid_visit.selectedIndex = -1;

@@ -58,7 +58,7 @@
 			
 			import util.DateManager;
 			import util.app.ConfigParameters;
-			import util.classes.Chat;
+			
 			import util.classes.QueueChat;
 			import util.classes.User;
 			import util.classes.DomainWorkSpace;
@@ -218,6 +218,9 @@
 				}
 				
 				
+				
+				//referesco array de agentes para filtrar los egentes del dominio
+				mainModel.arrayCollection_agent.refresh();
 				
 				timerController.updateTimer();
 				
@@ -399,7 +402,7 @@
 								 requireSelection="true"
 								
 								change="list_domains_changeHandler(event)"
-								dataProvider="{mainModel.arrayCollection_domainsWorkSpace}"
+								dataProvider="{mainModel.arrayCollection_domainWorkSpace}"
 								itemRenderer="renderer.DomainRenderer"
 								contentBackgroundColor="#686868"/>
 						<s:VGroup width="100%" gap="0">
