@@ -10,7 +10,9 @@
 					   applicationComplete="windowedapplication_applicationCompleteHandler(event)"
 					   closing="{windowedapplication1_closingHandler(event)}"
 					   creationComplete="windowedapplication1_creationCompleteHandler(event)"
-					   showStatusBar="false" title="echat Agente">
+					   showStatusBar="false" title="echat Agente"
+					   
+					   >
 	
 	
 	
@@ -54,8 +56,7 @@
 			protected function windowedapplication_applicationCompleteHandler(event:FlexEvent):void
 			{
 				
-			
-				
+		
 				var mainEvent:MainEvent = new MainEvent(MainEvent.applicationComplete,true);
 				
 				

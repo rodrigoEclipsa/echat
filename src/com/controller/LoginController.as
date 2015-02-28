@@ -1,8 +1,6 @@
 package com.controller
 {
-	import com.adobe.crypto.MD5;
-	import com.adobe.crypto.SHA1;
-	import com.event.ChatManagerEvent;
+	
 	import com.event.LoginEvent;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
@@ -11,22 +9,17 @@ package com.controller
 	import com.view.login.LoginView;
 	
 	import flash.events.IEventDispatcher;
-	import flash.utils.getTimer;
 	
 	import mx.controls.Alert;
-	import mx.core.FlexGlobals;
 	import mx.rpc.Fault;
-	import mx.utils.ObjectUtil;
 	
 	import org.igniterealtime.xiff.core.EscapedJID;
-	import org.igniterealtime.xiff.events.ConnectionSuccessEvent;
-	import org.igniterealtime.xiff.events.RoomEvent;
+	import org.igniterealtime.xiff.core.UnescapedJID;
 	import org.igniterealtime.xiff.events.RosterEvent;
 	import org.igniterealtime.xiff.events.XIFFErrorEvent;
 	
 	import service.ServiceEchat;
 	
-	import util.app.ConfigParameters;
 	import util.vo.ResultVO;
 	import util.vo.entities.AgentVO;
 	import util.vo.entities.DomainVO;
@@ -79,86 +72,12 @@ package com.controller
 		
 			loginView.showLoad();
 	
-	   
 			
-		var service_echat:ServiceEchat = new ServiceEchat();
-		
-		service_echat.login(service_chat_loginHandler,email,MD5.hash(password));
-			
-		
-		
-			
-		function service_chat_loginHandler(result:Object):void
-		{
-			
-		
-			
-		
-			if(result is Fault)
-			{
+		chatManagerController.login(email,password); 
+						
+						
+						
 				
-				Alert.show("Se produjo un error","Error");
-			
-				loginView.removeLoad();
-			}
-			else
-			{
-				
-				var resultVO:ResultVO= result as ResultVO;
-				
-				if(resultVO.success)
-				{
-					
-					//si tiene acceso existe la propiedad access
-					if(resultVO.data.hasOwnProperty("access"))
-					{
-						
-				//		trace("loggued : " + ObjectUtil.toString(resultVO.data))
-			
-						loginModel.agentVO = resultVO.data.agentVO as AgentVO;
-						
-						
-						
-						for each(var domainVO:DomainVO in resultVO.data.domainsVO)
-						loginModel.arrayList_domainsVO.addItem(domainVO);
-					
-						
-						loginModel.roleVO = resultVO.data.roleVO;
-						
-						
-						
-						
-						
-						
-						chatManagerController.login("agent_"+resultVO.data.agentVO.id,MD5.hash(password)); 
-						
-						
-						
-					}
-					else
-					{
-						loginView.removeLoad();
-						Alert.show("Usuario o Contraseña incorrecto","Atencion");
-						
-					}
-					
-					
-				}
-				else
-				{
-					Alert.show("ups algo salio mal, contactese con eclipsa ","Atencion");
-					loginView.removeLoad();
-					
-				}
-				
-				
-			}
-			
-			
-		
-			
-			
-		}
 			
 			
 		}
@@ -200,7 +119,7 @@ package com.controller
 				
 			}
 			
-		
+			loginView.removeLoad();
 			
 		}
 		

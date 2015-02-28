@@ -1,7 +1,5 @@
 package com.controller
 {
-	import com.event.ChatManagerEvent;
-	import com.event.MainEvent;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
@@ -9,44 +7,12 @@ package com.controller
 	import com.view.chatWindow.ChatWindowView;
 	
 	import flash.events.IEventDispatcher;
-	import flash.xml.XMLDocument;
 	
-	import mx.controls.Alert;
-	import mx.rpc.events.FaultEvent;
-	import mx.rpc.xml.SimpleXMLDecoder;
-	import mx.utils.ObjectUtil;
-	
-	import org.igniterealtime.xiff.conference.IRoomOccupant;
-	import org.igniterealtime.xiff.conference.Room;
-	import org.igniterealtime.xiff.conference.RoomOccupant;
-	import org.igniterealtime.xiff.core.EscapedJID;
-	import org.igniterealtime.xiff.data.Extension;
-	import org.igniterealtime.xiff.data.IExtension;
 	import org.igniterealtime.xiff.data.Message;
-	import org.igniterealtime.xiff.data.Presence;
-	import org.igniterealtime.xiff.data.im.RosterItem;
-	import org.igniterealtime.xiff.data.im.RosterItemVO;
-	import org.igniterealtime.xiff.data.muc.MUCItem;
-	import org.igniterealtime.xiff.events.ConnectionSuccessEvent;
-	import org.igniterealtime.xiff.events.DisconnectionEvent;
-	import org.igniterealtime.xiff.events.RoomEvent;
 	
-	import renderer.ChatRenderer;
-	
-	import service.ServiceEchat;
-	
-	import util.ArrayCollectionUtil;
-	import util.DateManager;
 	import util.Interface.IContact;
-	import util.app.ConfigParameters;
 	import util.classes.Domain;
 	import util.classes.DomainWorkSpace;
-
-	import util.classes.QueueChat;
-	import util.classes.Agent;
-	import util.classes.User;
-	import util.classes.functionReturn.UserDomain;
-	import util.vo.ResultVO;
 	import util.vo.entities.DomainVO;
 
 
@@ -109,12 +75,7 @@ package com.controller
 	
 		
 		
-		
-		
-		
-		
-		
-		
+	
 		[EventHandler(event="LoginEvent.loginSuccess")]
 		public function loginEvent_loginSuccess():void
 		{
@@ -160,6 +121,7 @@ package com.controller
 		public function ChatManagerEvent_messageHandler(message:Message):void
 		{
 			
+			/*
 			var splitName:Array=message.from.node.split("_");
 			
 			var prefix:String=splitName[0];
@@ -212,7 +174,7 @@ package com.controller
 			
 			chatWindowView.appendFormatTextChat(message.body,iContact,message.id,false);
 				
-				
+				*/
 			
 		}
 	

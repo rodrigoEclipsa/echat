@@ -1,71 +1,41 @@
 package com.controller
 {
-	import com.adobe.crypto.SHA1;
 	import com.event.ChatManagerEvent;
 	import com.hurlant.crypto.tls.TLSConfig;
 	import com.hurlant.crypto.tls.TLSEngine;
 	import com.model.ChatManagerModel;
 	import com.model.LoginModel;
 	import com.model.MainModel;
-	import com.wirelust.as3zlib.System;
 	
-	import flash.events.EventDispatcher;
 	import flash.events.IEventDispatcher;
 	import flash.events.TimerEvent;
-	import flash.system.Capabilities;
 	import flash.system.Security;
 	import flash.utils.Timer;
 	
-	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
-	import mx.core.Application;
-	import mx.core.FlexGlobals;
 	import mx.rpc.Fault;
-	import mx.utils.ObjectUtil;
 	
-	import org.igniterealtime.xiff.auth.External;
-	import org.igniterealtime.xiff.auth.Plain;
-	import org.igniterealtime.xiff.conference.InviteListener;
-	import org.igniterealtime.xiff.conference.Room;
-	import org.igniterealtime.xiff.conference.RoomOccupant;
-	import org.igniterealtime.xiff.core.AbstractJID;
-	import org.igniterealtime.xiff.core.EscapedJID;
 	import org.igniterealtime.xiff.core.UnescapedJID;
 	import org.igniterealtime.xiff.core.XMPPConnection;
 	import org.igniterealtime.xiff.core.XMPPTLSConnection;
 	import org.igniterealtime.xiff.data.IQ;
-	import org.igniterealtime.xiff.data.IXMPPStanza;
 	import org.igniterealtime.xiff.data.Message;
 	import org.igniterealtime.xiff.data.Presence;
-	import org.igniterealtime.xiff.data.XMPPStanza;
-	import org.igniterealtime.xiff.data.im.RosterGroup;
-	import org.igniterealtime.xiff.data.im.RosterItem;
 	import org.igniterealtime.xiff.data.im.RosterItemVO;
-	import org.igniterealtime.xiff.data.muc.MUC;
-	import org.igniterealtime.xiff.data.muc.MUCStatus;
 	import org.igniterealtime.xiff.events.ConnectionSuccessEvent;
 	import org.igniterealtime.xiff.events.DisconnectionEvent;
-	import org.igniterealtime.xiff.events.IQEvent;
 	import org.igniterealtime.xiff.events.IncomingDataEvent;
-	import org.igniterealtime.xiff.events.InviteEvent;
 	import org.igniterealtime.xiff.events.LoginEvent;
 	import org.igniterealtime.xiff.events.MessageEvent;
 	import org.igniterealtime.xiff.events.OutgoingDataEvent;
 	import org.igniterealtime.xiff.events.PresenceEvent;
-	import org.igniterealtime.xiff.events.RegistrationFieldsEvent;
-	import org.igniterealtime.xiff.events.RegistrationSuccessEvent;
-	import org.igniterealtime.xiff.events.RoomEvent;
 	import org.igniterealtime.xiff.events.RosterEvent;
 	import org.igniterealtime.xiff.events.XIFFErrorEvent;
 	import org.igniterealtime.xiff.im.Roster;
 	
 	import service.ServiceEchat;
 	
-	import util.ArrayCollectionUtil;
-	import util.DateManager;
 	import util.ExtensionsXiff.EchatExtension;
-	import util.NetUtil;
-	import util.XmlFuncUtil;
 	import util.app.ConfigParameters;
 	import util.classes.Agent;
 	import util.classes.DomainWorkSpace;
@@ -145,11 +115,12 @@ package com.controller
 			setupConnection();
 			setupRoster();
 
+			
 			chatManagerModel.connection.username=username;
 			chatManagerModel.connection.password=password;
 			chatManagerModel.connection.server=ConfigParameters.server;
 
-			chatManagerModel.connection.resource="echat/panel/";
+			chatManagerModel.connection.resource="echat";
 
 			chatManagerModel.connection.connect(XMPPConnection.STREAM_TYPE_STANDARD);
 
@@ -170,9 +141,7 @@ package com.controller
 
 		private function setupConnection():void
 		{
-
-
-
+			
 
 			chatManagerModel.connection=new XMPPTLSConnection();
 
@@ -182,10 +151,14 @@ package com.controller
 
 			config.ignoreCommonNameMismatch=true;
 
+			config.trustSelfSignedCertificates = true
+			
 			chatManagerModel.connection.config=config;
-
-			chatManagerModel.connection.config.trustSelfSignedCertificates=true;
-
+           
+		
+			
+			
+			
 			chatManagerModel.connection.addEventListener(ConnectionSuccessEvent.CONNECT_SUCCESS, onConnectSuccess);
 			chatManagerModel.connection.addEventListener(DisconnectionEvent.DISCONNECT, onDisconnect);
 			chatManagerModel.connection.addEventListener(LoginEvent.LOGIN, onLogin);
@@ -249,7 +222,7 @@ package com.controller
 
 						chatManagerModel.connection.send(presence);
 			*/
-
+/*
 			//-------------------------------------------------------------envio evento
 
 			var chatManagerEvent_rosterLoaded:ChatManagerEvent=new ChatManagerEvent(ChatManagerEvent.rosterLoaded, true);
@@ -261,21 +234,45 @@ package com.controller
 
 			//---------------------------------------------------------------
 
+			var iqPacket:IQ = new IQ();
+			
+			iqPacket.xml =<data>informacion de contacto</data>;
+		//	var ex:EchatExtension = new EchatExtension();
+			
+			//ex.setDataExtension(<data>informacion de contacto</data>);
+			
+			iqPacket.from = chatManagerModel.connection.jid.escaped;
+			iqPacket.type = IQ.TYPE_GET;
+			iqPacket.id = "101";
+			iqPacket.errorCallback =  iqCallbackError;
+			iqPacket.callback = iqCallback;
+			
+			
+		
+			
+			chatManagerModel.connection.send(iqPacket);
+			
+			*/
 
-
-
-
-
-
-
-
-			trace("rosterLoaded....................")
-
+			
 		}
 
 
 
+		private function iqCallback(iq:IQ):void
+		{
+			
+			trace("result iq : " + iq);
+			
+		}
 
+		private function iqCallbackError(iq:IQ):void
+		{
+			
+			trace("error result iq : " + iq);
+			
+		}
+		
 
 
 
@@ -312,98 +309,15 @@ package com.controller
 			var prefix:String=splitName[0];
 			var contactId:int=int(splitName[1]);
 
-			if (prefix == "agent")
-			{
+		
 
-				var serviceEchat:ServiceEchat=new ServiceEchat();
-				serviceEchat.getAgentId(serviceEchat_getUserIdHandler, contactId);
+		
 
-
-
-
-
-			}
-			else if (prefix == "user")
-			{
-
-
-
-
-			}
-
-
-
-
-
-			trace("added....................")
+	//		trace("added....................")
 
 		}
 
-		private function serviceEchat_getUserIdHandler(result:Object):void
-		{
-
-
-
-			if (result is Fault)
-			{
-
-				Alert.show("se produjo un error", "Error")
-
-			}
-			else
-			{
-
-				var resultVO:ResultVO=result as ResultVO;
-
-				trace("getuser: : " + ObjectUtil.toString(resultVO))
-
-
-				if (resultVO.success)
-				{
-
-					var agentVO:AgentVO=new AgentVO();
-					agentVO.id=resultVO.data.agentVO.id;
-					agentVO.name=resultVO.data.agentVO.name;
-					agentVO.nick=resultVO.data.agentVO.nick;
-
-
-
-					var agent:Agent=new Agent(agentVO);
-					agent.domainsIds=resultVO.data.domainsIds as Array;
-					agent.jid=new UnescapedJID("agent_" + agentVO.id + "@" + ConfigParameters.server);
-
-					agent.roleVO=resultVO.data.roleVO;
-
-
-					//asigno datos de contacto
-					var rosterItemVO:RosterItemVO=RosterItemVO.get(agent.jid);
-
-					//	trace("rosterItemVO : " + rosterItemVO)
-					agent.online=rosterItemVO.online;
-					agent.show=rosterItemVO.show;
-
-
-					mainModel.arrayCollection_agent.addItem(agent);
-
-				}
-				else
-				{
-
-					Alert.show("se produjo un error al listar los agentes", "Error")
-				}
-
-
-
-			}
-
-
-			
-			
-			trace(result);
-			
-			
-		}
-
+	
 
 
 
@@ -681,9 +595,7 @@ package com.controller
 			}
 
 
-
-
-
+			
 		}
 
 
@@ -803,7 +715,7 @@ package com.controller
 		{
 
 
-			//	trace("error xiff : " + event.errorCondition + " " + event.errorCode)
+				trace("error xiff : " + event.errorCondition + " " + event.errorCode)
 
 
 
@@ -823,7 +735,7 @@ package com.controller
 		private function onOutgoingData(event:OutgoingDataEvent):void
 		{
 
-			//	trace("outcomingData ...... :" +event.data.toString());
+				trace("outcomingData ...... :" +event.data.toString());
 			if (timerKeepAlive.running)
 			{
 				timerKeepAlive.reset();
@@ -836,7 +748,7 @@ package com.controller
 		private function onIncomingData(event:IncomingDataEvent):void
 		{
 
-			//trace("incomingData ...... :" + String(event.data).toString());
+			trace("incomingData ...... :" + event.data.toString());
 
 		}
 

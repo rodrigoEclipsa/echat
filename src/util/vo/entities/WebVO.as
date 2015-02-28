@@ -1,7 +1,6 @@
 package util.vo.entities
 {
 	[Bindable]
-	[RemoteClass(alias="WebVO")]
 	public class WebVO
 	{
 		public function WebVO()

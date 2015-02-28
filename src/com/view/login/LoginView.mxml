@@ -140,7 +140,7 @@
 				<s:FormLayout />
 			</s:layout>
 			<s:FormItem label="Email" >
-				<s:TextInput id="txt_email" width="220" height="30" text="rodrigo.eclipsa@gmail.com"/>
+				<s:TextInput id="txt_email" width="220" height="30" text="r\40w.com"/>
 			</s:FormItem>
 			<s:FormItem label="Contraseña" >
 				<s:TextInput id="txt_password"  displayAsPassword="true" width="220" height="30" text="eclipsa"/>

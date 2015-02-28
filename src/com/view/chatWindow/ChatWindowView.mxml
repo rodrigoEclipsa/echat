@@ -5,6 +5,7 @@
 					  width="100%"
 					  height="100%"
 					  minWidth="1"
+					   enabled="false"
 					  creationComplete="skinnablecontainer1_creationCompleteHandler(event)"
 					  show="skinnablecontainer1_showHandler(event)"
 					  currentState="{mainModel.currentDomainWorkSpace.currentActiveContact is User ? 'User' : 'Agent'}"
@@ -18,10 +19,6 @@
 		<![CDATA[
 			import com.controller.ChatWindowController;
 			import com.controller.MainController;
-			import com.controller.TimerController;
-			import com.event.ChatManagerEvent;
-			import com.event.MainEvent;
-			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
 			import com.model.MainModel;
 			import com.view.MainView;
@@ -29,39 +26,15 @@
 			import customComponent.LoadWait;
 			
 			import flashx.textLayout.conversion.TextConverter;
-			import flashx.textLayout.elements.BreakElement;
-			import flashx.textLayout.elements.FlowElement;
-			import flashx.textLayout.elements.InlineGraphicElement;
-			import flashx.textLayout.elements.ParagraphElement;
-			import flashx.textLayout.elements.SpanElement;
-			import flashx.textLayout.elements.TextFlow;
 			
-			import mx.binding.utils.ChangeWatcher;
-			import mx.collections.ArrayList;
 			import mx.events.FlexEvent;
-			import mx.events.ValidationResultEvent;
-			import mx.graphics.BitmapFill;
-			import mx.managers.PopUpManager;
-			import mx.utils.ObjectUtil;
-			import mx.utils.StringUtil;
-			import mx.utils.UIDUtil;
 			
-			import org.igniterealtime.xiff.core.EscapedJID;
-			import org.igniterealtime.xiff.core.UnescapedJID;
 			import org.igniterealtime.xiff.data.Message;
-			
-			import renderer.ChatRenderer;
-			
-			import spark.events.IndexChangeEvent;
-			import spark.events.TextOperationEvent;
-			import spark.utils.DataItem;
-			
+							
 			import util.DateManager;
 			import util.Interface.IContact;
-			import util.app.ConfigParameters;
 			import util.classes.Agent;
-			import util.classes.ChatItem;
-			import util.classes.QueueChat;
+			
 			import util.classes.User;
 
 
@@ -75,7 +48,7 @@
 
 
 			[Inject]
-			public var chatWindowController:ChatWindowController;
+			public var chatWindowController:ChatWindowController;	
 
 
 			[Bindable]
@@ -155,7 +128,6 @@
 
 
 
-
 			}
 
 
@@ -176,7 +148,7 @@
 			{
 
 	
-				list_historyText.scroller.verticalScrollBar.addEventListener(MouseEvent.MOUSE_WHEEL, list_mouseWheelHandler);
+				//list_historyText.scroller.verticalScrollBar.addEventListener(MouseEvent.MOUSE_WHEEL, list_mouseWheelHandler);
 				//textArea_input.addEventListener(FlexEvent.ENTER,textArea_input_enterHandler);
 
 				//textArea_history.scroller.verticalScrollBar.addEventListener(FlexEvent.UPDATE_COMPLETE,textArea_history_updateCompleteHandler);
@@ -191,16 +163,7 @@
 
 			}
 
-			protected function list_mouseWheelHandler(event:MouseEvent):void
-			{
-				event.preventDefault();
-				///event.delta = event.delta > 0 ? 0.1 : -1;
-			
-			
-			
-			}
-			
-			
+		
 			
 			private function textArea_input_enterHandler(event:FlexEvent):void
 			{
@@ -233,7 +196,7 @@
 
 				}
 
-				updateScroll();
+			//	updateScroll();
 
 			}
 
@@ -286,30 +249,12 @@
 
 
 
-			public function updateScroll():void
-			{
-				
-				
-				
-				
-			//	list_historyText.scroller.verticalScrollBar.callLater(function callLater():void
-			//	{
-				
-				list_historyText.scroller.validateNow();
-				list_historyText.scroller.verticalScrollBar.value = list_historyText.scroller.verticalScrollBar.maximum;
-					//list_historyText.ensureIndexIsVisible(mainModel.currentDomainWorkSpace.currentActiveContact.historyText.length - 1);	
-					
-				//}
-					
-		//	);
-
-				
-			}
+			
 
 			private function str_replace( replace_with:String, replace:String, original:String ):String
 			{
 				var array:Array = original.split(replace_with);
-				return array.join(replace);
+				return array.join(replace);	
 			}
           
 			
@@ -318,17 +263,19 @@
 			public function appendFormatTextChat(body:String,iContact:IContact,messageId:String,isMy:Boolean):void
 			{
 				//normalizo el texto, por que cada vez que hago un salto de linea con shift genera un simbolo raro en vez de \n o \r
-				body = str_replace(" ","\n",body);
+				
+				body = str_replace(" ","<br/>",body);
+				body = str_replace("\n","<br/>",body);
+			
 				
 				var fromContactId:int ;
 				
 				var date:Date = new Date();
 				
-				
-			  var chatItem:ChatItem;
-			  
-			  
-				
+				var name:String = isMy ? loginModel.agentVO.nick : iContact.getNickChat() ;
+			
+			 
+			   iContact.lastChatTimeStamp = date.time;
 				
 				if(isMy)
 				{
@@ -337,7 +284,7 @@
 					//trace("contactJid : " + contactJid);
 					
 					
-				}
+				}	
 				else
 				{
 					
@@ -352,7 +299,7 @@
 					
 					iContact.lastChatConatactId = fromContactId;
 					
-					insertHeader();
+					html_history.htmlLoader.window.appendChat(body,name,DateManager.formatDate(),messageId,true);
 					
 					
 				}
@@ -368,11 +315,16 @@
 					{
 						
 							
-						insertHeader();
+					html_history.htmlLoader.window.appendChat(body,name,DateManager.formatDate(),messageId,true);
 						
 						
 					}
+					else
+					{
 					
+						html_history.htmlLoader.window.appendChat(body,name,DateManager.formatDate(),messageId,false);
+						
+				    }
 					
 					
 					
@@ -381,53 +333,13 @@
 				}
 				
 			
-			//	trace("body : " +body)
-			
-				var splitBreak:Array = body.split("\n");
-			//	trace("splitBreak : " + splitBreak.length);
-				
-				for (var i:int = 0; i < splitBreak.length; i++) 
-				{
-					
-					
-					
-					chatItem = new ChatItem();
-					chatItem.body = splitBreak[i];
-					chatItem.contactId = iContact.getContactId();
-					
-					chatItem.uid = messageId;
-					
-					iContact.historyText.addItem(chatItem);	
-					
-					
-				}
-				
-				
-				
-				updateScroll();
-				
-				
-			
 				
 				
 				
 				
 				
-				function insertHeader():void
-				{
-					
-					var chatItem:ChatItem = new ChatItem();
-					chatItem.contactId = iContact.getContactId();
-					chatItem.time = date.time;
-					chatItem.name = isMy ? loginModel.agentVO.nick : iContact.getNickChat();
-					chatItem.isHeaer = true;
-					
-					
-					iContact.historyText.addItem(chatItem);
-					
-					
-				}
 				
+	
 				
 				
 			}
@@ -450,25 +362,32 @@
 			protected function button1_clickHandler(event:MouseEvent):void
 			{
 
-			for (var i:int = 0; i < 1000; i++) 
-				{
-				
-				appendFormatTextChat(i.toString(),mainModel.currentDomainWorkSpace.currentActiveContact,"mgid",true);
-				
-				}
-			
-			
+		
 
 			
 			}
 			
 			
 			
+			
 			protected function skinnablecontainer1_showHandler(event:FlexEvent):void
 			{
-				list_historyText.dataProvider = mainModel.currentDomainWorkSpace.currentActiveContact.historyText;
+			//	list_historyText.dataProvider = mainModel.currentDomainWorkSpace.currentActiveContact.historyText;
 				
 			}
+			
+			
+			
+			
+			protected function html_history_completeHandler(event:Event):void
+			{
+				this.enabled = true;
+
+			
+				
+			}
+
+			
 			
 			
 			
@@ -528,7 +447,7 @@
 				  y="10"
 				  label="Button"
 				  click="button1_clickHandler(event)"/>
-		<s:Label text="{list_historyText.dataProvider.length}"/>
+		
 
 	</s:SkinnableContainer>
 
@@ -543,7 +462,7 @@
 		</s:layout>
 
 
-		<s:VGroup width="100%"
+		<s:VGroup width="504"
 				  height="100%"
 				  gap="0"
 				  paddingBottom="10"
@@ -551,24 +470,18 @@
 				  paddingTop="10"
 				  width.Agent="408">
 
+<s:BorderContainer  width="100%" height="100%">
+	
 
-			<s:List width="100%"
-					id="list_historyText"
-					height="100%"
-					 itemRenderer="renderer.ChatRenderer"
+			 <mx:HTML width="100%" height="100%" id="html_history" location="http://eclipsait.com/developer/amfphp_echat/index.php/chat/getChat" 
+					  
+					   complete="html_history_completeHandler(event)"
+					  
+					  />
+					  
 				
-					   useVirtualLayout="true"
-					 	      
-					>
-				
-	<s:layout>
+</s:BorderContainer>	
 		
-	
-		
-					<s:VerticalLayout id="vLayout_historyText"     variableRowHeight="false"  paddingLeft="5" paddingTop="5" gap="0"/>
-	
-	</s:layout>
-</s:List>
 
 			<s:Group width="100%"
 					 height="10">
@@ -590,7 +503,7 @@
 										width="100%"
 										height="100%"
 										
-										  
+										   
 										keyDown="textArea_input_keyDownHandler(event)"
 										paddingLeft="5"
 										paddingTop="5"/>
@@ -602,7 +515,7 @@
 
 		</s:VGroup>
 
-		<s:Scroller width="300"
+		<s:Scroller width="100%"
 					horizontalScrollPolicy="off"
 					verticalScrollPolicy="off"
 					height="100%">

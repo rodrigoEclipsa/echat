@@ -52,7 +52,7 @@
 			[Bindable]
 			[Inject]
 			public var mainController:MainController;
-			
+				
 			
 			[Bindable]
 			[Inject]

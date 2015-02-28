@@ -24,7 +24,7 @@
 			import com.controller.MainController;
 			import com.controller.TimerController;
 			import com.event.ChatManagerEvent;
-			import com.event.MainEvent;
+			import com.event.MainEvent;	
 			import com.event.customComponent.TabBarChatEvent;
 			import com.model.ChatManagerModel;
 			import com.model.LoginModel;
@@ -41,7 +41,7 @@
 			import mx.events.FlexEvent;
 			import mx.events.ValidationResultEvent;
 			import mx.managers.PopUpManager;
-			import mx.utils.ObjectProxy;
+			import mx.utils.ObjectProxy;	
 			import mx.utils.ObjectUtil;
 			import mx.utils.StringUtil;
 			
@@ -49,8 +49,7 @@
 			import org.igniterealtime.xiff.core.UnescapedJID;
 			import org.igniterealtime.xiff.data.Message;
 			
-			import renderer.ChatRenderer;
-			
+		
 			import service.ServiceEchat;
 			
 			import spark.events.IndexChangeEvent;

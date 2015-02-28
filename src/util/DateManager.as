@@ -167,7 +167,7 @@ package util
 		*/
 		
 		
-		public static function formatDate(date:Date,format:String = "HH:mm"):String
+		public static function formatDate(format:String = "HH:mm"):String
 		{
 			
 			var date:Date = new Date();

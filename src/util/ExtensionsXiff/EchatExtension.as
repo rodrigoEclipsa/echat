@@ -48,7 +48,7 @@ package util.ExtensionsXiff
 		public function getNS():String
 		{
 			// TODO Auto Generated method stub
-			return "http://www.eclipsait.com/echat";
+			return "custom:iq:example";
 		}
 		
 		

@@ -1,7 +1,6 @@
 package util.vo.entities
 {
 	[Bindable]
-	[RemoteClass(alias="RoleVO")]
 	public class RoleVO
 	{
 		public function RoleVO()

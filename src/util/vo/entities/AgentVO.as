@@ -1,7 +1,6 @@
 package util.vo.entities
 {
 	[Bindable]
-	[RemoteClass(alias="AgentVO")]
 	public class AgentVO
 	{
 	

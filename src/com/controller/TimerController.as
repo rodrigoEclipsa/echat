@@ -37,9 +37,9 @@ package com.controller
 		
 			timer = new Timer(6000);
 			
-			timer.addEventListener(TimerEvent.TIMER,timer_timerHandler);
+			//timer.addEventListener(TimerEvent.TIMER,timer_timerHandler);
 			
-			timer.start();
+		//	timer.start();
 			
 			
 		}
